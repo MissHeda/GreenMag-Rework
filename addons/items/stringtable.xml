@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="gmr">
+    <Package name="items">
+        <Key ID="STR_gmr_items_Speedloader">
+            <English>Speedloader</English>
+        </Key>
+        <Key ID="STR_gmr_items_Speedloader_Desc">
+            <English>Loads magazines faster while it is in the inventory.</English>
+        </Key>
+    </Package>
+</Project>

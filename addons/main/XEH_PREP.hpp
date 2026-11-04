@@ -1,0 +1,12 @@
+PREP(beltItems);
+PREP(dropOnGround);
+PREP(giveBelt);
+PREP(giveItem);
+PREP(itemCounts);
+PREP(itemInfo);
+PREP(magazineInfo);
+PREP(placeMagazine);
+PREP(registerBelts);
+PREP(removeItem);
+PREP(takeBelts);
+PREP(takeMagazine);

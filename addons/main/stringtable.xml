@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="gmr">
+    <Package name="main">
+        <Key ID="STR_gmr_main_Eden_BeltTime">
+            <English>Belt time multiplier</English>
+        </Key>
+        <Key ID="STR_gmr_main_Eden_BeltTime_Desc">
+            <English>Multiplies how long this unit takes to load or unload a belt. Lower is faster.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Eden_MagazineTime">
+            <English>Magazine time multiplier</English>
+        </Key>
+        <Key ID="STR_gmr_main_Eden_MagazineTime_Desc">
+            <English>Multiplies how long this unit takes to load or unload a magazine. Lower is faster.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_AllowPacking">
+            <English>Allow packing rounds</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_AllowPacking_Desc">
+            <English>Loose rounds can be put back\ninto packs of 10 to 60.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_AmmoSystem">
+            <English>Ammunition system</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_AmmoSystem_Advanced">
+            <English>Advanced</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_AmmoSystem_Desc">
+            <English>Simple: only the caliber counts.\n\nAdvanced: the type counts as well,\nfor example tracer or AP.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_AmmoSystem_Simple">
+            <English>Simple</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_BeltTimeFactor">
+            <English>Belt time factor</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_BeltTimeFactor_Desc">
+            <English>Multiplies the time a belt takes\nto load or to unload.\n\n1 is normal, 0.5 twice as fast.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_BeltsEnabled">
+            <English>Enable belts</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_BeltsEnabled_Desc">
+            <English>Off: machine gun belts cannot be\nrefilled or unloaded, and empty ones\ndisappear as usual.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Container_Auto">
+            <English>Automatic</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Container_Backpack">
+            <English>Backpack</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Container_Uniform">
+            <English>Uniform</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Container_Vest">
+            <English>Vest</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_DisableAceRepack">
+            <English>Disable ACE repacking</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_DisableAceRepack_Desc">
+            <English>Hides ACE's "Repack Magazines" action:\nrounds move by unloading one magazine\nand refilling another.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_EmptiesForAI">
+            <English>Keep empty magazines for AI</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_EmptiesForAI_Desc">
+            <English>AI units keep their empty magazines\nas well. Off saves their inventory\nfrom filling up.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_EmptyContainer">
+            <English>Empty magazines go to</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_EmptyContainer_Desc">
+            <English>Which container is tried first for\nan empty magazine. When it is full,\nthe others are tried.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Enabled">
+            <English>Enable the mod</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Enabled_Desc">
+            <English>Off: no menus, no empty magazines\nand no reload guard. The items stay.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_FreeRefill">
+            <English>Free refill</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_FreeRefill_Desc">
+            <English>Magazines and belts can be refilled\nwithout using any rounds.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GuardNotice">
+            <English>Show reload guard repairs</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GuardNotice_Desc">
+            <English>Shows a line when the reload guard\nputs a magazine back.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Holster">
+            <English>Put the weapon away</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Holster_Desc">
+            <English>The weapon goes on the back while\nloading or unloading.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Interaction">
+            <English>Interaction</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Interaction_Desc">
+            <English>Hold: hold a scroll menu action.\n\nProgress bar: starts at once and\nruns ACE's progress bar.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Interaction_Hold">
+            <English>Hold</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Interaction_Progress">
+            <English>Progress bar</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_KeepEmpties">
+            <English>Keep empty magazines</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_KeepEmpties_Desc">
+            <English>An empty magazine goes back into the\ninventory after a reload, and stays\nwhen it is unloaded.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_MaxMagazines">
+            <English>Magazines per type in the menu</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_MaxMagazines_Desc">
+            <English>How many magazines of one type\nthe menu lists.\n\n0 lists all of them.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ReloadGuard">
+            <English>Reload guard</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ReloadGuard_Desc">
+            <English>Puts a magazine back that the game lost\nduring a reload.\n\nIt only acts when nothing else changed\nin the inventory, and every repair\nis written to the RPT.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Sounds">
+            <English>Play sounds</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_Sounds_Desc">
+            <English>A click per round while loading\nor unloading.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderFactor">
+            <English>Speedloader factor</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderFactor_Desc">
+            <English>Multiplies the loading time while a\nspeedloader is in the inventory.\n\nBelts and unloading are not affected.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_TimePerRound">
+            <English>Seconds per round</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_TimePerRound_Desc">
+            <English>How long one round takes to load\ninto a magazine or to take out of one.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Topic_Magazines">
+            <English>Magazines</English>
+        </Key>
+        <Key ID="STR_gmr_main_Topic_Menu">
+            <English>Menu</English>
+        </Key>
+        <Key ID="STR_gmr_main_Topic_Rules">
+            <English>Rules</English>
+        </Key>
+        <Key ID="STR_gmr_main_Topic_Timing">
+            <English>Timing</English>
+        </Key>
+    </Package>
+</Project>

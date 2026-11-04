@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="gmr">
+    <Package name="handling">
+        <Key ID="STR_gmr_handling_All">
+            <English>All (%1)</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Combine">
+            <English>Combine belts</English>
+        </Key>
+        <Key ID="STR_gmr_handling_CombineAll">
+            <English>Combine all</English>
+        </Key>
+        <Key ID="STR_gmr_handling_CombineWith">
+            <English>With [%1]</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hint_Busy">
+            <English>You are already doing this.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hint_Changed">
+            <English>A magazine was no longer there, it was left out.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hint_Ground">
+            <English>Not everything fits, the rest is on the ground.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hint_NoAmmo">
+            <English>You have no fitting rounds or belts.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hint_Short">
+            <English>Not enough rounds to fill everything.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hold_Fill">
+            <English>Hold to refill %1</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hold_Unload">
+            <English>Hold to unload %1</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Pack">
+            <English>Pack rounds</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Refill">
+            <English>Refill magazines</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Unload">
+            <English>Unload magazines</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Unpack">
+            <English>Unpack ammunition</English>
+        </Key>
+    </Package>
+</Project>

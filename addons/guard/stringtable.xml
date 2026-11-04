@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="gmr">
+    <Package name="guard">
+        <Key ID="STR_gmr_guard_Restored">
+            <English>The game lost a magazine in the reload, it was put back: %1 [%2]</English>
+        </Key>
+    </Package>
+</Project>

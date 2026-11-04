@@ -1,0 +1,9 @@
+name = "GreenMag Rework";
+author = "Miss Heda";
+tooltip = "GreenMag Rework";
+tooltipOwned = "GreenMag Rework";
+overview = "GreenMag Rework by Miss Heda - empty magazines stay with you, refill them from loose rounds, packs and belts. Written from scratch, not affiliated with the original GreenMag.";
+actionName = "Support Discord";
+action = "https://discord.gg/Jud6gyzFYx";
+hideName = 0;
+hidePicture = 0;

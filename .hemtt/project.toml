@@ -1,0 +1,27 @@
+name = "GreenMag Rework"
+prefix = "gmr"
+author = "Miss Heda"
+mainprefix = "z"
+
+[files]
+include = [
+    "mod.cpp",
+    "README.md",
+    "CHANGELOG.md",
+]
+
+[version]
+git_hash = 0
+
+[hemtt.config]
+preset = "Hemtt"
+
+# Mods loaded alongside for testing. Anything specific to your machine goes on the command line:
+#
+#   hemtt launch -- -name="Your Profile"
+[hemtt.launch.default]
+workshop = [
+    "450814997",  # CBA_A3
+    "463939057",  # ACE3
+    "3499977893", # Advanced Developer Tools
+]
