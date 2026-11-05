@@ -1,38 +1,58 @@
-#define SOUND(fileName) class TRIPLES(ADDON,sound,fileName) {\
+// Real recordings the game ships, played from where they lie. With ACE, its recorded magazine sounds take over the
+// rounds going in (compat_ace). The same recording climbs in pitch as the spring tightens.
+#define SOUND(fileName,file,volume,pitch) class TRIPLES(ADDON,sound,fileName) {\
     name = QUOTE(TRIPLES(ADDON,sound,fileName));\
-    sound[] = {QPATHTOF(sounds\fileName.wav), 2, 1};\
+    sound[] = {file, volume, pitch};\
     titles[] = {};\
 }
 
+#define CLICK "A3\Sounds_F\weapons\Reloads\kohoutek1"
+#define BOLT_1 "A3\Sounds_F\weapons\Other\reload_bolt_1"
+#define BOLT_2 "A3\Sounds_F\weapons\Other\reload_bolt_2"
+#define BOLT_3 "A3\Sounds_F\weapons\Other\reload_bolt_3"
+#define BRASS_1 "A3\Sounds_F\weapons\Shells\5_56\metal_556_01"
+#define BRASS_2 "A3\Sounds_F\weapons\Shells\5_56\metal_556_02"
+#define BRASS_3 "A3\Sounds_F\weapons\Shells\5_56\metal_556_03"
+#define BRASS_4 "A3\Sounds_F\weapons\Shells\5_56\metal_556_04"
+#define BRASS_5 "A3\Sounds_F\weapons\Shells\5_56\metal_556_05"
+#define BRASS_6 "A3\Sounds_F\weapons\Shells\5_56\metal_556_06"
+#define BRASS_7 "A3\Sounds_F\weapons\Shells\5_56\metal_556_07"
+#define BRASS_8 "A3\Sounds_F\weapons\Shells\5_56\metal_556_08"
+
 class CfgSounds {
-    SOUND(round_in_1);
-    SOUND(round_in_2);
-    SOUND(round_in_3);
-    SOUND(round_in_4);
-    SOUND(round_in_5);
-    SOUND(round_in_6);
-    SOUND(round_in_7);
-    SOUND(round_in_8);
-    SOUND(round_out_1);
-    SOUND(round_out_2);
-    SOUND(round_out_3);
-    SOUND(round_out_4);
-    SOUND(round_out_5);
-    SOUND(round_out_6);
-    SOUND(belt_link_1);
-    SOUND(belt_link_2);
-    SOUND(belt_link_3);
-    SOUND(belt_link_4);
-    SOUND(magazine_done);
-    SOUND(magazine_empty);
-    SOUND(belt_done);
-    SOUND(grab);
-    SOUND(cancel);
-    SOUND(denied);
-    SOUND(drop_item);
-    SOUND(pack_open);
-    SOUND(pack_close);
-    SOUND(belt_split);
-    SOUND(belt_combine);
-    SOUND(belt_feed);
+    SOUND(round_in_1,CLICK,2,0.94);
+    SOUND(round_in_2,CLICK,2,0.97);
+    SOUND(round_in_3,CLICK,2,1.0);
+    SOUND(round_in_4,CLICK,2,1.03);
+    SOUND(round_in_5,CLICK,2,1.06);
+    SOUND(round_in_6,CLICK,2,1.09);
+    SOUND(round_in_7,CLICK,2,1.12);
+    SOUND(round_in_8,CLICK,2,1.15);
+
+    SOUND(round_out_1,BRASS_1,1.5,0.92);
+    SOUND(round_out_2,BRASS_2,1.5,0.96);
+    SOUND(round_out_3,BRASS_3,1.5,1.0);
+    SOUND(round_out_4,BRASS_4,1.5,1.0);
+    SOUND(round_out_5,BRASS_6,1.5,1.04);
+    SOUND(round_out_6,BRASS_7,1.5,1.08);
+
+    SOUND(belt_link_1,BRASS_5,1.5,0.72);
+    SOUND(belt_link_2,BRASS_6,1.5,0.76);
+    SOUND(belt_link_3,BRASS_7,1.5,0.72);
+    SOUND(belt_link_4,BRASS_8,1.5,0.78);
+
+    SOUND(magazine_done,BOLT_1,2,1);
+    SOUND(magazine_empty,BOLT_2,1.5,1);
+    SOUND(belt_done,BOLT_3,2,0.9);
+    SOUND(belt_feed,BOLT_3,2.5,0.8);
+    SOUND(belt_split,BOLT_2,1.5,1.2);
+    SOUND(belt_combine,BOLT_1,1.5,1.1);
+
+    SOUND(grab,CLICK,1,0.7);
+    SOUND(cancel,CLICK,1,0.6);
+    SOUND(denied,CLICK,1.5,0.5);
+    SOUND(drop_item,BRASS_2,1.5,0.85);
+
+    SOUND(pack_open,"A3\Sounds_F_Decade\Assets\Props\LinkTerminal_01_node_2_F\Link_Terminal02_Box_Lock_Open",1.5,1);
+    SOUND(pack_close,"A3\Sounds_F_Decade\Assets\Props\LinkTerminal_01_node_2_F\Link_Terminal02_Box_Lock_Close",1.5,1);
 };

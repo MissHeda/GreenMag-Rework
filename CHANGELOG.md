@@ -4,7 +4,7 @@
 
 - Changed: the magazine in the hand sits further forward and is turned a little more towards the front
 - Changed: one click for every round, in step with a new counter and the ring or bar; the click climbs as the spring tightens
-- Changed: all sounds made anew, and every action has its own
+- Changed: every action has its own sound, all real recordings of the game, with ACE its recorded magazine sounds
 - Added: "Round counter" setting
 - Changed: new icons in the ACE menu
 - Changed: every kind of ammunition has its own pack picture

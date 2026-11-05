@@ -462,9 +462,9 @@ def build_pack(caliber, variant, label, variant_label):
         add_key_light()
         universal = caliber == "universal"
         base = (0.045, 0.06, 0.03) if universal else (0.13, 0.07, 0.028)
-        kraft = material("kraft", base, 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
-        flap = material("kraft_flap", tuple(v * 0.72 for v in base), 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
-        ink = material("ink", (0.82, 0.80, 0.72) if universal else (0.002, 0.002, 0.002), 0.0, 0.9)
+        kraft = material(f"kraft_{caliber}", base, 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
+        flap = material(f"kraft_flap_{caliber}", tuple(v * 0.72 for v in base), 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
+        ink = material(f"ink_{caliber}", (0.82, 0.80, 0.72) if universal else (0.002, 0.002, 0.002), 0.0, 0.9)
 
         width = 97
         depth = 58.6
@@ -487,7 +487,7 @@ def build_pack(caliber, variant, label, variant_label):
             block("rule", (sx, sy, 0.06), (x, y, top + 0.03), ink)
 
         if variant in TIPS:
-            colour = material("band", TIPS[variant], 0.0, 0.6)
+            colour = material(f"band_{variant}", TIPS[variant], 0.0, 0.6)
             block("band", (inset_x * 2, depth * 0.16, 0.08), (0, -inset_y + depth * 0.09, top + 0.04), colour)
             block("band_side", (width * 0.98, 0.25, height * 0.18), (0, -depth / 2 - 0.05, height * 0.72), colour)
 
