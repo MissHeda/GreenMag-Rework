@@ -1,8 +1,9 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * Sets up loading or unloading and shows what it takes to do it: a hold action that leaves on its own if nobody
- * starts it, or ACE's progress bar. Nothing in the inventory changes before the end (fnc_finish).
+ * Sets up loading or unloading and shows it (fnc_uiCreate). With "Hold to load" it waits for the key to be held, and leaves
+ * on its own if nobody does; otherwise, and in the minigame, it starts at once. One clock runs it all (fnc_tick). Nothing in
+ * the inventory changes before the end (fnc_finish).
  *
  * Arguments:
  * 0: Unit <OBJECT>
@@ -29,7 +30,7 @@ if (!isNil QGVAR(op)) then {
     if (
         (GVAR(op) get "unit") isNotEqualTo _unit
         || {!alive (GVAR(op) get "unit")}
-        || {(GVAR(op) get "started") >= 0 && {CBA_missionTime > (GVAR(op) get "started") + (GVAR(op) get "time") + 5}}
+        || {CBA_missionTime > (GVAR(op) get "seen") + 5}
     ) then {
         [false] call FUNC(finish);
     };
@@ -148,6 +149,10 @@ private _time = if (_belt) then {
 
 GVAR(opCounter) = GVAR(opCounter) + 1;
 
+// What the display starts from: the first magazine's rounds, or the whole belt item.
+private _startShown = if (_kind == "unloadBelt") then {_capacity} else {_amounts param [0, 0]};
+private _game = EGVAR(main,loadGame) && {!_belt} && {_time / _need >= GAME_MIN_BEAT};
+
 GVAR(op) = createHashMapFromArray [
     ["id", GVAR(opCounter)],
     ["unit", _unit],
@@ -157,90 +162,50 @@ GVAR(op) = createHashMapFromArray [
     ["need", _need],
     ["capacity", _capacity],
     ["played", 0],
-    ["counter", controlNull],
+    ["shown", _startShown],
+    ["shownAtStart", _startShown],
     ["time", _time],
+    ["progress", 0],
     ["belt", _belt],
     ["source", _source],
     ["becomes", _becomes],
+    ["title", format [[LLSTRING(Title_Unload), LLSTRING(Title_Fill)] select (_kind == "fill"), _name]],
+    ["picture", _picture],
+    ["created", CBA_missionTime],
+    ["seen", CBA_missionTime],
     ["started", -1],
-    ["tick", -1],
-    ["hold", -1],
-    ["cancel", -1]
+    ["last", CBA_missionTime],
+    ["hold", EGVAR(main,holdToLoad) && {!_game}],
+    ["pressed", false],
+    ["game", _game],
+    ["combo", 0],
+    ["best", 0],
+    ["round", -1],
+    ["tried", false],
+    ["zone", 0],
+    ["zoneSize", 0],
+    ["stall", 0],
+    ["ui", createHashMap],
+    ["handle", -1],
+    ["keys", -1]
 ];
 
-private _title = format [[LLSTRING(Hold_Unload), LLSTRING(Hold_Fill)] select (_kind == "fill"), _name];
+call FUNC(uiCreate);
 
-if (!EGVAR(main,holdToLoad)) then {
-    call FUNC(begin);
+GVAR(op) set ["keys", (findDisplay 46) displayAddEventHandler ["KeyDown", {
+    params ["", "_key"];
 
-    if (HAS_ACE) then {
-        [
-            _time,
-            [],
-            {[true] call FUNC(finish)},
-            {[false] call FUNC(finish)},
-            _title,
-            {true},
-            ["isNotInside", "isNotSitting", "isNotSwimming"]
-        ] call ace_common_fnc_progressBar;
+    if (_key == 1 && {!isNil QGVAR(op)}) then {
+        [false] call FUNC(finish);
+        true
     } else {
-        // Without ACE's bar: it runs by itself, and the scroll menu has the way out.
-        GVAR(op) set ["cancel", _unit addAction [LLSTRING(Cancel), {[false] call FUNC(finish)}, nil, 100000, true, true]];
-
-        [
-            {
-                params ["_id"];
-
-                if (!isNil QGVAR(op) && {(GVAR(op) get "id") == _id}) then {
-                    [true] call FUNC(finish);
-                };
-            },
-            [GVAR(opCounter)],
-            _time
-        ] call CBA_fnc_waitAndExecute;
-    };
-} else {
-    // The picture of what is being worked on, in the ring. The game draws a plain path at the ring's full size, so
-    // the icon comes as text of its own, centred by a spacer above it.
-    GVAR(holdIcon) = format [
-        "<t size='%1'>&#160;</t><br/><img size='%2' color='#ffffff' image='%3'/>",
-        (HOLD_RING_SIZE - HOLD_ICON_SIZE) / 2, HOLD_ICON_SIZE, _picture
-    ];
-
-    private _icon = {missionNamespace getVariable [QGVAR(holdIcon), ""]};
-
-    private _hold = [
-        _unit,
-        _title,
-        _icon,
-        _icon,
-        "alive _this",
-        "alive _caller",
-        {call FUNC(begin)},
-        {},
-        {[true] call FUNC(finish)},
-        {[false] call FUNC(finish)},
-        [],
-        _time,
-        100000,
-        true,
         false
-    ] call BIS_fnc_holdActionAdd;
+    };
+}]];
+GVAR(op) set ["handle", [FUNC(tick), 0, [GVAR(opCounter)]] call CBA_fnc_addPerFrameHandler];
 
-    GVAR(op) set ["hold", _hold];
-
-    // Not started in time: it leaves. Nothing has changed yet, so nothing is lost.
-    [
-        {
-            params ["_id"];
-
-            if (!isNil QGVAR(op) && {(GVAR(op) get "id") == _id} && {(GVAR(op) get "started") < 0}) then {
-                [false] call FUNC(finish);
-            };
-        },
-        [GVAR(opCounter)],
-        HOLD_TIMEOUT
-    ] call CBA_fnc_waitAndExecute;
+if !(GVAR(op) get "hold") then {
+    call FUNC(begin);
 };
 
 true

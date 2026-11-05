@@ -113,7 +113,7 @@
             <English>Hold to load</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_HoldToLoad_Desc">
-            <English>On: hold the scroll menu action\nfor as long as it takes.\n\nOff: it starts at once and runs by itself.\nCancel with Esc, without ACE in the\nscroll menu. The rounds moved stay moved.</English>
+            <English>On: hold the action key for as long\nas it takes, letting go stops it.\n\nOff: it starts at once and runs by\nitself, Esc stops it.\n\nThe rounds moved stay moved.</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_Holster">
             <English>Put the weapon away</English>
@@ -207,6 +207,12 @@
         </Key>
         <Key ID="STR_gmr_main_Setting_ArsenalRounds_Desc">
             <English>Single rounds are listed in the\nammunition tab of ACE Arsenal.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_LoadGame">
+            <English>Loading minigame</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_LoadGame_Desc">
+            <English>A marker runs across once per round.\nPress the action key in the green zone\nand the round seats at once. A miss\nholds you up for a moment.\n\nFor magazines, not for belts.\nStarts by itself, ignoring Hold to load.</English>
         </Key>
     </Package>
 </Project>

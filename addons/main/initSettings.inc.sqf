@@ -145,6 +145,11 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 ] call CBA_fnc_addSetting;
 
 [
+    QGVAR(loadGame), "CHECKBOX", [LLSTRING(Setting_LoadGame), LLSTRING(Setting_LoadGame_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu], false, 0
+] call CBA_fnc_addSetting;
+
+[
     QGVAR(loadAnimation), "CHECKBOX", [LLSTRING(Setting_LoadAnimation), LLSTRING(Setting_LoadAnimation_Desc)],
     [CBA_SETTINGS_CLIENT, _menu], true, 0
 ] call CBA_fnc_addSetting;

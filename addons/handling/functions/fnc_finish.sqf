@@ -1,8 +1,8 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * Ends the running operation. The rounds moved follow from the time that passed, so they can never come out above
- * what was set up, however the frames fell or however often the action was tapped.
+ * Ends the running operation. The rounds moved are the ones that clicked (fnc_tick), so they can never come out above what
+ * was set up, however the frames fell or however often the key was tapped.
  *
  * Arguments:
  * 0: It ran to the end <BOOL>
@@ -24,31 +24,19 @@ private _op = GVAR(op);
 
 GVAR(op) = nil;
 
-if ((_op get "tick") >= 0) then {
-    [_op get "tick"] call CBA_fnc_removePerFrameHandler;
-};
+[_op get "handle"] call CBA_fnc_removePerFrameHandler;
+(findDisplay 46) displayRemoveEventHandler ["KeyDown", _op get "keys"];
 
-ctrlDelete (_op get "counter");
+private _ui = _op get "ui";
 
-if ((_op get "cancel") >= 0) then {
-    (_op get "unit") removeAction (_op get "cancel");
-};
-
-// A completed hold action has removed itself.
-if (!_completed && {(_op get "hold") >= 0}) then {
-    [_op get "unit", _op get "hold"] call BIS_fnc_holdActionRemove;
-};
+{ctrlDelete _x} forEach (_ui getOrDefault ["all", []]);
 
 private _started = _op get "started";
 
 if (_started < 0 || {!alive (_op get "unit")}) exitWith {};
 
-private _need = _op get "need";
-private _done = if (_completed) then {
-    _need
-} else {
-    floor (_need * (((CBA_missionTime - _started) / ((_op get "time") max 0.01)) min 1))
-};
+// Whatever clicked went in, no more and no less.
+private _done = [_op get "played", _op get "need"] select _completed;
 
 if (!_completed) then {
     PLAY_SOUND(cancel);

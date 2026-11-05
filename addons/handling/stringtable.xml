@@ -4,9 +4,6 @@
         <Key ID="STR_gmr_handling_All">
             <English>All (%1)</English>
         </Key>
-        <Key ID="STR_gmr_handling_Cancel">
-            <English>Cancel loading</English>
-        </Key>
         <Key ID="STR_gmr_handling_Combine">
             <English>Combine belts</English>
         </Key>
@@ -40,11 +37,11 @@
         <Key ID="STR_gmr_handling_Hint_WrongKind">
             <English>With rounds still inside, only the same kind of round fits.</English>
         </Key>
-        <Key ID="STR_gmr_handling_Hold_Fill">
-            <English>Hold to refill %1</English>
+        <Key ID="STR_gmr_handling_Title_Fill">
+            <English>Refilling %1</English>
         </Key>
-        <Key ID="STR_gmr_handling_Hold_Unload">
-            <English>Hold to unload %1</English>
+        <Key ID="STR_gmr_handling_Title_Unload">
+            <English>Unloading %1</English>
         </Key>
         <Key ID="STR_gmr_handling_Pack">
             <English>Pack rounds</English>
@@ -63,6 +60,21 @@
         </Key>
         <Key ID="STR_gmr_handling_Hint_OpenPack">
             <English>Open the pack first.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Prompt_Hold">
+            <English>Hold %1 to start, let go to stop</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Prompt_LetGo">
+            <English>Let go to stop</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Prompt_Esc">
+            <English>Esc to stop</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Prompt_Game">
+            <English>Press %1 in the green zone, Esc to stop</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Prompt_Combo">
+            <English>%1 in a row! Press %2 in the green zone</English>
         </Key>
     </Package>
 </Project>

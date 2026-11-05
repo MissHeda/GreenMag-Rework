@@ -1,8 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * The running operation really starts: its clock runs from here, the weapon goes away, the counter shows and the clicks
- * begin (fnc_tick). The rounds moved at the end follow from the time (fnc_finish).
+ * The running operation really starts: its clock runs from here (fnc_tick) and the weapon goes away.
  *
  * Arguments:
  * None
@@ -34,14 +33,8 @@ if (EGVAR(main,loadAnimation)) then {
 
 PLAY_SOUND(grab);
 
-if (EGVAR(main,roundCounter)) then {
-    private _counter = (findDisplay 46) ctrlCreate ["RscStructuredText", -1];
+GVAR(op) set ["last", CBA_missionTime];
 
-    _counter ctrlSetPosition [safeZoneX + safeZoneW * 0.4, safeZoneY + safeZoneH * 0.60, safeZoneW * 0.2, safeZoneH * 0.05];
-    _counter ctrlCommit 0;
-    GVAR(op) set ["counter", _counter];
-};
-
-GVAR(op) set ["tick", [FUNC(tick), 0, [GVAR(op) get "id"]] call CBA_fnc_addPerFrameHandler];
+call FUNC(uiRound);
 
 nil

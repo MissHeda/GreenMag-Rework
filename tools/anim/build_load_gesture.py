@@ -38,7 +38,7 @@ MAG_THICKNESS = 0.026
 MAG_HEIGHT = 0.21
 
 # The back of the magazine lies in the palm, the knuckles this far past its far side.
-KNUCKLES_PAST = 0.012
+KNUCKLES_PAST = 0.014
 
 # The hand holds it this far below its middle: the top must stay free for the rounds.
 HAND_BELOW_MIDDLE = 0.02

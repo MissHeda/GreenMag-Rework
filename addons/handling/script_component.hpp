@@ -3,7 +3,7 @@
 #include "\z\gmr\addons\main\script_mod.hpp"
 #include "\z\gmr\addons\main\script_macros.hpp"
 
-// A hold action nobody starts leaves the scroll menu after this many seconds, so it cannot wait around for a fight.
+// A loading nobody starts by holding the key goes away after this many seconds, so it cannot wait around for a fight.
 #define HOLD_TIMEOUT 30
 
 // A belt moves this many rounds per second, and takes at least these many seconds.
@@ -16,16 +16,33 @@
 #define IDC_LIST_VEST 638
 #define IDC_LIST_BACKPACK 619
 
-// The hold action draws its ring this big; the picture inside it is smaller.
-#define HOLD_RING_SIZE 3
-#define HOLD_ICON_SIZE 1.5
+// The display while loading (fnc_uiCreate): place and size in screen units, its colours, and the most segments in its strip.
+#define UI_WIDTH 0.42
+#define UI_HEIGHT 0.112
+#define UI_TOP 0.80
+#define UI_STRIP_HEIGHT 0.014
+#define UI_MAX_SEGMENTS 50
+#define UI_SPARK_TIME 0.22
+#define UI_PANEL_COLOR [0.03, 0.04, 0.03, 0.72]
+#define UI_ON_COLOR [0.42, 0.92, 0.42, 1]
+#define UI_OLD_COLOR [0.20, 0.46, 0.22, 1]
+#define UI_OFF_COLOR [1, 1, 1, 0.10]
+#define UI_MISS_COLOR [1, 0.3, 0.2, 1]
+
+// The minigame: its track's height, a miss holds the hand this long, and the green zone's share of the track.
+#define UI_GAME_HEIGHT 0.03
+#define GAME_MISS_STALL 0.5
+#define GAME_ZONE_START 0.30
+#define GAME_ZONE_SHRINK 0.02
+#define GAME_ZONE_MIN 0.12
+#define GAME_MIN_BEAT 0.25
 
 // The magazine as one holds it to load it: across the body, its broad side to the front, its front towards the right
 // hand, its back in the left palm, the fingers around its far side and front, the thumb on its near side. From the
 // unit's "lefthand" point to the middle of its back (right, forward, up), the depth the hand is shaped around, the way
 // its front points, up, and its broad side. tools/anim/build_load_gesture.py solves the hand for these and prints the
 // first of them.
-#define MAG_FROM_HAND [-0.0127, -0.0506, -0.0159]
+#define MAG_FROM_HAND [-0.0118, -0.0524, -0.0159]
 #define MAG_DEPTH 0.065
 #define MAG_DIR [0.90, 0.44, 0]
 #define MAG_UP [0, 0, 1]

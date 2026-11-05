@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.25
+
+- Changed: an own display replaces the ring and the bar while loading: the magazine, its count and one segment for each of its rounds, lighting with each click
+- Added: "Loading minigame" setting, off by default
+- Changed: the hand a little closer around the magazine
+
 ## 0.1.24
 
 - Changed: a pack's rounds go where the pack was, only what has no room there goes elsewhere
