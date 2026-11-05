@@ -20,16 +20,31 @@
 params [["_class", "", [""]]];
 
 private _config = configFile >> "CfgMagazines" >> _class;
-private _special = getText (_config >> "modelSpecial");
+private _facts = [_class] call EFUNC(main,magazineInfo);
+
+// A belt box often inherits the model of the magazine it was made from, the MK200's box that of the MX SW's: a box only
+// shows a model its own class sets.
+private _fnc_model = if (_facts select MAG_BELT) then {
+    {
+        private _name = toLowerANSI _this;
+        private _own = configProperties [_config, "isText _x", false];
+        private _at = _own findIf {toLowerANSI configName _x == _name};
+
+        if (_at < 0) then {""} else {getText (_own select _at)}
+    }
+} else {
+    {getText (_config >> _this)}
+};
+
+private _special = "modelSpecial" call _fnc_model;
 
 if (_special isNotEqualTo "") exitWith {_special};
 
-private _own = getText (_config >> "model");
+private _own = "model" call _fnc_model;
 private _ownLower = toLowerANSI _own;
 
 if (_own isNotEqualTo "" && {!("mag_univ" in _ownLower)} && {!("dummy" in _ownLower)} && {!("ammo\mag_" in _ownLower)}) exitWith {_own};
 
-private _facts = [_class] call EFUNC(main,magazineInfo);
 private _caliber = _facts select MAG_CALIBER;
 
 switch (true) do {

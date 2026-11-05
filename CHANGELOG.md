@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.31
+
+- Fixed: the MK200's box showed an MX SW magazine in the hand
+- Fixed: ACE Arsenal coloured belts for weapons that only take loose rounds, and rounds and packs for belt-fed ones
+
 ## 0.1.30
 
 - Changed: the magazine further into the fingers
