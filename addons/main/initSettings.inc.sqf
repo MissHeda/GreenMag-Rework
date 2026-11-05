@@ -127,6 +127,11 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 ] call CBA_fnc_addSetting;
 
 [
+    QGVAR(roundCounter), "CHECKBOX", [LLSTRING(Setting_RoundCounter), LLSTRING(Setting_RoundCounter_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu], true, 0
+] call CBA_fnc_addSetting;
+
+[
     QGVAR(sounds), "CHECKBOX", [LLSTRING(Setting_Sounds), LLSTRING(Setting_Sounds_Desc)],
     [CBA_SETTINGS_CLIENT, _menu], true, 0
 ] call CBA_fnc_addSetting;

@@ -21,6 +21,9 @@
 #define EVENT_CHANGED "gmr_main_changed"
 
 // What fits any magazine, and what a magazine of no known caliber unloads into.
+// A sound of the mod, if the player wants them.
+#define PLAY_SOUND(name) if (EGVAR(main,sounds)) then {playSound QUOTE(DOUBLES(gmr_handling_sound,name))}
+
 #define UNIVERSAL_ROUND "gmr_round_universal_basic"
 #define UNIVERSAL_BELT "gmr_belt_universal_basic_"
 

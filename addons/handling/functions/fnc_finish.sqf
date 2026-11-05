@@ -28,6 +28,8 @@ if ((_op get "tick") >= 0) then {
     [_op get "tick"] call CBA_fnc_removePerFrameHandler;
 };
 
+ctrlDelete (_op get "counter");
+
 if ((_op get "cancel") >= 0) then {
     (_op get "unit") removeAction (_op get "cancel");
 };
@@ -48,6 +50,10 @@ private _done = if (_completed) then {
     floor (_need * (((CBA_missionTime - _started) / ((_op get "time") max 0.01)) min 1))
 };
 
+if (!_completed) then {
+    PLAY_SOUND(cancel);
+};
+
 if (_done <= 0) exitWith {};
 
 switch (_op get "kind") do {
@@ -56,8 +62,12 @@ switch (_op get "kind") do {
     case "unloadBelt": {[_op, _done] call FUNC(applyBeltItem)};
 };
 
-if (EGVAR(main,sounds)) then {
-    playSound QGVAR(sound_magazine_done);
+if (_completed) then {
+    switch (true) do {
+        case (_op get "belt"): {PLAY_SOUND(belt_done)};
+        case ((_op get "kind") == "fill"): {PLAY_SOUND(magazine_done)};
+        default {PLAY_SOUND(magazine_empty)};
+    };
 };
 
 [EVENT_CHANGED, []] call CBA_fnc_localEvent;

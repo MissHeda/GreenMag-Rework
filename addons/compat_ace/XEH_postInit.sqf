@@ -34,8 +34,10 @@
     if (hasInterface && {_unit == ACE_player}) then {
         [[LLSTRING(BeltNotLinked), LLSTRING(BeltLinked)] select _linked] call ace_common_fnc_displayTextStructured;
 
-        if (_linked && {EGVAR(main,sounds)}) then {
-            playSound QEGVAR(handling,sound_belt_link_1);
+        if (_linked) then {
+            PLAY_SOUND(belt_feed);
+        } else {
+            PLAY_SOUND(denied);
         };
     };
 }] call CBA_fnc_addEventHandler;

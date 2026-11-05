@@ -1,8 +1,8 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * The running operation really starts: its clock runs from here, the weapon goes away and the clicks begin. The
- * clicks are only sound, the rounds moved at the end follow from the time (fnc_finish).
+ * The running operation really starts: its clock runs from here, the weapon goes away, the counter shows and the clicks
+ * begin (fnc_tick). The rounds moved at the end follow from the time (fnc_finish).
  *
  * Arguments:
  * None
@@ -32,16 +32,16 @@ if (EGVAR(main,loadAnimation)) then {
     [FUNC(animTick), ANIM_CHECK_INTERVAL, [_unit, GVAR(op) get "id", _model]] call CBA_fnc_addPerFrameHandler;
 };
 
-if (EGVAR(main,sounds)) then {
-    private _belt = GVAR(op) get "belt";
-    private _interval = [(GVAR(op) get "time") / (GVAR(op) get "need"), 1] select _belt;
-    private _sounds = switch (true) do {
-        case (_belt): {[QGVAR(sound_belt_link_1), QGVAR(sound_belt_link_2), QGVAR(sound_belt_link_3)]};
-        case ((GVAR(op) get "kind") == "fill"): {[QGVAR(sound_round_in_1), QGVAR(sound_round_in_2), QGVAR(sound_round_in_3), QGVAR(sound_round_in_4)]};
-        default {[QGVAR(sound_round_out_1), QGVAR(sound_round_out_2), QGVAR(sound_round_out_3)]};
-    };
+PLAY_SOUND(grab);
 
-    GVAR(op) set ["tick", [{playSound selectRandom (_this select 0)}, _interval, _sounds] call CBA_fnc_addPerFrameHandler];
+if (EGVAR(main,roundCounter)) then {
+    private _counter = (findDisplay 46) ctrlCreate ["RscStructuredText", -1];
+
+    _counter ctrlSetPosition [safeZoneX + safeZoneW * 0.4, safeZoneY + safeZoneH * 0.60, safeZoneW * 0.2, safeZoneH * 0.05];
+    _counter ctrlCommit 0;
+    GVAR(op) set ["counter", _counter];
 };
+
+GVAR(op) set ["tick", [FUNC(tick), 0, [GVAR(op) get "id"]] call CBA_fnc_addPerFrameHandler];
 
 nil

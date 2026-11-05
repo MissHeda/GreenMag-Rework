@@ -175,5 +175,11 @@
         <Key ID="STR_gmr_main_Topic_Timing">
             <English>Timing</English>
         </Key>
+        <Key ID="STR_gmr_main_Setting_RoundCounter">
+            <English>Round counter</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_RoundCounter_Desc">
+            <English>Shows the rounds in the magazine\nwhile loading or unloading it.</English>
+        </Key>
     </Package>
 </Project>

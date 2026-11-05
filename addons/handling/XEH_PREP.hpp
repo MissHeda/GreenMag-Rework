@@ -22,5 +22,6 @@ PREP(onInventoryLoad);
 PREP(packRounds);
 PREP(splitBelt);
 PREP(start);
+PREP(tick);
 PREP(unpack);
 PREP(watchDrag);

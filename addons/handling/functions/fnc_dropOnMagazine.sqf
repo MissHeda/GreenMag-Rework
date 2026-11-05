@@ -40,6 +40,7 @@ private _fits = (_magazine select MAG_OK)
 
 if (!_fits) exitWith {
     hintSilent LLSTRING(Hint_WrongAmmo);
+    PLAY_SOUND(denied);
     false
 };
 
@@ -68,6 +69,7 @@ if (_amount >= _capacity) then {
 };
 
 if (_amount >= _capacity) exitWith {
+    PLAY_SOUND(denied);
     false
 };
 
@@ -76,6 +78,7 @@ private _why = ([_class, _amount, _ammunition] call FUNC(loadRule)) select 1;
 
 if (_why isNotEqualTo "") exitWith {
     hintSilent _why;
+    PLAY_SOUND(denied);
     false
 };
 
@@ -83,6 +86,7 @@ if ((_facts select ITEM_KIND) == "pack") then {
     [_unit, _item, true] call FUNC(unpack);
 };
 
+PLAY_SOUND(drop_item);
 closeDialog 0;
 
 [

@@ -48,18 +48,20 @@ private _name = "";
 private _picture = "";
 private _becomes = "";
 private _refused = "";
+private _capacity = 0;
 
 if (_kind == "unloadBelt") then {
     private _facts = [_class] call EFUNC(main,itemInfo);
 
     _belt = true;
     _need = _facts select ITEM_ROUNDS;
+    _capacity = _need;
     _name = _facts select ITEM_NAME;
     _picture = _facts select ITEM_PICTURE;
 } else {
     private _facts = [_class] call EFUNC(main,magazineInfo);
-    private _capacity = _facts select MAG_CAPACITY;
 
+    _capacity = _facts select MAG_CAPACITY;
     _belt = _facts select MAG_BELT;
     _name = _facts select MAG_NAME;
     _picture = _facts select MAG_PICTURE;
@@ -123,11 +125,13 @@ if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
 
 if (_refused isNotEqualTo "") exitWith {
     hintSilent _refused;
+    PLAY_SOUND(denied);
     false
 };
 
 if (_need <= 0) exitWith {
     hintSilent LLSTRING(Hint_NoAmmo);
+    PLAY_SOUND(denied);
     false
 };
 
@@ -151,6 +155,9 @@ GVAR(op) = createHashMapFromArray [
     ["class", _class],
     ["amounts", _amounts],
     ["need", _need],
+    ["capacity", _capacity],
+    ["played", 0],
+    ["counter", controlNull],
     ["time", _time],
     ["belt", _belt],
     ["source", _source],

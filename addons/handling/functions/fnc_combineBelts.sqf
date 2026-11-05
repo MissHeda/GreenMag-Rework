@@ -38,8 +38,8 @@ if (_first isEqualTo "") then {
 
 [_unit, _type, _rounds] call EFUNC(main,giveBelt);
 
-if (EGVAR(main,sounds) && {_rounds > 0}) then {
-    playSound QGVAR(sound_belt_link_1);
+if (_rounds > 0) then {
+    PLAY_SOUND(belt_combine);
 };
 
 nil

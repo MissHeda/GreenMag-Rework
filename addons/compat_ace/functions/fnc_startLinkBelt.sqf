@@ -22,6 +22,7 @@ params [["_unit", objNull, [objNull]], ["_target", objNull, [objNull]]];
 if (([_unit, _target] call FUNC(linkBeltSource)) isEqualTo []) exitWith {};
 
 [_unit, "PutDown"] call ace_common_fnc_doGesture;
+PLAY_SOUND(grab);
 
 [
     LINK_BELT_TIME,

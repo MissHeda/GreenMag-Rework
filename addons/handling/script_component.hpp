@@ -25,11 +25,11 @@
 // unit's "lefthand" point to the middle of its back (right, forward, up), the depth the hand is shaped around, the way
 // its front points, up, and its broad side. tools/anim/build_load_gesture.py solves the hand for these and prints the
 // first of them.
-#define MAG_FROM_HAND [-0.0249, -0.0459, -0.0159]
+#define MAG_FROM_HAND [-0.0127, -0.0506, -0.0159]
 #define MAG_DEPTH 0.065
-#define MAG_DIR [0.97, 0.20, 0]
+#define MAG_DIR [0.90, 0.44, 0]
 #define MAG_UP [0, 0, 1]
-#define MAG_ACROSS [0.20, -0.97, 0]
+#define MAG_ACROSS [0.44, -0.90, 0]
 
 // Beyond this nobody makes out a magazine in a hand.
 #define MAG_VISIBLE_RANGE 300

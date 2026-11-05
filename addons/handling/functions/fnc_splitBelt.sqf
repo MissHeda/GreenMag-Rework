@@ -28,8 +28,6 @@ private _half = floor (_rounds / 2);
 [_unit, _facts select ITEM_BELT_TYPE, _half] call EFUNC(main,giveBelt);
 [_unit, _facts select ITEM_BELT_TYPE, _rounds - _half] call EFUNC(main,giveBelt);
 
-if (EGVAR(main,sounds)) then {
-    playSound QGVAR(sound_belt_link_1);
-};
+PLAY_SOUND(belt_split);
 
 nil

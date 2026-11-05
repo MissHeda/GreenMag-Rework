@@ -37,6 +37,10 @@ private _dropped = 0;
     };
 } forEach [60, 50, 40, 30, 20, 10];
 
+if (_have >= 10) then {
+    PLAY_SOUND(pack_close);
+};
+
 if (_dropped > 0) then {
     hintSilent LLSTRING(Hint_Ground);
 };

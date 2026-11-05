@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.23
+
+- Changed: the magazine in the hand sits further forward and is turned a little more towards the front
+- Changed: one click for every round, in step with a new counter and the ring or bar; the click climbs as the spring tightens
+- Changed: all sounds made anew, and every action has its own
+- Added: "Round counter" setting
+
 ## 0.1.22
 
 - Added: with ACE, link loose belts into the machine gun someone is firing, or your own, so an ammo bearer only carries belts (idea by Guide [ISO])

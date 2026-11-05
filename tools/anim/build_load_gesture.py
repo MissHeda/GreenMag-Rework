@@ -29,9 +29,9 @@ PELVIS_HEIGHT = 0.912
 
 # The magazine the left hand closes around, in the game's axes of the unit (right, forward, up): its middle, the way its
 # front points, its side towards the body, up. The hand is solved against this box, see solve_left_grip.
-MAG_CENTER = np.array([-0.024, 0.300, 1.264])
-MAG_FRONT = np.array([0.97, 0.20, 0.0])
-MAG_INWARD = np.array([0.20, -0.97, 0.0])
+MAG_CENTER = np.array([-0.024, 0.360, 1.264])
+MAG_FRONT = np.array([0.90, 0.44, 0.0])
+MAG_INWARD = np.array([0.44, -0.90, 0.0])
 MAG_UP = np.array([0.0, 0.0, 1.0])
 MAG_DEPTH = 0.065
 MAG_THICKNESS = 0.026

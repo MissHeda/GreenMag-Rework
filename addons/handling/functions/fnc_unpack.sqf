@@ -23,6 +23,8 @@ if (_remove && {[_unit, _pack, 1] call EFUNC(main,removeItem) != 1}) exitWith {}
 
 private _facts = [_pack] call EFUNC(main,itemInfo);
 
+PLAY_SOUND(pack_open);
+
 if ([_unit, _facts select ITEM_ROUND, _facts select ITEM_ROUNDS] call EFUNC(main,giveItem) > 0) then {
     hintSilent LLSTRING(Hint_Ground);
 };
