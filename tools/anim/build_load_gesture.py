@@ -36,7 +36,7 @@ MAG_UP = np.array([0.0, 0.0, 1.0])
 MAG_DEPTH = 0.065
 
 # The magazine in the game lies this much further towards the fingertips than the palm's stop, by eye.
-MAG_TOWARDS_TIPS = 0.01
+MAG_TOWARDS_TIPS = 0.025
 MAG_THICKNESS = 0.026
 MAG_HEIGHT = 0.21
 

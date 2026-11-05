@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.30
+
+- Changed: the magazine further into the fingers
+- Fixed: the minigame's line spoke of loading while unloading
+
 ## 0.1.29
 
 - Added: "Only calibers in use" setting, on by default: ACE Arsenal lists only ammunition that a magazine of the loaded mods takes
