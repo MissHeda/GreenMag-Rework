@@ -19,6 +19,12 @@
         <Key ID="STR_gmr_main_Setting_AllowPacking_Desc">
             <English>Loose rounds can be put back\ninto packs of 10 to 60.</English>
         </Key>
+        <Key ID="STR_gmr_main_Setting_AmmoRules">
+            <English>Ammo rules</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_AmmoRules_Desc">
+            <English>Which caliber a magazine counts as,\nfor magazines of other mods.\n\nmagazine: caliber, magazine: caliber\n\nPart of the class name is enough:\nvn_m16: 556x45, CUP_30Rnd_9x39: 9x39</English>
+        </Key>
         <Key ID="STR_gmr_main_Setting_AmmoSystem">
             <English>Ammunition system</English>
         </Key>
@@ -30,6 +36,12 @@
         </Key>
         <Key ID="STR_gmr_main_Setting_AmmoSystem_Simple">
             <English>Simple</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalHighlight">
+            <English>Highlight fitting ammunition</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalHighlight_Desc">
+            <English>In ACE Arsenal's ammunition tab,\nwhat fits one of your weapons, and\nuniversal ammunition, stands out in green.</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_BeltTimeFactor">
             <English>Belt time factor</English>
@@ -61,6 +73,12 @@
         <Key ID="STR_gmr_main_Setting_DisableAceRepack_Desc">
             <English>Hides ACE's "Repack Magazines" action:\nrounds move by unloading one magazine\nand refilling another.</English>
         </Key>
+        <Key ID="STR_gmr_main_Setting_DragToLoad">
+            <English>Drag to load</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_DragToLoad_Desc">
+            <English>Drag rounds, a pack or a belt onto a\nmagazine in the inventory to load it.\n\nThe inventory closes and the normal\naction takes over.</English>
+        </Key>
         <Key ID="STR_gmr_main_Setting_EmptiesForAI">
             <English>Keep empty magazines for AI</English>
         </Key>
@@ -91,29 +109,29 @@
         <Key ID="STR_gmr_main_Setting_GuardNotice_Desc">
             <English>Shows a line when the reload guard\nputs a magazine back.</English>
         </Key>
+        <Key ID="STR_gmr_main_Setting_HoldToLoad">
+            <English>Hold to load</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_HoldToLoad_Desc">
+            <English>On: hold the scroll menu action\nfor as long as it takes.\n\nOff: it starts at once and runs by itself.\nCancel with Esc, without ACE in the\nscroll menu. The rounds moved stay moved.</English>
+        </Key>
         <Key ID="STR_gmr_main_Setting_Holster">
             <English>Put the weapon away</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_Holster_Desc">
             <English>The weapon goes on the back while\nloading or unloading.</English>
         </Key>
-        <Key ID="STR_gmr_main_Setting_Interaction">
-            <English>Interaction</English>
-        </Key>
-        <Key ID="STR_gmr_main_Setting_Interaction_Desc">
-            <English>Hold: hold a scroll menu action.\n\nProgress bar: starts at once and\nruns ACE's progress bar.</English>
-        </Key>
-        <Key ID="STR_gmr_main_Setting_Interaction_Hold">
-            <English>Hold</English>
-        </Key>
-        <Key ID="STR_gmr_main_Setting_Interaction_Progress">
-            <English>Progress bar</English>
-        </Key>
         <Key ID="STR_gmr_main_Setting_KeepEmpties">
             <English>Keep empty magazines</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_KeepEmpties_Desc">
             <English>An empty magazine goes back into the\ninventory after a reload, and stays\nwhen it is unloaded.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_LoadAnimation">
+            <English>Loading animation</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_LoadAnimation_Desc">
+            <English>The hands load the magazine round by\nround while it runs, standing or kneeling.\n\nNeeds the weapon put away.</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_MaxMagazines">
             <English>Magazines per type in the menu</English>

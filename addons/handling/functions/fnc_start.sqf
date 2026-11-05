@@ -9,6 +9,7 @@
  * 1: "fill", "unload" or "unloadBelt" <STRING>
  * 2: Magazine class, or the belt item for "unloadBelt" <STRING>
  * 3: The rounds of each magazine, in the order to work through them <ARRAY>
+ * 4: Ammunition to refill from, a round class or belt type; "" chooses by the caliber (optional, default: "") <STRING>
  *
  * Return Value:
  * Whether it started <BOOL>
@@ -19,7 +20,7 @@
  * Public: No
  */
 
-params [["_unit", objNull, [objNull]], ["_kind", "fill", [""]], ["_class", "", [""]], ["_amounts", [], [[]]]];
+params [["_unit", objNull, [objNull]], ["_kind", "fill", [""]], ["_class", "", [""]], ["_amounts", [], [[]]], ["_ammunition", "", [""]]];
 
 if (!EGVAR(main,enabled) || {!alive _unit}) exitWith {false};
 
@@ -44,6 +45,9 @@ private _need = 0;
 private _speedload = false;
 private _source = "";
 private _name = "";
+private _picture = "";
+private _becomes = "";
+private _refused = "";
 
 if (_kind == "unloadBelt") then {
     private _facts = [_class] call EFUNC(main,itemInfo);
@@ -51,16 +55,46 @@ if (_kind == "unloadBelt") then {
     _belt = true;
     _need = _facts select ITEM_ROUNDS;
     _name = _facts select ITEM_NAME;
+    _picture = _facts select ITEM_PICTURE;
 } else {
     private _facts = [_class] call EFUNC(main,magazineInfo);
     private _capacity = _facts select MAG_CAPACITY;
 
     _belt = _facts select MAG_BELT;
     _name = _facts select MAG_NAME;
+    _picture = _facts select MAG_PICTURE;
     _speedload = _facts select MAG_SPEEDLOAD;
     _source = [_facts select MAG_ROUND, _facts select MAG_BELT_TYPE] select _belt;
 
+    // A magazine of no known caliber unloads into universal ammunition.
+    if (_source isEqualTo "") then {
+        _source = [UNIVERSAL_ROUND, UNIVERSAL_BELT] select _belt;
+    };
+
     if (_kind == "fill") then {
+        _source = [_ammunition, [_unit, _class] call FUNC(ammoSource)] select (_ammunition isEqualTo "");
+
+        // What does not take this ammunition stays out, and says why if that leaves nothing.
+        if (!EGVAR(main,freeRefill)) then {
+            _amounts = _amounts select {
+                ([_class, _x, _source] call FUNC(loadRule)) params ["_target", "_why"];
+
+                if (_target isEqualTo "") then {
+                    _refused = _why;
+                } else {
+                    if (_target != _class) then {
+                        _becomes = _target;
+                    };
+                };
+
+                _target isNotEqualTo ""
+            };
+
+            if (_amounts isNotEqualTo []) then {
+                _refused = "";
+            };
+        };
+
         {_need = _need + (_capacity - _x)} forEach _amounts;
     } else {
         {_need = _need + _x} forEach _amounts;
@@ -73,7 +107,9 @@ if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
     private _have = 0;
 
     if (_belt) then {
-        {_have = _have + (_x select 1)} forEach ([_unit, _source] call EFUNC(main,beltItems));
+        if (_source isNotEqualTo "") then {
+            {_have = _have + (_x select 1)} forEach ([_unit, _source] call EFUNC(main,beltItems));
+        };
     } else {
         _have = _counts getOrDefault [_source, 0];
     };
@@ -83,6 +119,11 @@ if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
     };
 
     _need = _need min _have;
+};
+
+if (_refused isNotEqualTo "") exitWith {
+    hintSilent _refused;
+    false
 };
 
 if (_need <= 0) exitWith {
@@ -113,27 +154,53 @@ GVAR(op) = createHashMapFromArray [
     ["time", _time],
     ["belt", _belt],
     ["source", _source],
+    ["becomes", _becomes],
     ["started", -1],
     ["tick", -1],
-    ["hold", -1]
+    ["hold", -1],
+    ["cancel", -1]
 ];
 
 private _title = format [[LLSTRING(Hold_Unload), LLSTRING(Hold_Fill)] select (_kind == "fill"), _name];
 
-if (EGVAR(main,interaction) == 1) then {
+if (!EGVAR(main,holdToLoad)) then {
     call FUNC(begin);
 
-    [
-        _time,
-        [],
-        {[true] call FUNC(finish)},
-        {[false] call FUNC(finish)},
-        _title,
-        {true},
-        ["isNotInside", "isNotSitting", "isNotSwimming"]
-    ] call ace_common_fnc_progressBar;
+    if (HAS_ACE) then {
+        [
+            _time,
+            [],
+            {[true] call FUNC(finish)},
+            {[false] call FUNC(finish)},
+            _title,
+            {true},
+            ["isNotInside", "isNotSitting", "isNotSwimming"]
+        ] call ace_common_fnc_progressBar;
+    } else {
+        // Without ACE's bar: it runs by itself, and the scroll menu has the way out.
+        GVAR(op) set ["cancel", _unit addAction [LLSTRING(Cancel), {[false] call FUNC(finish)}, nil, 100000, true, true]];
+
+        [
+            {
+                params ["_id"];
+
+                if (!isNil QGVAR(op) && {(GVAR(op) get "id") == _id}) then {
+                    [true] call FUNC(finish);
+                };
+            },
+            [GVAR(opCounter)],
+            _time
+        ] call CBA_fnc_waitAndExecute;
+    };
 } else {
-    private _icon = [QPATHTOF(data\action_unload.paa), QPATHTOF(data\action_fill.paa)] select (_kind == "fill");
+    // The picture of what is being worked on, in the ring. The game draws a plain path at the ring's full size, so
+    // the icon comes as text of its own, centred by a spacer above it.
+    GVAR(holdIcon) = format [
+        "<t size='%1'>&#160;</t><br/><img size='%2' color='#ffffff' image='%3'/>",
+        (HOLD_RING_SIZE - HOLD_ICON_SIZE) / 2, HOLD_ICON_SIZE, _picture
+    ];
+
+    private _icon = {missionNamespace getVariable [QGVAR(holdIcon), ""]};
 
     private _hold = [
         _unit,

@@ -11,6 +11,9 @@ GVAR(itemCache) = createHashMap;
 // Magazines declared belts at runtime (fnc_registerBelts), lowercase.
 GVAR(registeredBelts) = createHashMap;
 
+// The server's own rules, magazine name part -> caliber (fnc_parseAmmoRules).
+GVAR(ammoRuleList) = [];
+
 // The calibers as data: [id, tokens, [[variant id, tokens], ...]]. Any mod can add classes to gmr_calibers.
 GVAR(calibers) = ("true" configClasses (configFile >> "gmr_calibers")) apply {
     [

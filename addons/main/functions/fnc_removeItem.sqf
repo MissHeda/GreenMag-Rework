@@ -25,7 +25,8 @@ private _fnc_held = {
 
     private _at = _classes findIf {_x == _class};
 
-    [0, _amounts select _at] select (_at >= 0)
+    // Not an array with "select": SQF works out both entries first, and select -1 stops the script.
+    if (_at < 0) then {0} else {_amounts select _at}
 };
 
 private _left = _amount;

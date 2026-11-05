@@ -9,8 +9,7 @@ class CfgPatches {
         requiredAddons[] = {
             "gmr_main",
             "gmr_items",
-            "ace_interact_menu",
-            "ace_magazinerepack"
+            "A3_Anims_F"
         };
         author = "Miss Heda";
         VERSION_CONFIG;
@@ -18,4 +17,5 @@ class CfgPatches {
 };
 
 #include "CfgEventHandlers.hpp"
-#include "CfgVehicles.hpp"
+#include "CfgGestures.hpp"
+#include "CfgSounds.hpp"

@@ -30,7 +30,6 @@ private _types = createHashMap;
 
     if (
         (_facts select MAG_OK)
-        && {(_facts select MAG_ROUND) isNotEqualTo ""}
         && {[_rounds > 0, _rounds < (_facts select MAG_CAPACITY)] select _fill}
     ) then {
         private _list = _types getOrDefault [_class, [], true];

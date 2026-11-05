@@ -26,10 +26,22 @@ if (EGVAR(main,holster) && {isNull objectParent _unit}) then {
     _unit action ["SwitchWeapon", _unit, _unit, NO_WEAPON_MODE];
 };
 
-if (EGVAR(main,sounds)) then {
-    private _interval = [(GVAR(op) get "time") / (GVAR(op) get "need"), 1] select (GVAR(op) get "belt");
+if (EGVAR(main,loadAnimation)) then {
+    private _model = if ((GVAR(op) get "kind") == "unloadBelt") then {QPATHTOF(data\mag_box.p3d)} else {[GVAR(op) get "class"] call FUNC(handModel)};
 
-    GVAR(op) set ["tick", [{playSound "ace_magazinerepack_soundRoundFinished"}, _interval] call CBA_fnc_addPerFrameHandler];
+    [FUNC(animTick), ANIM_CHECK_INTERVAL, [_unit, GVAR(op) get "id", _model]] call CBA_fnc_addPerFrameHandler;
+};
+
+if (EGVAR(main,sounds)) then {
+    private _belt = GVAR(op) get "belt";
+    private _interval = [(GVAR(op) get "time") / (GVAR(op) get "need"), 1] select _belt;
+    private _sounds = switch (true) do {
+        case (_belt): {[QGVAR(sound_belt_link_1), QGVAR(sound_belt_link_2), QGVAR(sound_belt_link_3)]};
+        case ((GVAR(op) get "kind") == "fill"): {[QGVAR(sound_round_in_1), QGVAR(sound_round_in_2), QGVAR(sound_round_in_3), QGVAR(sound_round_in_4)]};
+        default {[QGVAR(sound_round_out_1), QGVAR(sound_round_out_2), QGVAR(sound_round_out_3)]};
+    };
+
+    GVAR(op) set ["tick", [{playSound selectRandom (_this select 0)}, _interval, _sounds] call CBA_fnc_addPerFrameHandler];
 };
 
 nil

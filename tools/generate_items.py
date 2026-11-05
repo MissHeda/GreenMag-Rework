@@ -33,6 +33,8 @@ def v(label, *tokens):
 # id: label, picture family, mass of a round, tokens looked for in the magazine's class, its ammo's class and
 # its description (lowercase, without dots and spaces), variants beside "basic".
 CALIBERS = {
+    # Fits every magazine of the game, of any mod, known or not: see fnc_ammoSource. It has no tokens to be detected by.
+    "universal": ("Universal", "rifle", 0.17, (), {}),
     "9x19": ("9x19 mm", "pistol", 0.10, ("9x19", "9mm_para"), {"tracer": TRACER}),
     "9x21": ("9x21 mm", "pistol", 0.10, ("9x21",), {"tracer": TRACER}),
     "9x18": ("9x18 mm", "pistol", 0.09, ("9x18",), {}),
@@ -83,6 +85,7 @@ CALIBERS = {
 }
 
 BELTS = (
+    ("universal", "basic"),
     ("127x108", "basic"),
     ("127x99", "basic"),
     ("338", "basic"),
@@ -134,7 +137,7 @@ def rounds_and_packs():
 
             lines.append(
                 f'class {round_class}: gmr_round_base {{scope = 2; scopeArsenal = 2; scopeCurator = 2; displayName = "{name} Round"; '
-                f'picture = "\\z\\gmr\\addons\\items\\data\\round_{family}.paa"; '
+                f'picture = "\\z\\gmr\\addons\\items\\data\\round_{caliber}_{variant}.paa"; '
                 f'gmr_caliber = "{caliber}"; gmr_variant = "{variant}"; gmr_round = "{round_class}"; '
                 f"class ItemInfo: CBA_MiscItem_ItemInfo {{mass = {mass(round_mass)};}};}};"
             )
@@ -165,6 +168,7 @@ def belts():
 
         lines.append(
             f'class {base}: gmr_belt_base {{displayName = "{name} Belt"; '
+            f'picture = "\\z\\gmr\\addons\\items\\data\\belt_{variant}.paa"; '
             f'gmr_caliber = "{caliber}"; gmr_variant = "{variant}"; gmr_round = "gmr_round_{caliber}_{variant}"; '
             f'gmr_beltType = "{base}_";}};'
         )

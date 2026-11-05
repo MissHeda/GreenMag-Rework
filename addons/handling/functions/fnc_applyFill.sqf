@@ -4,7 +4,7 @@
  * Puts the rounds into the magazines. The rounds are taken first, as far as they are still there; then each magazine
  * is swapped by itself, by its class and rounds, in the container it lies in. A magazine that is gone by now is left
  * out and its rounds come back. No other magazine is touched, so nothing that happened to the inventory since the
- * menu can be lost or doubled.
+ * menu can be lost or doubled. An empty magazine loaded with another kind of round becomes that kind's magazine.
  *
  * Arguments:
  * 0: The operation (fnc_start) <HASHMAP>
@@ -45,7 +45,9 @@ private _changed = false;
         if (isNull _from) then {
             _changed = true;
         } else {
-            [_unit, _class, _x + _load, _from] call EFUNC(main,placeMagazine);
+            private _becomes = _op get "becomes";
+
+            [_unit, [_class, _becomes] select (_x == 0 && {_becomes isNotEqualTo ""}), _x + _load, _from] call EFUNC(main,placeMagazine);
             _left = _left - _load;
         };
     };

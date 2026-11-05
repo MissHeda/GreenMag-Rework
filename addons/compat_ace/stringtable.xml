@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="gmr">
+    <Package name="compat_ace">
+        <Key ID="STR_gmr_compat_ace_ArsenalTab">
+            <English>Ammunition</English>
+        </Key>
+        <Key ID="STR_gmr_compat_ace_LinkBelt">
+            <English>Link loose belt</English>
+        </Key>
+        <Key ID="STR_gmr_compat_ace_LinkingBelt">
+            <English>Linking belt...</English>
+        </Key>
+        <Key ID="STR_gmr_compat_ace_BeltLinked">
+            <English>Belt linked</English>
+        </Key>
+        <Key ID="STR_gmr_compat_ace_BeltNotLinked">
+            <English>Belt not linked</English>
+        </Key>
+    </Package>
+</Project>

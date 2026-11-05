@@ -29,7 +29,6 @@ class CfgWeapons {
     };
     class gmr_belt_base: gmr_item_base {
         gmr_kind = "belt";
-        picture = QPATHTOF(data\belt.paa);
     };
 
     class gmr_speedloader: gmr_item_base {

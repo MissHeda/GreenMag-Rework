@@ -10,12 +10,19 @@
 // The unit the player controls, a unit taken over in Zeus included.
 #define PLAYER_UNIT (missionNamespace getVariable ["ACE_player", player])
 
+// ACE is optional.
+#define HAS_ACE (isClass (configFile >> "CfgPatches" >> "ace_common"))
+
 // The settings' categories in CBA's Addon Options.
 #define CBA_SETTINGS_SERVER "GreenMag Rework - Server"
 #define CBA_SETTINGS_CLIENT "GreenMag Rework - Client"
 
 // Raised on the local machine after this mod changed a unit's magazines, so the reload guard's picture stays right.
 #define EVENT_CHANGED "gmr_main_changed"
+
+// What fits any magazine, and what a magazine of no known caliber unloads into.
+#define UNIVERSAL_ROUND "gmr_round_universal_basic"
+#define UNIVERSAL_BELT "gmr_belt_universal_basic_"
 
 // The longest belt item there is (tools/generate_items.py).
 #define BELT_MAX 200
@@ -31,6 +38,7 @@
 #define MAG_BELT_TYPE 7
 #define MAG_NAME 8
 #define MAG_PICTURE 9
+#define MAG_TYPE 10
 
 // The fields of our items' facts (gmr_main_fnc_itemInfo).
 #define ITEM_KIND 0

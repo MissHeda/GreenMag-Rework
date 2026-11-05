@@ -4,6 +4,9 @@
         <Key ID="STR_gmr_handling_All">
             <English>All (%1)</English>
         </Key>
+        <Key ID="STR_gmr_handling_Cancel">
+            <English>Cancel loading</English>
+        </Key>
         <Key ID="STR_gmr_handling_Combine">
             <English>Combine belts</English>
         </Key>
@@ -25,8 +28,17 @@
         <Key ID="STR_gmr_handling_Hint_NoAmmo">
             <English>You have no fitting rounds or belts.</English>
         </Key>
+        <Key ID="STR_gmr_handling_Hint_NoVersion">
+            <English>This magazine has no version for that kind of round.</English>
+        </Key>
         <Key ID="STR_gmr_handling_Hint_Short">
             <English>Not enough rounds to fill everything.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hint_WrongAmmo">
+            <English>This ammunition does not fit that magazine.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hint_WrongKind">
+            <English>With rounds still inside, only the same kind of round fits.</English>
         </Key>
         <Key ID="STR_gmr_handling_Hold_Fill">
             <English>Hold to refill %1</English>
@@ -45,6 +57,9 @@
         </Key>
         <Key ID="STR_gmr_handling_Unpack">
             <English>Unpack ammunition</English>
+        </Key>
+        <Key ID="STR_gmr_handling_SplitBelt">
+            <English>Split belt</English>
         </Key>
     </Package>
 </Project>

@@ -59,6 +59,12 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
     [[false, true], [LLSTRING(Setting_AmmoSystem_Simple), LLSTRING(Setting_AmmoSystem_Advanced)], 0], 1, _fnc_resetFacts
 ] call CBA_fnc_addSetting;
 
+// Text boxes
+[
+    QGVAR(ammoRules), "EDITBOX", [LLSTRING(Setting_AmmoRules), LLSTRING(Setting_AmmoRules_Desc)],
+    [CBA_SETTINGS_SERVER, _rules], "", 1, {call FUNC(parseAmmoRules)}
+] call CBA_fnc_addSetting;
+
 // ----- Server: magazines -----
 // Switches
 [
@@ -96,7 +102,27 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 
 // Switches
 [
+    QGVAR(arsenalHighlight), "CHECKBOX", [LLSTRING(Setting_ArsenalHighlight), LLSTRING(Setting_ArsenalHighlight_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu], true, 0
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(dragToLoad), "CHECKBOX", [LLSTRING(Setting_DragToLoad), LLSTRING(Setting_DragToLoad_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu], true, 0
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(holdToLoad), "CHECKBOX", [LLSTRING(Setting_HoldToLoad), LLSTRING(Setting_HoldToLoad_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu], true, 0
+] call CBA_fnc_addSetting;
+
+[
     QGVAR(holster), "CHECKBOX", [LLSTRING(Setting_Holster), LLSTRING(Setting_Holster_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu], true, 0
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(loadAnimation), "CHECKBOX", [LLSTRING(Setting_LoadAnimation), LLSTRING(Setting_LoadAnimation_Desc)],
     [CBA_SETTINGS_CLIENT, _menu], true, 0
 ] call CBA_fnc_addSetting;
 
@@ -108,11 +134,4 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 [
     QGVAR(guardNotice), "CHECKBOX", [LLSTRING(Setting_GuardNotice), LLSTRING(Setting_GuardNotice_Desc)],
     [CBA_SETTINGS_CLIENT, _menu], false, 0
-] call CBA_fnc_addSetting;
-
-// Lists
-[
-    QGVAR(interaction), "LIST", [LLSTRING(Setting_Interaction), LLSTRING(Setting_Interaction_Desc)],
-    [CBA_SETTINGS_CLIENT, _menu],
-    [[0, 1], [LLSTRING(Setting_Interaction_Hold), LLSTRING(Setting_Interaction_Progress)], 0], 0
 ] call CBA_fnc_addSetting;

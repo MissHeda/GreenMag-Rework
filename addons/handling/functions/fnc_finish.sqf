@@ -28,6 +28,10 @@ if ((_op get "tick") >= 0) then {
     [_op get "tick"] call CBA_fnc_removePerFrameHandler;
 };
 
+if ((_op get "cancel") >= 0) then {
+    (_op get "unit") removeAction (_op get "cancel");
+};
+
 // A completed hold action has removed itself.
 if (!_completed && {(_op get "hold") >= 0}) then {
     [_op get "unit", _op get "hold"] call BIS_fnc_holdActionRemove;
@@ -53,7 +57,7 @@ switch (_op get "kind") do {
 };
 
 if (EGVAR(main,sounds)) then {
-    playSound "ace_magazinerepack_soundMagazineFinished";
+    playSound QGVAR(sound_magazine_done);
 };
 
 [EVENT_CHANGED, []] call CBA_fnc_localEvent;

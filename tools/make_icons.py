@@ -1,6 +1,7 @@
-"""Draws the mod's own inventory and action icons and converts them to PAA.
+"""Converts the rendered item pictures to PAA and draws the white action icons of the menus.
 
-    python tools/make_icons.py
+    blender -b --python tools/render_items.py -- RENDERS_FOLDER
+    python tools/make_icons.py RENDERS_FOLDER
 
 Needs Pillow and the Arma 3 Tools' ImageToPAA (path below, or the environment variable IMAGETOPAA).
 """
@@ -11,7 +12,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
 ITEMS = ROOT / "addons" / "items" / "data"
@@ -19,81 +21,20 @@ HANDLING = ROOT / "addons" / "handling" / "data"
 TOOL = os.environ.get("IMAGETOPAA", r"D:\Steam\steamapps\common\Arma 3 Tools\ImageToPAA\ImageToPAA.exe")
 
 SIZE = 256
-BRASS = (205, 165, 80, 255)
-BRASS_DARK = (150, 115, 50, 255)
-COPPER = (180, 105, 65, 255)
-GREEN = (85, 110, 65, 255)
-GREEN_DARK = (55, 75, 45, 255)
-RED = (165, 50, 40, 255)
 WHITE = (255, 255, 255, 255)
-GRAY = (70, 70, 70, 255)
 
 
-def canvas():
-    image = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
-    return image, ImageDraw.Draw(image)
-
-
-def cartridge(draw, cx, top, bottom, width, tip=COPPER):
-    """An upright cartridge: bullet, brass case, rim."""
+def cartridge(draw, cx, top, bottom, width):
     half = width / 2
     neck = top + (bottom - top) * 0.38
 
-    draw.polygon([(cx, top), (cx + half * 0.75, neck), (cx - half * 0.75, neck)], fill=tip)
-    draw.rectangle([cx - half, neck, cx + half, bottom], fill=BRASS)
-    draw.rectangle([cx - half, neck, cx - half * 0.4, bottom], fill=BRASS_DARK)
-    draw.rectangle([cx - half * 1.1, bottom - 8, cx + half * 1.1, bottom], fill=BRASS_DARK)
-
-
-def round_icon(width, top, bottom):
-    image, draw = canvas()
-    cartridge(draw, SIZE / 2, top, bottom, width)
-    return image
-
-
-def shell_icon():
-    image, draw = canvas()
-    draw.rectangle([92, 40, 164, 170], fill=RED)
-    draw.rectangle([92, 40, 112, 170], fill=(125, 35, 30, 255))
-    draw.rectangle([92, 170, 164, 222], fill=BRASS)
-    draw.rectangle([84, 212, 172, 222], fill=BRASS_DARK)
-    return image
-
-
-def pack_icon(size):
-    image, draw = canvas()
-    draw.rectangle([28, 72, 228, 214], fill=GREEN)
-    draw.polygon([(28, 72), (64, 36), (228, 36), (228, 72)], fill=GREEN_DARK)
-    draw.rectangle([28, 118, 228, 170], fill=(225, 220, 195, 255))
-    font = ImageFont.load_default(size=48)
-    text = str(size)
-    box = draw.textbbox((0, 0), text, font=font)
-    draw.text((128 - (box[2] - box[0]) / 2, 144 - (box[3] - box[1]) / 2 - box[1]), text, fill=GRAY, font=font)
-    return image
-
-
-def belt_icon():
-    image, draw = canvas()
-
-    for at, x in enumerate(range(32, 225, 32)):
-        y = 58 + (at % 2) * 10
-        cartridge(draw, x, y, y + 124, 18)
-        draw.rectangle([x - 16, y + 62, x + 16, y + 80], fill=GRAY)
-
-    return image
-
-
-def speedloader_icon():
-    image, draw = canvas()
-    draw.rectangle([84, 30, 172, 150], fill=GRAY)
-    draw.rectangle([104, 150, 152, 226], fill=(45, 45, 45, 255))
-    cartridge(draw, 128, 62, 136, 28)
-    return image
+    draw.polygon([(cx, top), (cx + half * 0.75, neck), (cx - half * 0.75, neck)], fill=WHITE)
+    draw.rectangle([cx - half, neck, cx + half, bottom], fill=WHITE)
 
 
 def action(kind):
-    """White on transparent, for the ACE menu and the hold action."""
-    image, draw = canvas()
+    image = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
 
     if kind == "fill":
         draw.rectangle([72, 120, 184, 232], outline=WHITE, width=14)
@@ -105,11 +46,14 @@ def action(kind):
         draw.rectangle([36, 104, 220, 226], outline=WHITE, width=14)
         draw.line([(36, 104), (10, 60)], fill=WHITE, width=14)
         draw.line([(220, 104), (246, 60)], fill=WHITE, width=14)
-        cartridge(draw, 128, 18, 150, 30, WHITE)
+        cartridge(draw, 128, 18, 150, 30)
     elif kind == "pack":
         draw.rectangle([36, 104, 220, 226], outline=WHITE, width=14)
         draw.line([(36, 104), (128, 62), (220, 104)], fill=WHITE, width=14)
         draw.polygon([(128, 180), (96, 130), (160, 130)], fill=WHITE)
+    elif kind == "ammo":
+        for x in (72, 128, 184):
+            cartridge(draw, x, 30, 226, 40)
     elif kind == "belt":
         for x in range(32, 225, 48):
             draw.rectangle([x - 10, 52, x + 10, 204], fill=WHITE)
@@ -118,35 +62,62 @@ def action(kind):
     return image
 
 
-def save(image, folder, name, tool, work):
-    folder.mkdir(parents=True, exist_ok=True)
-    png = work / f"{name}.png"
-    image.save(png)
-    subprocess.run([tool, str(png), str(folder / f"{name}.paa")], check=True, capture_output=True)
+def clean_edges(png, target):
+    """Takes the light fringe off a picture: the edge pixel by pixel in, and the colour of what is solid pulled outward."""
+    image = Image.open(png).convert("RGBA")
+    alpha = image.getchannel("A").filter(ImageFilter.MinFilter(3))
+    pixels = np.array(image, dtype=np.float32)
+    solid = np.array(alpha, dtype=np.float32) > 200
+    colour = pixels[:, :, :3] * solid[:, :, None]
+    weight = solid.astype(np.float32)
+
+    for _ in range(4):
+        grown = sum(np.roll(np.roll(colour, y, 0), x, 1) for x, y in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        count = sum(np.roll(np.roll(weight, y, 0), x, 1) for x, y in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        fill = (weight == 0) & (count > 0)
+        colour[fill] = grown[fill] / count[fill][:, None]
+        weight[fill] = 1
+
+    result = np.dstack((colour, np.array(alpha, dtype=np.float32))).clip(0, 255).astype(np.uint8)
+    Image.fromarray(result, "RGBA").save(target)
+
+
+def to_paa(png, target):
+    target.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run([TOOL, str(png), str(target)], check=True, capture_output=True)
 
 
 def main():
+    if len(sys.argv) < 2:
+        sys.exit("Usage: make_icons.py RENDERS_FOLDER")
+
     if not Path(TOOL).exists():
         sys.exit(f"ImageToPAA not found at {TOOL}")
 
-    with tempfile.TemporaryDirectory() as temp:
-        work = Path(temp)
-        items = {
-            "round_pistol": round_icon(46, 72, 196),
-            "round_rifle": round_icon(36, 20, 236),
-            "round_heavy": round_icon(62, 12, 244),
-            "round_shell": shell_icon(),
-            "belt": belt_icon(),
-            "speedloader": speedloader_icon(),
-        } | {f"pack_{size}": pack_icon(size) for size in (10, 20, 30, 40, 50, 60)}
+    renders = sorted(Path(sys.argv[1]).glob("*.png"))
+    renders = [png for png in renders if not png.name.startswith("_")]
 
-        for name, image in items.items():
-            save(image, ITEMS, name, TOOL, work)
+    with tempfile.TemporaryDirectory() as temp:
+        ammo = Path(temp) / "action_ammo.png"
+        action("ammo").save(ammo)
+        to_paa(ammo, ROOT / "addons" / "compat_ace" / "data" / "action_ammo.paa")
+
+        for png in renders:
+            source = png
+
+            # Thin bright edges show as a light rim at inventory size. The cartons are matte and keep theirs.
+            if png.stem.startswith(("belt_", "round_", "speedloader")):
+                source = Path(temp) / png.name
+                clean_edges(png, source)
+
+            to_paa(source, ITEMS / f"{png.stem}.paa")
 
         for kind in ("fill", "unload", "unpack", "pack", "belt"):
-            save(action(kind), HANDLING, f"action_{kind}", TOOL, work)
+            png = Path(temp) / f"action_{kind}.png"
+            action(kind).save(png)
+            to_paa(png, HANDLING / f"{png.stem}.paa")
 
-    print("Icons written.")
+    print(f"{len(renders)} item pictures and 5 action icons written.")
 
 
 if __name__ == "__main__":

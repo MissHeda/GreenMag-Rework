@@ -2,7 +2,7 @@
 /*
  * Author: Miss Heda
  * What this mod knows about a magazine class, worked out once on first use. A magazine's own gmr_* config entries
- * win; otherwise the caliber is looked for in its class name, then its ammo's, then its description, and whether it
+ * win, and the server's rules (fnc_parseAmmoRules) over those; otherwise the caliber is looked for in its class name, then its ammo's, then its description, and whether it
  * is a belt follows from its name and size.
  *
  * Arguments:
@@ -36,7 +36,7 @@ private _ok = isClass _config
     && {getNumber (_config >> "gmr_disabled") != 1};
 
 // Lowercase, without dots and spaces: "Caliber: 5.56x45 mm" reads caliber:556x45mm.
-private _fnc_clean = {(toLowerANSI _this) regexReplace ["[. ]", ""]};
+private _fnc_clean = {((toLowerANSI _this) splitString ". ") joinString ""};
 private _sources = [_class call _fnc_clean, _ammo call _fnc_clean, getText (_config >> "descriptionShort") call _fnc_clean];
 
 private _caliber = getText (_config >> "gmr_caliber");
@@ -52,16 +52,22 @@ if (_ok && {_caliber isEqualTo ""}) then {
     } forEach _sources;
 };
 
+{
+    if ((_x select 0) in _key) exitWith {
+        _caliber = _x select 1;
+    };
+} forEach GVAR(ammoRuleList);
+
 private _caliberAt = GVAR(calibers) findIf {(_x select 0) == _caliber};
 
 if (_caliberAt < 0) then {
     _caliber = "";
 };
 
-// The variant: only the advanced system tells them apart.
-private _variant = "basic";
+// The kind of round it really holds. Only the advanced system has its refills depend on it.
+private _type = "basic";
 
-if (_caliber isNotEqualTo "" && {GVAR(advancedAmmo)}) then {
+if (_caliber isNotEqualTo "") then {
     private _variants = (GVAR(calibers) select _caliberAt) select 2;
     private _ids = _variants apply {_x select 0};
     private _names = (_sources select 0) + "|" + (_sources select 1);
@@ -79,9 +85,11 @@ if (_caliber isNotEqualTo "" && {GVAR(advancedAmmo)}) then {
     };
 
     if (_wanted in _ids) then {
-        _variant = _wanted;
+        _type = _wanted;
     };
 };
+
+private _variant = ["basic", _type] select GVAR(advancedAmmo);
 
 // A belt: stated in its config, declared at runtime, or by its name and size.
 private _belt = if (isNumber (_config >> "gmr_belt")) then {
@@ -135,6 +143,7 @@ _facts set [MAG_ROUND, _roundClass];
 _facts set [MAG_BELT_TYPE, _beltType];
 _facts set [MAG_NAME, getText (_config >> "displayName")];
 _facts set [MAG_PICTURE, getText (_config >> "picture")];
+_facts set [MAG_TYPE, _type];
 
 GVAR(magazineCache) set [_key, _facts];
 
