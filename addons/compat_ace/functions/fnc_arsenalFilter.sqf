@@ -2,7 +2,7 @@
 /*
  * Author: Miss Heda
  * ACE Arsenal has filled the ammunition tab: takes out what the settings do not show, belts, packs or single rounds, and
- * the ammunition of calibers no magazine of the loaded mods uses.
+ * ammunition no magazine of the loaded mods takes, by caliber, kind and whether it is a belt.
  *
  * Arguments:
  * 0: The arsenal display <DISPLAY>
@@ -43,8 +43,9 @@ for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
     if (toLowerANSI _item find "gmr_" == 0) then {
         private _facts = [_item] call EFUNC(main,itemInfo);
         private _caliber = _facts select ITEM_CALIBER;
+        private _key = format ["%1:%2:%3", ["round", "belt"] select ((_facts select ITEM_KIND) == "belt"), _caliber, _facts select ITEM_VARIANT];
 
-        if ((_facts select ITEM_KIND) in _hidden || {_usedOnly && {_caliber isNotEqualTo ""} && {!(_caliber in GVAR(usedCalibers))}}) then {
+        if ((_facts select ITEM_KIND) in _hidden || {_usedOnly && {_caliber isNotEqualTo ""} && {!(_key in GVAR(usedCalibers))}}) then {
             _list lnbDeleteRow _row;
         };
     };

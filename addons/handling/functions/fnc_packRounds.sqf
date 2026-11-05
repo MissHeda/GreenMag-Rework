@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * Packs a unit's loose rounds of one kind into the largest packs they fill. Fewer than ten stay loose.
+ * Packs a unit's loose rounds of one kind into the largest of its caliber's packs they fill. What fills no pack stays loose.
  *
  * Arguments:
  * 0: Unit <OBJECT>
@@ -20,7 +20,16 @@ params [["_unit", objNull, [objNull]], ["_round", "", [""]]];
 
 private _facts = [_round] call EFUNC(main,itemInfo);
 private _have = ([_unit] call EFUNC(main,itemCounts)) getOrDefault [_round, 0];
-private _left = [_unit, _round, _have - (_have % 10)] call EFUNC(main,removeItem);
+private _sizes = [_facts select ITEM_CALIBER] call EFUNC(main,packSizes);
+private _packed = 0;
+private _rest = _have;
+
+{
+    _packed = _packed + (_rest - (_rest % _x));
+    _rest = _rest % _x;
+} forEach _sizes;
+
+private _left = [_unit, _round, _packed] call EFUNC(main,removeItem);
 private _dropped = 0;
 
 {
@@ -35,9 +44,9 @@ private _dropped = 0;
 
         _left = _left - _packs * _x;
     };
-} forEach [60, 50, 40, 30, 20, 10];
+} forEach _sizes;
 
-if (_have >= 10) then {
+if (_packed > 0) then {
     PLAY_SOUND(pack_close);
 };
 

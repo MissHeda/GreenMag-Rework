@@ -4,7 +4,7 @@ Run it after changing the table (no arguments):
 
     python tools/generate_items.py
 
-Every caliber gets one loose round and six packs per variant; the belt types below get one class per
+Every caliber gets one loose round per variant and its packs in the sizes the real cartridges are sold or issued in; the belt types below get one class per
 length (1-200 rounds), because an item's mass cannot change at runtime. Mass is config mass, a tenth
 of a pound per unit.
 """
@@ -13,8 +13,38 @@ from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "addons" / "items" / "cfg"
 
-PACK_SIZES = (10, 20, 30, 40, 50, 60)
-ARSENAL_PACKS = (30, 60)
+# The boxes the real cartridges come in: pistol rounds in boxes of 50, rifle rounds in boxes of 20 (Soviet 5.45 in
+# paper packs of 30, NATO 5.56 also issued as three 10-round stripper clips), German 7.92 as three 5-round clips, the
+# large calibers in boxes of 10, shotgun shells by 5 and 25. Universal ammunition has no real box, 30 suits most magazines.
+PACK_SIZES = {
+    "universal": (30,),
+    "9x19": (50,),
+    "9x21": (50,),
+    "9x18": (16,),
+    "9x39": (20,),
+    "762x25": (50,),
+    "45acp": (50,),
+    "46x30": (50,),
+    "570x28": (50,),
+    "545x39": (30,),
+    "556x45": (20, 30),
+    "580x42": (20,),
+    "650x39": (20,),
+    "762x39": (20,),
+    "300blk": (20,),
+    "762x51": (20,),
+    "762x54": (20,),
+    "792x57": (15,),
+    "303": (20,),
+    "50bw": (20,),
+    "93x64": (20,),
+    "338": (10,),
+    "408": (10,),
+    "127x54": (10,),
+    "127x99": (10,),
+    "127x108": (10,),
+    "12g": (5, 25),
+}
 ARSENAL_BELTS = (50, 100, 150, 200)
 BELT_LENGTH = 200
 
@@ -142,8 +172,8 @@ def rounds_and_packs():
                 f"class ItemInfo: CBA_MiscItem_ItemInfo {{mass = {mass(round_mass)};}};}};"
             )
 
-            for size in PACK_SIZES:
-                shown = 2 if size in ARSENAL_PACKS else 1
+            for size in PACK_SIZES[caliber]:
+                shown = 2
 
                 lines.append(
                     f"class gmr_pack_{caliber}_{variant}_{size}: gmr_pack_base {{"
@@ -190,7 +220,8 @@ def calibers():
     lines = [HEADER, "class gmr_calibers {"]
 
     for caliber, (label, _, _, tokens, _) in CALIBERS.items():
-        lines.append(f'    class {caliber} {{displayName = "{label}"; tokens[] = {array(tokens)};')
+        packs = ",".join(str(size) for size in sorted(PACK_SIZES[caliber], reverse=True))
+        lines.append(f'    class {caliber} {{displayName = "{label}"; tokens[] = {array(tokens)}; packs[] = {{{packs}}};')
         lines.append("        class variants {")
 
         for variant, (variant_label, variant_tokens) in variants_of(caliber).items():
@@ -212,7 +243,7 @@ def public_classes():
     for caliber in CALIBERS:
         for variant in variants_of(caliber):
             names.append(f"gmr_round_{caliber}_{variant}")
-            names += [f"gmr_pack_{caliber}_{variant}_{size}" for size in ARSENAL_PACKS]
+            names += [f"gmr_pack_{caliber}_{variant}_{size}" for size in PACK_SIZES[caliber]]
 
     for caliber, variant in BELTS:
         names += [f"gmr_belt_{caliber}_{variant}_{length}" for length in ARSENAL_BELTS]

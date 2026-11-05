@@ -5,6 +5,7 @@ PREP(giveItem);
 PREP(itemCounts);
 PREP(itemInfo);
 PREP(magazineInfo);
+PREP(packSizes);
 PREP(parseAmmoRules);
 PREP(placeMagazine);
 PREP(registerBelts);

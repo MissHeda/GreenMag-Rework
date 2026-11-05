@@ -1,4 +1,5 @@
 #include "..\script_component.hpp"
+#include "..\mag_backs.hpp"
 /*
  * Author: Miss Heda
  * Shows a magazine in a unit's left hand on this machine, every player seeing it through their own local object. Each
@@ -13,7 +14,7 @@
  * None
  *
  * Example:
- * [player, "\z\gmr\addons\handling\data\mag_rifle.p3d"] call gmr_handling_fnc_holdMagazine;
+ * [player, "\z\gmr\addons\handling\data\mag_rifle_30.p3d"] call gmr_handling_fnc_holdMagazine;
  *
  * Public: No
  */
@@ -50,6 +51,15 @@ if (_sizeX > _sizeY) then {
     _axisX = ((MAG_DIR vectorMultiply -cos _tilt) vectorAdd (MAG_UP vectorMultiply sin _tilt));
     _axisY = MAG_ACROSS;
     _axisZ = ((MAG_UP vectorMultiply cos _tilt) vectorAdd (MAG_DIR vectorMultiply sin _tilt));
+};
+
+// This mod's own magazines know where their back is, however deep a large caliber or bent the curve makes them.
+private _path = (toLowerANSI _model) splitString "\\";
+private _ownName = ((_path select (count _path - 1)) splitString ".") select 0;
+private _ownAt = MAG_BACKS findIf {(_x select 0) == _ownName};
+
+if (_ownAt >= 0 && {QPATHTOF(data) in _model}) then {
+    _depth = 2 * ((_middle select 1) - ((MAG_BACKS select _ownAt) select 1));
 };
 
 // The back of the magazine lies in the palm, whatever its depth.

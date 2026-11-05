@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.33
+
+- Changed: packs come in the sizes the real cartridges are boxed in: 50 for pistol rounds, 20 for rifle rounds (5.45 in 30, 5.56 also as 30 on stripper clips, 7.92 in 15), 10 for the large calibers, 5 and 25 for shotgun shells
+- Changed: "Only ammunition in use" also hides kinds no loaded magazine has, like subsonic or Mk 262, and belts where no weapon is belt-fed
+- Changed: new stand-in magazines for weapons without a magazine model of their own: pistol, rifle, AK, battle rifle, sniper, .50 and shotgun, each in the size of its magazine, with ribs, floor plate, feed lips and the top round, and an ammunition box with its belt
+
 ## 0.1.32
 
 - Changed: the line saying what to press sits inside the loading display, the minigame's run of hits beside the count

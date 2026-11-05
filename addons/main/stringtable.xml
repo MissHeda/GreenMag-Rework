@@ -224,10 +224,10 @@
             <English>Nothing, it has to be hit</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_ArsenalUsedCalibers">
-            <English>Only calibers in use</English>
+            <English>Only ammunition in use</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_ArsenalUsedCalibers_Desc">
-            <English>Lists only the ammunition of calibers\nthat a magazine of the loaded mods uses,\nand universal ammunition.</English>
+            <English>Lists only ammunition that a magazine\nof the loaded mods takes: its caliber,\nits kind like tracer or subsonic,\nand rounds or belts.\n\nUniversal ammunition always stays.</English>
         </Key>
     </Package>
 </Project>

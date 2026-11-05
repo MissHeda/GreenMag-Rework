@@ -44,16 +44,22 @@
 
 if (!hasInterface) exitWith {};
 
-// Which calibers the loaded mods' magazines use, for the arsenal. Thousands of classes, so in the background: it would be a
-// noticeable hang on the arsenal's first opening. Universal ammunition is there for the magazines nothing else fits.
+// Which ammunition the loaded mods' magazines take, for the arsenal: loose rounds or belts, of which caliber and kind.
+// Thousands of classes, so in the background: it would be a noticeable hang on the arsenal's first opening. Universal
+// ammunition is there for the magazines nothing else fits.
 [] spawn {
-    private _used = createHashMapFromArray [["universal", true]];
+    private _used = createHashMapFromArray [["round:universal:basic", true], ["belt:universal:basic", true]];
 
     {
         private _facts = [configName _x] call EFUNC(main,magazineInfo);
 
         if (_facts select MAG_OK) then {
-            _used set [_facts select MAG_CALIBER, true];
+            private _kind = ["round", "belt"] select (_facts select MAG_BELT);
+
+            // Basic ammunition fills any magazine of its caliber, so it is there as soon as one of its kinds is.
+            {
+                _used set [format ["%1:%2:%3", _kind, _facts select MAG_CALIBER, _x], true];
+            } forEach ["basic", _facts select MAG_TYPE];
         };
     } forEach ("getNumber (_x >> 'scope') > 0" configClasses (configFile >> "CfgMagazines"));
 

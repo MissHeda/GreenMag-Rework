@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * The children of "Pack rounds": one entry per kind of loose round the player has at least a small pack of.
+ * The children of "Pack rounds": one entry per kind of loose round the player has at least its smallest pack of.
  *
  * Arguments:
  * 0: Player <OBJECT>
@@ -22,7 +22,7 @@ private _actions = [];
 {
     private _facts = [_x] call EFUNC(main,itemInfo);
 
-    if ((_facts select ITEM_KIND) == "round" && {_y >= 10}) then {
+    if ((_facts select ITEM_KIND) == "round" && {_y >= selectMin ([_facts select ITEM_CALIBER] call EFUNC(main,packSizes))}) then {
         private _action = [
             format ["gmr_pack_%1", _x],
             format ["%1 (%2)", _facts select ITEM_NAME, _y],

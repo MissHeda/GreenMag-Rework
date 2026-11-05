@@ -3,7 +3,8 @@
  * Author: Miss Heda
  * The model to show in the hand for a magazine: its own where it has one, which is modelSpecial for those a weapon
  * shows as a part of its own, or a model of its own instead of the game's generic pouch. Most magazines have neither,
- * their look is a fixed part of the weapon's model and cannot be taken out, so one of this mod's shapes stands in.
+ * their look is a fixed part of the weapon's model and cannot be taken out, so one of this mod's shapes stands in: of
+ * the kind of weapon its caliber has and of its size.
  *
  * Arguments:
  * 0: Magazine class <STRING>
@@ -47,9 +48,24 @@ if (_own isNotEqualTo "" && {!("mag_univ" in _ownLower)} && {!("dummy" in _ownLo
 
 private _caliber = _facts select MAG_CALIBER;
 
-switch (true) do {
-    case (_facts select MAG_BELT): {QPATHTOF(data\mag_box.p3d)};
-    case (_caliber in ["9x19", "9x21", "9x18", "762x25", "45acp", "46x30", "570x28"]): {QPATHTOF(data\mag_pistol.p3d)};
-    case (_caliber in ["545x39", "762x39", "762x54", "9x39"]): {QPATHTOF(data\mag_ak.p3d)};
-    default {QPATHTOF(data\mag_rifle.p3d)};
-}
+if (_facts select MAG_BELT) exitWith {QPATHTOF(data\mag_box.p3d)};
+
+// The family of magazine its caliber's weapons have, and of the sizes made for it (tools/make_mag_models.py) the
+// smallest that holds it, so a magazine of ten looks short and one of forty long.
+private _family = switch (true) do {
+    case (_caliber in ["9x19", "9x21", "9x18", "762x25", "45acp", "46x30", "570x28"]): {["pistol", [7, 15, 30]]};
+    case (_caliber in ["545x39", "762x39", "762x54", "9x39"]): {["ak", [10, 20, 30, 45]]};
+    case (_caliber in ["762x51", "792x57", "303"]): {["battle", [5, 10, 20, 30]]};
+    case (_caliber in ["93x64", "338", "408", "127x54"]): {["heavy", [5, 10]]};
+    case (_caliber in ["127x99", "127x108"]): {["fifty", [5, 10]]};
+    case (_caliber == "12g"): {["shell", [5, 10]]};
+    default {["rifle", [10, 20, 30, 40]]};
+};
+
+_family params ["_name", "_sizes"];
+
+private _capacity = _facts select MAG_CAPACITY;
+private _at = _sizes findIf {_x >= _capacity};
+private _size = if (_at < 0) then {selectMax _sizes} else {_sizes select _at};
+
+format ["%1\mag_%2_%3.p3d", QPATHTOF(data), _name, _size]

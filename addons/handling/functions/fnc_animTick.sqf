@@ -14,7 +14,7 @@
  * None
  *
  * Example:
- * [[player, 1, "\z\gmr\addons\handling\data\mag_rifle.p3d"], 0] call gmr_handling_fnc_animTick;
+ * [[player, 1, "\z\gmr\addons\handling\data\mag_rifle_30.p3d"], 0] call gmr_handling_fnc_animTick;
  *
  * Public: No
  */
