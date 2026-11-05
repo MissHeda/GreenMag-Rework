@@ -44,6 +44,22 @@
 
 if (!hasInterface) exitWith {};
 
+// Which calibers the loaded mods' magazines use, for the arsenal. Thousands of classes, so in the background: it would be a
+// noticeable hang on the arsenal's first opening. Universal ammunition is there for the magazines nothing else fits.
+[] spawn {
+    private _used = createHashMapFromArray [["universal", true]];
+
+    {
+        private _facts = [configName _x] call EFUNC(main,magazineInfo);
+
+        if (_facts select MAG_OK) then {
+            _used set [_facts select MAG_CALIBER, true];
+        };
+    } forEach ("getNumber (_x >> 'scope') > 0" configClasses (configFile >> "CfgMagazines"));
+
+    GVAR(usedCalibers) = _used;
+};
+
 // ACE builds its side buttons as this event goes out, so they are moved a frame later.
 ["ace_arsenal_rightPanelContainer", {
     [FUNC(arrangeArsenal), _this] call CBA_fnc_execNextFrame;

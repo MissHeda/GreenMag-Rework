@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.29
+
+- Added: "Only calibers in use" setting, on by default: ACE Arsenal lists only ammunition that a magazine of the loaded mods takes
+
 ## 0.1.28
 
 - Fixed: the line below the loading display was cut off

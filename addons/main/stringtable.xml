@@ -223,5 +223,11 @@
         <Key ID="STR_gmr_main_Setting_GameMustHit_Yes">
             <English>Nothing, it has to be hit</English>
         </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalUsedCalibers">
+            <English>Only calibers in use</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalUsedCalibers_Desc">
+            <English>Lists only the ammunition of calibers\nthat a magazine of the loaded mods uses,\nand universal ammunition.</English>
+        </Key>
     </Package>
 </Project>

@@ -128,6 +128,11 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 ] call CBA_fnc_addSetting;
 
 [
+    QGVAR(arsenalUsedCalibers), "CHECKBOX", [LLSTRING(Setting_ArsenalUsedCalibers), LLSTRING(Setting_ArsenalUsedCalibers_Desc)],
+    [CBA_SETTINGS_SERVER, _arsenal], true, 1
+] call CBA_fnc_addSetting;
+
+[
     QGVAR(arsenalRounds), "CHECKBOX", [LLSTRING(Setting_ArsenalRounds), LLSTRING(Setting_ArsenalRounds_Desc)],
     [CBA_SETTINGS_SERVER, _arsenal], false, 1
 ] call CBA_fnc_addSetting;
