@@ -21,7 +21,7 @@ private _unit = GVAR(op) get "unit";
 
 GVAR(op) set ["started", CBA_missionTime];
 
-if (EGVAR(main,holster) && {isNull objectParent _unit}) then {
+if (isNull objectParent _unit) then {
     _unit action ["SwitchWeapon", _unit, _unit, NO_WEAPON_MODE];
 };
 

@@ -527,42 +527,47 @@ def build_pack(caliber, variant, label, variant_label):
     return build
 
 
-def build_belt(variant):
+def build_belt(caliber, variant):
     def build(camera):
         band = metal(PARKERIZED)
         hole = material("link_hole", (0.015, 0.012, 0.01), 0.0, 0.6)
+        diameter = CARTRIDGES[caliber][0]
+        case = CARTRIDGES[caliber][5]
+        overall = CARTRIDGES[caliber][6]
+        radius = diameter / 2
         count = 7
-        pitch = 13.2
+        pitch = diameter * 1.11
         start = -pitch * (count - 1) / 2
 
-        def link(x, y, low, high, radius):
-            ring = lathe("link", [(radius - 0.05, low), (radius + 0.42, low + 0.2), (radius + 0.42, high - 0.2), (radius - 0.05, high)], band)
+        def link(x, y, low, high, r):
+            ring = lathe("link", [(r - 0.05, low), (r + radius * 0.07, low + 0.2), (r + radius * 0.07, high - 0.2), (r - 0.05, high)], band)
             ring.location = (x, y, 0)
 
         for index in range(count):
             x = start + index * pitch
             # A slight sag, so it reads as a flexible belt rather than a row.
             t = (index - (count - 1) / 2) / count
-            y = 24 * t * t
+            y = 2.0 * diameter * t * t
             turn = -t * 0.42
             kind = variant if variant != "basic" and index % 3 == 1 else "basic"
-            cartridge("762x51", kind, 1.0, (x, y, 0), (0, 0, turn))
+            cartridge(caliber, kind, 1.0, (x, y, 0), (0, 0, turn))
 
-            # M13 links: a wide band around one round, two narrow ones around the next, joined by a pin behind.
+            # M13 style links: a wide band around one round, two narrow ones around the next, joined by a pin behind.
             if index % 2 == 0:
-                link(x, y, 15.5, 33.0, 6.0)
-                pin = lathe("hole", [(1.9, 0), (1.9, 0.3)], hole)
-                pin.location = (x, y - 6.5, 24.2)
+                link(x, y, case * 0.30, case * 0.64, radius * 1.01)
+                pin = lathe("hole", [(radius * 0.32, 0), (radius * 0.32, 0.3)], hole)
+                pin.location = (x, y - radius * 1.09, case * 0.47)
                 pin.rotation_euler = (math.radians(90), 0, 0)
             else:
-                link(x, y, 13.0, 19.5, 6.05)
-                link(x, y, 27.5, 34.5, 5.95)
+                link(x, y, case * 0.25, case * 0.38, radius * 1.02)
+                link(x, y, case * 0.54, case * 0.67, radius)
 
             if index < count - 1:
-                spine = block("spine", (pitch, 1.3, 4.4), (x + pitch / 2, y + 6.4, 24.2), band, 0.3)
+                spine = block("spine", (pitch, radius * 0.22, case * 0.086), (x + pitch / 2, y + radius * 1.08, case * 0.47), band, 0.2)
                 spine.rotation_euler = (0, 0, turn)
 
-        frame(camera, (0, 2.5, 35), 134, (0.10, -1.0, 0.30), math.radians(12), 200)
+        extent = max(pitch * count * 1.45, overall * 1.75)
+        frame(camera, (0, diameter * 0.2, overall * 0.49), extent, (0.10, -1.0, 0.30), math.radians(12), 200)
 
     return build
 
@@ -619,8 +624,8 @@ def main():
         for variant, (variant_label, _) in ({"basic": ("Basic", ())} | variants).items():
             render(f"pack_{caliber}_{variant}", build_pack(caliber, variant, label, variant_label), folder, name_filter)
 
-    for variant in ("basic", "tracer", "irtracer"):
-        render(f"belt_{variant}", build_belt(variant), folder, name_filter)
+    for caliber, variant in ITEM_TABLE.BELTS:
+        render(f"belt_{caliber}_{variant}", build_belt(caliber, variant), folder, name_filter)
 
     render("speedloader", build_speedloader, folder, name_filter)
 

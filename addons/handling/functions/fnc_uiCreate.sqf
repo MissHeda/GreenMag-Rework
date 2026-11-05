@@ -84,7 +84,7 @@ private _spark = ["RscPicture", _stripX, _stripY - 0.003, _segmentW, UI_STRIP_HE
 _spark ctrlSetFade 1;
 _spark ctrlCommit 0;
 
-private _prompt = ["RscStructuredText", _x0, _y0 + _height + 0.003, _width, 0.036] call _fnc_make;
+private _prompt = ["RscStructuredText", safeZoneX, _y0 + _height + 0.003, safeZoneW, 0.04] call _fnc_make;
 
 GVAR(op) set ["ui", createHashMapFromArray [
     ["all", _all],

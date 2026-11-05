@@ -34,6 +34,9 @@ MAG_FRONT = np.array([0.90, 0.44, 0.0])
 MAG_INWARD = np.array([0.44, -0.90, 0.0])
 MAG_UP = np.array([0.0, 0.0, 1.0])
 MAG_DEPTH = 0.065
+
+# The magazine in the game lies this much further towards the fingertips than the palm's stop, by eye.
+MAG_TOWARDS_TIPS = 0.01
 MAG_THICKNESS = 0.026
 MAG_HEIGHT = 0.21
 
@@ -628,7 +631,7 @@ def build():
 
     if LEFTHAND_POINT is not None:
         point = left_wrist_at + left_hand_rotation @ np.array(LEFTHAND_POINT)
-        back = box.center - box.axes[:, 0] * (MAG_DEPTH / 2)
+        back = box.center - box.axes[:, 0] * (MAG_DEPTH / 2) + box.axes[:, 0] * MAG_TOWARDS_TIPS
         print("MAG_FROM_HAND:", np.round(from_rtm(back - point), 4).tolist())
 
 

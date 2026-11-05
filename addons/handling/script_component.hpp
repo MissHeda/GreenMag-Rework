@@ -48,7 +48,7 @@
 // unit's "lefthand" point to the middle of its back (right, forward, up), the depth the hand is shaped around, the way
 // its front points, up, and its broad side. tools/anim/build_load_gesture.py solves the hand for these and prints the
 // first of them.
-#define MAG_FROM_HAND [-0.0489, -0.0447, -0.0094]
+#define MAG_FROM_HAND [-0.0399, -0.0403, -0.0094]
 #define MAG_DEPTH 0.065
 #define MAG_DIR [0.90, 0.44, 0]
 #define MAG_UP [0, 0, 1]

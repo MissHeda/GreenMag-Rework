@@ -115,12 +115,6 @@
         <Key ID="STR_gmr_main_Setting_HoldToLoad_Desc">
             <English>On: hold the action key for as long\nas it takes, letting go stops it.\n\nOff: it starts at once and runs by\nitself, Esc stops it.\n\nThe rounds moved stay moved.</English>
         </Key>
-        <Key ID="STR_gmr_main_Setting_Holster">
-            <English>Put the weapon away</English>
-        </Key>
-        <Key ID="STR_gmr_main_Setting_Holster_Desc">
-            <English>The weapon goes on the back while\nloading or unloading.</English>
-        </Key>
         <Key ID="STR_gmr_main_Setting_KeepEmpties">
             <English>Keep empty magazines</English>
         </Key>

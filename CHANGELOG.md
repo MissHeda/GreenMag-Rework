@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.28
+
+- Fixed: the line below the loading display was cut off
+- Changed: the magazine a little further towards the fingertips
+- Changed: the weapon always goes away while loading, the setting for it is gone
+- Changed: every kind of belt has its own picture, with its own rounds and links to fit them
+
 ## 0.1.27
 
 - Changed: the minigame is on by default and a server setting; the round flies along a track and the magazine is the slot to hit

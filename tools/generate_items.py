@@ -168,7 +168,7 @@ def belts():
 
         lines.append(
             f'class {base}: gmr_belt_base {{displayName = "{name} Belt"; '
-            f'picture = "\\z\\gmr\\addons\\items\\data\\belt_{variant}.paa"; '
+            f'picture = "\\z\\gmr\\addons\\items\\data\\belt_{caliber}_{variant}.paa"; '
             f'gmr_caliber = "{caliber}"; gmr_variant = "{variant}"; gmr_round = "gmr_round_{caliber}_{variant}"; '
             f'gmr_beltType = "{base}_";}};'
         )

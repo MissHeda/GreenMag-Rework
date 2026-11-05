@@ -156,11 +156,6 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 ] call CBA_fnc_addSetting;
 
 [
-    QGVAR(holster), "CHECKBOX", [LLSTRING(Setting_Holster), LLSTRING(Setting_Holster_Desc)],
-    [CBA_SETTINGS_CLIENT, _menu], true, 0
-] call CBA_fnc_addSetting;
-
-[
     QGVAR(loadAnimation), "CHECKBOX", [LLSTRING(Setting_LoadAnimation), LLSTRING(Setting_LoadAnimation_Desc)],
     [CBA_SETTINGS_CLIENT, _menu], true, 0
 ] call CBA_fnc_addSetting;
