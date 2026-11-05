@@ -17,20 +17,26 @@
 #define IDC_LIST_BACKPACK 619
 
 // The display while loading (fnc_uiCreate): place and size in screen units, its colours, and the most segments in its strip.
-#define UI_WIDTH 0.42
-#define UI_HEIGHT 0.112
-#define UI_TOP 0.80
+#define UI_WIDTH 0.44
+#define UI_HEIGHT 0.118
+#define UI_TOP 0.78
+#define UI_RADIUS 0.014
 #define UI_STRIP_HEIGHT 0.014
 #define UI_MAX_SEGMENTS 50
 #define UI_SPARK_TIME 0.22
-#define UI_PANEL_COLOR [0.03, 0.04, 0.03, 0.72]
+#define UI_HIT_TIME 0.3
+#define UI_PANEL_COLOR [0.086, 0.094, 0.114, 0.88]
+#define UI_TILE_COLOR [1, 1, 1, 0.07]
 #define UI_ON_COLOR [0.42, 0.92, 0.42, 1]
 #define UI_OLD_COLOR [0.20, 0.46, 0.22, 1]
 #define UI_OFF_COLOR [1, 1, 1, 0.10]
+#define UI_ZONE_COLOR [0.42, 0.92, 0.42, 0.28]
+#define UI_ROUND_COLOR [0.96, 0.72, 0.30, 1]
 #define UI_MISS_COLOR [1, 0.3, 0.2, 1]
 
-// The minigame: its track's height, a miss holds the hand this long, and the green zone's share of the track.
-#define UI_GAME_HEIGHT 0.03
+// The minigame: its track, how long a miss holds the hand, the opening's share of the track, and the fastest a round may fly.
+#define UI_GAME_HEIGHT 0.062
+#define UI_TRACK_HEIGHT 0.008
 #define GAME_MISS_STALL 0.5
 #define GAME_ZONE_START 0.30
 #define GAME_ZONE_SHRINK 0.02

@@ -1,9 +1,9 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * Draws what loading looks like: the magazine, its count, and a strip with one segment per round of it, so a magazine of
- * ten and one of a hundred look as different as they are. Controls on the game's own display, so no key is taken from
- * the player.
+ * Draws what loading looks like, in the look of Arma Inventory Overhaul: a dark panel with round corners holding the
+ * magazine, its count and a strip with one segment per round of it, so a magazine of ten and one of a hundred look as
+ * different as they are. In the minigame a track below: the round flies along it, the magazine is the slot to hit.
  *
  * Arguments:
  * None
@@ -31,57 +31,60 @@ private _y0 = safeZoneY + safeZoneH * UI_TOP;
 private _all = [];
 
 private _fnc_make = {
-    params ["_class", "_x", "_y", "_w", "_h"];
+    params ["_class", "_x", "_y", "_w", "_h", ["_texture", ""], ["_colour", []]];
 
     private _control = _display ctrlCreate [_class, -1];
 
     _control ctrlSetPosition [_x, _y, _w, _h];
+
+    if (_texture isNotEqualTo "") then {
+        _control ctrlSetText _texture;
+    };
+
+    if (_colour isNotEqualTo []) then {
+        _control ctrlSetTextColor _colour;
+    };
+
     _control ctrlCommit 0;
     _all pushBack _control;
     _control
 };
 
-private _panel = ["RscText", _x0, _y0, _width, _height] call _fnc_make;
-_panel ctrlSetBackgroundColor UI_PANEL_COLOR;
+_all append ([_display, [_x0, _y0, _width, _height], UI_PANEL_COLOR, UI_RADIUS] call FUNC(uiPanel));
 
-private _accent = ["RscText", _x0, _y0, _width, 0.003] call _fnc_make;
-_accent ctrlSetBackgroundColor UI_ON_COLOR;
+private _tileHeight = 0.076;
+private _tileWidth = _tileHeight * 3 / 4;
+private _pad = 0.008;
 
-private _pictureHeight = 0.075;
-private _pictureWidth = _pictureHeight * 3 / 4;
-private _picture = ["RscPictureKeepAspect", _x0 + 0.006, _y0 + 0.008, _pictureWidth, _pictureHeight] call _fnc_make;
-_picture ctrlSetText (GVAR(op) get "picture");
+_all append ([_display, [_x0 + _pad, _y0 + _pad, _tileWidth, _tileHeight], UI_TILE_COLOR, UI_RADIUS * 0.6] call FUNC(uiPanel));
+["RscPictureKeepAspect", _x0 + _pad + 0.002, _y0 + _pad + 0.002, _tileWidth - 0.004, _tileHeight - 0.004, GVAR(op) get "picture"] call _fnc_make;
 
-private _textX = _x0 + _pictureWidth + 0.014;
-private _textW = _width - _pictureWidth - 0.02;
+private _textX = _x0 + _pad * 2 + _tileWidth;
+private _textW = _width - _tileWidth - _pad * 3;
 
 private _title = ["RscStructuredText", _textX, _y0 + 0.006, _textW, 0.036] call _fnc_make;
-_title ctrlSetStructuredText parseText format ["<t size='0.85' color='#d8d8d8' font='PuristaMedium'>%1</t>", GVAR(op) get "title"];
+_title ctrlSetStructuredText parseText format ["<t size='0.85' color='#c9ced6' font='PuristaMedium'>%1</t>", GVAR(op) get "title"];
 
-private _count = ["RscStructuredText", _textX, _y0 + 0.034, _textW, 0.05] call _fnc_make;
+private _count = ["RscStructuredText", _textX, _y0 + 0.032, _textW, 0.05] call _fnc_make;
 
-// The strip.
-private _stripX = _x0 + 0.008;
-private _stripW = _width - 0.016;
-private _stripY = _y0 + 0.09;
-private _gap = [0.0016, 0.0008] select (_segments > 30);
+// The strip: a little pill per round.
+private _stripX = _x0 + _pad;
+private _stripW = _width - _pad * 2;
+private _stripY = _y0 + _pad * 2 + _tileHeight;
+private _gap = [0.0018, 0.0009] select (_segments > 30);
 private _segmentW = (_stripW - _gap * (_segments - 1)) / _segments;
 private _strip = [];
 
 for "_i" from 0 to _segments - 1 do {
-    private _segment = ["RscText", _stripX + _i * (_segmentW + _gap), _stripY, _segmentW, UI_STRIP_HEIGHT] call _fnc_make;
-
-    _segment ctrlSetBackgroundColor UI_OFF_COLOR;
-    _strip pushBack _segment;
+    _strip pushBack (["RscPicture", _stripX + _i * (_segmentW + _gap), _stripY, _segmentW, UI_STRIP_HEIGHT, QPATHTOF(data\pill_ca.paa), UI_OFF_COLOR] call _fnc_make);
 };
 
 // The bright spark over the segment that just lit, fading out by itself.
-private _spark = ["RscText", _stripX, _stripY - 0.003, _segmentW, UI_STRIP_HEIGHT + 0.006] call _fnc_make;
-_spark ctrlSetBackgroundColor [1, 1, 1, 1];
+private _spark = ["RscPicture", _stripX, _stripY - 0.003, _segmentW, UI_STRIP_HEIGHT + 0.006, QPATHTOF(data\pill_ca.paa), [1, 1, 1, 1]] call _fnc_make;
 _spark ctrlSetFade 1;
 _spark ctrlCommit 0;
 
-private _prompt = ["RscStructuredText", _x0, _y0 + _height + 0.002, _width, 0.036] call _fnc_make;
+private _prompt = ["RscStructuredText", _x0, _y0 + _height + 0.003, _width, 0.036] call _fnc_make;
 
 GVAR(op) set ["ui", createHashMapFromArray [
     ["all", _all],
@@ -97,20 +100,32 @@ GVAR(op) set ["ui", createHashMapFromArray [
 ]];
 
 if (_game) then {
-    private _trackY = _stripY + UI_STRIP_HEIGHT + 0.012;
-    private _track = ["RscText", _stripX, _trackY, _stripW, UI_GAME_HEIGHT - 0.012] call _fnc_make;
-    _track ctrlSetBackgroundColor UI_OFF_COLOR;
-
-    private _zone = ["RscText", _stripX, _trackY, 0, UI_GAME_HEIGHT - 0.012] call _fnc_make;
-    _zone ctrlSetBackgroundColor UI_ON_COLOR;
-
-    private _marker = ["RscText", _stripX, _trackY - 0.003, 0.003, UI_GAME_HEIGHT - 0.006] call _fnc_make;
-    _marker ctrlSetBackgroundColor [1, 1, 1, 1];
-
     private _ui = GVAR(op) get "ui";
-    _ui set ["zone", _zone];
-    _ui set ["marker", _marker];
-    _ui set ["trackY", _trackY];
+    private _trackY = _stripY + UI_STRIP_HEIGHT + _pad + 0.004;
+    private _trackH = UI_GAME_HEIGHT - _pad - 0.004;
+    private _middle = _trackY + _trackH / 2 - UI_TRACK_HEIGHT / 2;
+
+    _all append ([_display, [_stripX, _middle, _stripW, UI_TRACK_HEIGHT], UI_OFF_COLOR, UI_TRACK_HEIGHT / 2] call FUNC(uiPanel));
+
+    // The slot: a glow on the track where the round has to be, and the magazine on it. It flashes on a hit.
+    private _glow = ["RscPicture", _stripX, _trackY + 0.004, 0, _trackH - 0.008, QPATHTOF(data\pill_ca.paa), UI_ZONE_COLOR] call _fnc_make;
+    private _hit = ["RscPicture", _stripX, _trackY + 0.004, 0, _trackH - 0.008, QPATHTOF(data\pill_ca.paa), UI_ON_COLOR] call _fnc_make;
+    _hit ctrlSetFade 1;
+    _hit ctrlCommit 0;
+
+    private _slotH = _trackH + 0.012;
+    private _slot = ["RscPictureKeepAspect", _stripX, _trackY - 0.006, _slotH * 3 / 4, _slotH, GVAR(op) get "picture"] call _fnc_make;
+    private _roundW = 0.05;
+    private _round = ["RscPictureKeepAspect", _stripX, _trackY, _roundW, _trackH, QPATHTOF(data\round_side_ca.paa), UI_ROUND_COLOR] call _fnc_make;
+
+    _ui set ["glow", _glow];
+    _ui set ["hit", _hit];
+    _ui set ["slot", _slot];
+    _ui set ["slotW", _slotH * 3 / 4];
+    _ui set ["round", _round];
+    _ui set ["roundW", _roundW];
+
+    call FUNC(uiGame);
 };
 
 call FUNC(uiRound);

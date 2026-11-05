@@ -151,7 +151,12 @@ GVAR(opCounter) = GVAR(opCounter) + 1;
 
 // What the display starts from: the first magazine's rounds, or the whole belt item.
 private _startShown = if (_kind == "unloadBelt") then {_capacity} else {_amounts param [0, 0]};
-private _game = EGVAR(main,loadGame) && {!_belt} && {_time / _need >= GAME_MIN_BEAT};
+private _game = EGVAR(main,loadGame) && {!_belt};
+private _beat = (_time / _need) max GAME_MIN_BEAT;
+
+if (_game) then {
+    _time = _beat * _need;
+};
 
 GVAR(op) = createHashMapFromArray [
     ["id", GVAR(opCounter)],
@@ -178,9 +183,13 @@ GVAR(op) = createHashMapFromArray [
     ["hold", EGVAR(main,holdToLoad) && {!_game}],
     ["pressed", false],
     ["game", _game],
+    ["mustHit", EGVAR(main,gameMustHit)],
+    ["beat", _beat],
+    ["phase", 0],
+    ["rounds", 0],
+    ["attempt", 0],
+    ["attemptShown", -1],
     ["combo", 0],
-    ["best", 0],
-    ["round", -1],
     ["tried", false],
     ["zone", 0],
     ["zoneSize", 0],

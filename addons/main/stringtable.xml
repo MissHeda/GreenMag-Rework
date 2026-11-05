@@ -161,7 +161,7 @@
             <English>Seconds per round</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_TimePerRound_Desc">
-            <English>How long one round takes to load\ninto a magazine or to take out of one.</English>
+            <English>How long one round takes to load\ninto a magazine or to take out of one.\n\nIn the minigame, how long the round\ntakes to fly across, at least 0.25.</English>
         </Key>
         <Key ID="STR_gmr_main_Topic_Magazines">
             <English>Magazines</English>
@@ -212,7 +212,22 @@
             <English>Loading minigame</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_LoadGame_Desc">
-            <English>A marker runs across once per round.\nPress the action key in the green zone\nand the round seats at once. A miss\nholds you up for a moment.\n\nFor magazines, not for belts.\nStarts by itself, ignoring Hold to load.</English>
+            <English>A round flies across once per round.\nPress the action key when it is on the\nmagazine and it seats at once. A miss\nholds you up for a moment.\n\nFor magazines, not for belts. Hold to\nload does not apply while this is on.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Topic_Minigame">
+            <English>Minigame</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameMustHit">
+            <English>Without a press</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameMustHit_Desc">
+            <English>What happens when the round reaches\nthe end and nobody pressed.\n\nLoads anyway: nobody has to play,\nhitting it only makes it faster.\n\nNothing: no round goes in\nuntil it is hit.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameMustHit_No">
+            <English>The round loads anyway</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameMustHit_Yes">
+            <English>Nothing, it has to be hit</English>
         </Key>
     </Package>
 </Project>

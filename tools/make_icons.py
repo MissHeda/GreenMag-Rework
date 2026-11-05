@@ -135,6 +135,40 @@ def action(kind):
     return big.resize((SIZE, SIZE), Image.LANCZOS)
 
 
+def white_alpha(image):
+    """Only the alpha, every pixel white: the game tints these, and its filtering mixes in the colour of see-through pixels."""
+    return Image.merge("RGBA", (Image.new("L", image.size, 255),) * 3 + (image.getchannel("A"),))
+
+
+def corner(which, size=64):
+    """A quarter of a filled circle, round towards the outside of the panel it sits in (fnc_uiPanel)."""
+    big = Image.new("RGBA", (size * 8, size * 8), (0, 0, 0, 0))
+    s = size * 8
+    cx = {"tl": s, "tr": 0, "bl": s, "br": 0}[which]
+    cy = {"tl": s, "tr": s, "bl": 0, "br": 0}[which]
+    ImageDraw.Draw(big).ellipse([cx - s, cy - s, cx + s, cy + s], fill=WHITE)
+    return white_alpha(big.resize((size, size), Image.LANCZOS))
+
+
+def pill(width=64, height=64):
+    """A bar with round ends, stretched over a segment of the strip or the minigame's opening."""
+    big = Image.new("RGBA", (width * 8, height * 8), (0, 0, 0, 0))
+    ImageDraw.Draw(big).rounded_rectangle([0, 0, width * 8 - 1, height * 8 - 1], radius=height * 2, fill=WHITE)
+    return white_alpha(big.resize((width, height), Image.LANCZOS))
+
+
+def round_side(width=256, height=128):
+    """A round lying on its side, flying to the right: the minigame's marker."""
+    big = Image.new("RGBA", (width * 8, height * 8), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(big)
+    u = height * 8 / 128
+    cy = height * 4
+    draw.polygon([(u * 250, cy), (u * 190, cy - u * 13), (u * 176, cy - u * 16), (u * 176, cy + u * 16), (u * 190, cy + u * 13)], fill=WHITE)
+    draw.polygon([(u * 172, cy - u * 16), (u * 150, cy - u * 18), (u * 134, cy - u * 28), (u * 26, cy - u * 28), (u * 26, cy + u * 28), (u * 134, cy + u * 28), (u * 150, cy + u * 18), (u * 172, cy + u * 16)], fill=WHITE)
+    draw.rectangle([u * 10, cy - u * 31, u * 22, cy + u * 31], fill=WHITE)
+    return white_alpha(big.resize((width, height), Image.LANCZOS))
+
+
 def clean_edges(png, target):
     """Takes the light fringe off a picture: the edge pixel by pixel in, and the colour of what is solid pulled outward."""
     image = Image.open(png).convert("RGBA")
@@ -181,6 +215,11 @@ def main():
                 clean_edges(png, source)
 
             to_paa(source, ITEMS / f"{png.stem}.paa")
+
+        for name, image in [(f"corner_{w}_ca", corner(w)) for w in ("tl", "tr", "bl", "br")] + [("pill_ca", pill()), ("round_side_ca", round_side())]:
+            png = Path(temp) / f"{name}.png"
+            image.save(png)
+            to_paa(png, HANDLING / f"{name}.paa")
 
         for kind in ("fill", "unload", "unpack", "pack", "belt", "split", "link"):
             png = Path(temp) / f"action_{kind}.png"

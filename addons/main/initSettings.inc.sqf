@@ -5,9 +5,16 @@ private _rules = LLSTRING(Topic_Rules);
 private _magazines = LLSTRING(Topic_Magazines);
 private _menu = LLSTRING(Topic_Menu);
 private _arsenal = LLSTRING(Topic_Arsenal);
+private _minigame = LLSTRING(Topic_Minigame);
 
 // What a magazine or belt counts as depends on these two, so what is known about magazines starts over.
 private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
+
+// The most important one, above every topic: CBA puts the settings without a sub-category first.
+[
+    QGVAR(enabled), "CHECKBOX", [LLSTRING(Setting_Enabled), LLSTRING(Setting_Enabled_Desc)],
+    CBA_SETTINGS_SERVER, true, 1
+] call CBA_fnc_addSetting;
 
 // ----- Server: timing -----
 // Numbers
@@ -28,11 +35,6 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 
 // ----- Server: rules -----
 // Switches
-[
-    QGVAR(enabled), "CHECKBOX", [LLSTRING(Setting_Enabled), LLSTRING(Setting_Enabled_Desc)],
-    [CBA_SETTINGS_SERVER, _rules], true, 1
-] call CBA_fnc_addSetting;
-
 [
     QGVAR(beltsEnabled), "CHECKBOX", [LLSTRING(Setting_BeltsEnabled), LLSTRING(Setting_BeltsEnabled_Desc)],
     [CBA_SETTINGS_SERVER, _rules], true, 1, _fnc_resetFacts
@@ -99,6 +101,20 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
     ], 1
 ] call CBA_fnc_addSetting;
 
+// ----- Server: minigame -----
+// Switches
+[
+    QGVAR(loadGame), "CHECKBOX", [LLSTRING(Setting_LoadGame), LLSTRING(Setting_LoadGame_Desc)],
+    [CBA_SETTINGS_SERVER, _minigame], true, 1
+] call CBA_fnc_addSetting;
+
+// Lists
+[
+    QGVAR(gameMustHit), "LIST", [LLSTRING(Setting_GameMustHit), LLSTRING(Setting_GameMustHit_Desc)],
+    [CBA_SETTINGS_SERVER, _minigame],
+    [[false, true], [LLSTRING(Setting_GameMustHit_No), LLSTRING(Setting_GameMustHit_Yes)], 0], 1
+] call CBA_fnc_addSetting;
+
 // ----- Server: what ACE Arsenal shows -----
 // Switches
 [
@@ -142,11 +158,6 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 [
     QGVAR(holster), "CHECKBOX", [LLSTRING(Setting_Holster), LLSTRING(Setting_Holster_Desc)],
     [CBA_SETTINGS_CLIENT, _menu], true, 0
-] call CBA_fnc_addSetting;
-
-[
-    QGVAR(loadGame), "CHECKBOX", [LLSTRING(Setting_LoadGame), LLSTRING(Setting_LoadGame_Desc)],
-    [CBA_SETTINGS_CLIENT, _menu], false, 0
 ] call CBA_fnc_addSetting;
 
 [

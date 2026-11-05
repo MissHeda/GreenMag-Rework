@@ -30,7 +30,7 @@ private _lit = ceil (_segments * _shown / _capacity);
 private _old = ceil (_segments * _before / _capacity);
 
 {
-    _x ctrlSetBackgroundColor (switch (true) do {
+    _x ctrlSetTextColor (switch (true) do {
         case (_forEachIndex >= _lit): {UI_OFF_COLOR};
         case (_forEachIndex >= _old): {UI_ON_COLOR};
         default {UI_OLD_COLOR};
@@ -62,8 +62,9 @@ private _line = switch (true) do {
     case (_waiting): {format [LLSTRING(Prompt_Hold), _keyName]};
     case (GVAR(op) get "game"): {
         private _combo = GVAR(op) get "combo";
+        private _text = format [[LLSTRING(Prompt_Game), LLSTRING(Prompt_GameMust)] select (GVAR(op) get "mustHit"), _keyName];
 
-        if (_combo > 1) then {format [LLSTRING(Prompt_Combo), _combo, _keyName]} else {format [LLSTRING(Prompt_Game), _keyName]}
+        if (_combo > 1) then {format [LLSTRING(Prompt_Combo), _combo, _text]} else {_text}
     };
     case (GVAR(op) get "hold"): {LLSTRING(Prompt_LetGo)};
     default {LLSTRING(Prompt_Esc)};

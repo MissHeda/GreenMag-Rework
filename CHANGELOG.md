@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.27
+
+- Changed: the minigame is on by default and a server setting; the round flies along a track and the magazine is the slot to hit
+- Added: "Without a press" setting: the round loads anyway so nobody has to play, or nothing goes in until it is hit
+- Changed: the loading display in the look of Arma Inventory Overhaul, with round corners
+- Changed: "Enable the mod" stands above every other setting
+
 ## 0.1.26
 
 - Changed: the magazine sits deeper in the hand

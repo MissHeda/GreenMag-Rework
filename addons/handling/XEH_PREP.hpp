@@ -26,6 +26,7 @@ PREP(start);
 PREP(tick);
 PREP(uiCreate);
 PREP(uiGame);
+PREP(uiPanel);
 PREP(uiRound);
 PREP(unpack);
 PREP(watchDrag);
