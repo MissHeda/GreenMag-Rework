@@ -6,6 +6,10 @@
 - Changed: one click for every round, in step with a new counter and the ring or bar; the click climbs as the spring tightens
 - Changed: all sounds made anew, and every action has its own
 - Added: "Round counter" setting
+- Changed: new icons in the ACE menu
+- Changed: every kind of ammunition has its own pack picture
+- Added: "Open packs first" setting, on by default: a pack dragged onto a magazine has to be opened first
+- Added: settings for what the ammunition tab of ACE Arsenal shows: belts and packs on, single rounds off
 
 ## 0.1.22
 

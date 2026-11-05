@@ -61,5 +61,8 @@
         <Key ID="STR_gmr_handling_SplitBelt">
             <English>Split belt</English>
         </Key>
+        <Key ID="STR_gmr_handling_Hint_OpenPack">
+            <English>Open the pack first.</English>
+        </Key>
     </Package>
 </Project>

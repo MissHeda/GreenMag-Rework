@@ -148,7 +148,7 @@ def rounds_and_packs():
                 lines.append(
                     f"class gmr_pack_{caliber}_{variant}_{size}: gmr_pack_base {{"
                     f'displayName = "{name} Pack ({size} rds)"; '
-                    f'picture = "\\z\\gmr\\addons\\items\\data\\pack_{size}.paa"; '
+                    f'picture = "\\z\\gmr\\addons\\items\\data\\pack_{caliber}_{variant}.paa"; '
                     f"scopeArsenal = {shown}; scopeCurator = {shown}; gmr_rounds = {size}; "
                     f'gmr_caliber = "{caliber}"; gmr_variant = "{variant}"; gmr_round = "{round_class}"; '
                     f"class ItemInfo: CBA_MiscItem_ItemInfo {{mass = {mass(round_mass * size * PACK_MASS_FACTOR)};}};}};"

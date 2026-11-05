@@ -181,5 +181,32 @@
         <Key ID="STR_gmr_main_Setting_RoundCounter_Desc">
             <English>Shows the rounds in the magazine\nwhile loading or unloading it.</English>
         </Key>
+        <Key ID="STR_gmr_main_Topic_Arsenal">
+            <English>ACE Arsenal</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_PacksMustOpen">
+            <English>Open packs first</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_PacksMustOpen_Desc">
+            <English>A pack dragged onto a magazine does\nnot load it. It has to be opened\nfirst, the rounds then go in.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalBelts">
+            <English>Show belts</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalBelts_Desc">
+            <English>Belts are listed in the ammunition\ntab of ACE Arsenal.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalPacks">
+            <English>Show packs</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalPacks_Desc">
+            <English>Packs are listed in the ammunition\ntab of ACE Arsenal.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalRounds">
+            <English>Show single rounds</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_ArsenalRounds_Desc">
+            <English>Single rounds are listed in the\nammunition tab of ACE Arsenal.</English>
+        </Key>
     </Package>
 </Project>

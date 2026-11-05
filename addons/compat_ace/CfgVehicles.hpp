@@ -48,7 +48,7 @@ class CfgVehicles {
                 condition = QUOTE(EGVAR(main,enabled) && {EGVAR(main,beltsEnabled)});
                 exceptions[] = {"isNotInside", "isNotSitting", "isNotSwimming"};
                 statement = "";
-                icon = QPATHTOEF(handling,data\action_belt.paa);
+                icon = QPATHTOEF(handling,data\action_split.paa);
                 insertChildren = QUOTE([_player] call EFUNC(handling,menuSplit));
             };
             class GVAR(linkBeltSelf) {
@@ -56,7 +56,7 @@ class CfgVehicles {
                 condition = QUOTE(([ARR_2(_player,_player)] call FUNC(linkBeltSource)) isNotEqualTo []);
                 exceptions[] = {"isNotInside"};
                 statement = QUOTE([ARR_2(_player,_player)] call FUNC(startLinkBelt));
-                icon = QPATHTOEF(handling,data\action_belt.paa);
+                icon = QPATHTOEF(handling,data\action_link.paa);
             };
 
             class ACE_RepackMagazines {
@@ -72,7 +72,7 @@ class CfgVehicles {
                     condition = QUOTE(([ARR_2(_player,_target)] call FUNC(linkBeltSource)) isNotEqualTo []);
                     statement = QUOTE([ARR_2(_player,_target)] call FUNC(startLinkBelt));
                     exceptions[] = {"isNotInside"};
-                    icon = QPATHTOEF(handling,data\action_belt.paa);
+                    icon = QPATHTOEF(handling,data\action_link.paa);
                 };
             };
         };

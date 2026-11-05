@@ -52,7 +52,11 @@ if (!hasInterface) exitWith {};
 ["ace_arsenal_rightPanelFilled", {
     params ["_display", "", "_button"];
 
-    if (EGVAR(main,arsenalHighlight) && {_button == 61 + GVAR(arsenalSlot) * 2}) then {
+    if (_button != 61 + GVAR(arsenalSlot) * 2) exitWith {};
+
+    [_display] call FUNC(arsenalFilter);
+
+    if (EGVAR(main,arsenalHighlight)) then {
         [_display] call FUNC(arsenalHighlight);
     };
 }] call CBA_fnc_addEventHandler;

@@ -17,6 +17,9 @@ from mathutils import Matrix, Vector
 RESOLUTION = 512
 SAMPLES = 96
 SEGMENTS = 128
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import generate_items as ITEM_TABLE  # noqa: E402
+
 FONT = r"C:\Windows\Fonts\arialbd.ttf"
 
 BRASS = ((0.78, 0.47, 0.13), 1.0, 0.20)
@@ -75,7 +78,6 @@ CARTRIDGES = {
 }
 
 SHELL_VARIANTS = {"basic": (0.20, 0.008, 0.006), "slug": (0.012, 0.075, 0.02)}
-PACK_SIZES = (10, 20, 30, 40, 50, 60)
 
 
 def material(name, base, metal=0.0, rough=0.5, wear=0.0, bump=0.0, bump_scale=120.0):
@@ -455,26 +457,25 @@ def build_shell(variant):
     return build
 
 
-def build_pack(size):
+def build_pack(caliber, variant, label, variant_label):
     def build(camera):
         add_key_light()
-        kraft = material("kraft", (0.13, 0.07, 0.028), 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
-        flap = material("kraft_flap", (0.095, 0.05, 0.02), 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
-        ink = material("ink", (0.002, 0.002, 0.002), 0.0, 0.9)
+        universal = caliber == "universal"
+        base = (0.045, 0.06, 0.03) if universal else (0.13, 0.07, 0.028)
+        kraft = material("kraft", base, 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
+        flap = material("kraft_flap", tuple(v * 0.72 for v in base), 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
+        ink = material("ink", (0.82, 0.80, 0.72) if universal else (0.002, 0.002, 0.002), 0.0, 0.9)
 
-        # A box that grows with what it holds, proportioned like a real cartridge carton.
-        width = 82 + size * 0.50
-        depth = 52 + size * 0.22
-        height = 30 + size * 0.22
+        width = 97
+        depth = 58.6
+        height = 36.6
         top = height
 
         block("carton", (width, depth, height), (0, 0, height / 2), kraft, 1.1)
-
-        # End flap tucked over the right side, with its fold showing.
         block("flap", (0.7, depth * 0.94, height * 0.70), (width / 2 + 0.25, 0, height * 0.60), flap, 0.25)
         block("flap_tuck", (0.5, depth * 0.40, height * 0.20), (width / 2 + 0.55, 0, height * 0.16), flap, 0.15)
 
-        # A printed frame on the lid, the way real cartons carry their lot data.
+        # A printed frame on the lid, and a band in the colour of the rounds' tips along its front.
         inset_x = width * 0.44
         inset_y = depth * 0.40
         line = 0.9
@@ -485,10 +486,15 @@ def build_pack(size):
         ):
             block("rule", (sx, sy, 0.06), (x, y, top + 0.03), ink)
 
+        if variant in TIPS:
+            colour = material("band", TIPS[variant], 0.0, 0.6)
+            block("band", (inset_x * 2, depth * 0.16, 0.08), (0, -inset_y + depth * 0.09, top + 0.04), colour)
+            block("band_side", (width * 0.98, 0.25, height * 0.18), (0, -depth / 2 - 0.05, height * 0.72), colour)
+
         font = bpy.data.fonts.load(FONT) if Path(FONT).exists() else None
 
         def lid_text(body, y, text_size):
-            bpy.ops.object.text_add(location=(0, y, top + 0.06))
+            bpy.ops.object.text_add(location=(0, y, top + 0.1))
             text = bpy.context.object
             text.data.body = body
             text.data.align_x = "CENTER"
@@ -501,12 +507,20 @@ def build_pack(size):
 
             text.data.materials.append(ink)
 
-        lid_text(f"{size} ROUNDS", depth * 0.08, width * 0.112)
-        lid_text("BALL  -  LOT 26-1104", -depth * 0.19, width * 0.040)
+        lid_text(label.upper(), depth * 0.14, width * (0.125 if len(label) <= 10 else 0.095))
+        lid_text("BALL" if variant == "basic" else variant_label.upper(), -depth * 0.10, width * 0.062)
 
-        # Two rounds in front of it, as in a photo of an opened box.
-        cartridge("762x51", "basic", 0.85, (-width * 0.30, -depth * 0.78, 5.2), (math.radians(90), 0, math.radians(102)))
-        cartridge("762x51", "basic", 0.85, (width * 0.28, -depth * 0.92, 5.2), (math.radians(90), 0, math.radians(84)))
+        # Two of its own rounds in front of it, as big as they are next to the same carton: only very long ones shrink.
+        if caliber == "12g":
+            shell(variant, (-width * 0.30, -depth * 0.86, 0))
+            shell(variant, (width * 0.26, -depth * 0.98, 0))
+        else:
+            length = CARTRIDGES[caliber][6]
+            scale = min(62.0 / length, 0.95) if length > 60 else 0.95
+            lying = CARTRIDGES[caliber][0] * scale / 2
+
+            cartridge(caliber, variant, scale, (-width * 0.30, -depth * 0.78, lying), (math.radians(90), 0, math.radians(102)))
+            cartridge(caliber, variant, scale, (width * 0.28, -depth * 0.92, lying), (math.radians(90), 0, math.radians(84)))
 
         frame(camera, (0, -depth * 0.20, height * 0.40), width * 1.34, (0.42, -0.85, 0.72))
 
@@ -601,8 +615,9 @@ def main():
     for variant in SHELL_VARIANTS:
         render(f"round_12g_{variant}", build_shell(variant), folder, name_filter)
 
-    for size in PACK_SIZES:
-        render(f"pack_{size}", build_pack(size), folder, name_filter)
+    for caliber, (label, _, _, _, variants) in ITEM_TABLE.CALIBERS.items():
+        for variant, (variant_label, _) in ({"basic": ("Basic", ())} | variants).items():
+            render(f"pack_{caliber}_{variant}", build_pack(caliber, variant, label, variant_label), folder, name_filter)
 
     for variant in ("basic", "tracer", "irtracer"):
         render(f"belt_{variant}", build_belt(variant), folder, name_filter)

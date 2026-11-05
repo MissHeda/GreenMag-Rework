@@ -4,6 +4,7 @@ private _timing = LLSTRING(Topic_Timing);
 private _rules = LLSTRING(Topic_Rules);
 private _magazines = LLSTRING(Topic_Magazines);
 private _menu = LLSTRING(Topic_Menu);
+private _arsenal = LLSTRING(Topic_Arsenal);
 
 // What a magazine or belt counts as depends on these two, so what is known about magazines starts over.
 private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
@@ -44,6 +45,11 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 
 [
     QGVAR(allowPacking), "CHECKBOX", [LLSTRING(Setting_AllowPacking), LLSTRING(Setting_AllowPacking_Desc)],
+    [CBA_SETTINGS_SERVER, _rules], true, 1
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(packsMustOpen), "CHECKBOX", [LLSTRING(Setting_PacksMustOpen), LLSTRING(Setting_PacksMustOpen_Desc)],
     [CBA_SETTINGS_SERVER, _rules], true, 1
 ] call CBA_fnc_addSetting;
 
@@ -91,6 +97,23 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
         [LLSTRING(Setting_Container_Auto), LLSTRING(Setting_Container_Uniform), LLSTRING(Setting_Container_Vest), LLSTRING(Setting_Container_Backpack)],
         0
     ], 1
+] call CBA_fnc_addSetting;
+
+// ----- Server: what ACE Arsenal shows -----
+// Switches
+[
+    QGVAR(arsenalBelts), "CHECKBOX", [LLSTRING(Setting_ArsenalBelts), LLSTRING(Setting_ArsenalBelts_Desc)],
+    [CBA_SETTINGS_SERVER, _arsenal], true, 1
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(arsenalPacks), "CHECKBOX", [LLSTRING(Setting_ArsenalPacks), LLSTRING(Setting_ArsenalPacks_Desc)],
+    [CBA_SETTINGS_SERVER, _arsenal], true, 1
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(arsenalRounds), "CHECKBOX", [LLSTRING(Setting_ArsenalRounds), LLSTRING(Setting_ArsenalRounds_Desc)],
+    [CBA_SETTINGS_SERVER, _arsenal], false, 1
 ] call CBA_fnc_addSetting;
 
 // ----- Client: menu -----

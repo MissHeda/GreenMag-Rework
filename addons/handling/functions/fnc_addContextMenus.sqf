@@ -102,7 +102,7 @@ private _fnc_magazineCan = {
     "CONTAINER",
     LLSTRING(SplitBelt),
     nil,
-    QPATHTOF(data\action_belt.paa),
+    QPATHTOF(data\action_split.paa),
     [
         {true},
         {

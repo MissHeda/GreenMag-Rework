@@ -73,6 +73,7 @@ if (_amount >= _capacity) exitWith {
     false
 };
 
+private _closed = false;
 private _ammunition = [_facts select ITEM_ROUND, _facts select ITEM_BELT_TYPE] select _isBelt;
 private _why = ([_class, _amount, _ammunition] call FUNC(loadRule)) select 1;
 
@@ -83,7 +84,17 @@ if (_why isNotEqualTo "") exitWith {
 };
 
 if ((_facts select ITEM_KIND) == "pack") then {
+    if (EGVAR(main,packsMustOpen)) exitWith {
+        _closed = true;
+    };
+
     [_unit, _item, true] call FUNC(unpack);
+};
+
+if (_closed) exitWith {
+    hintSilent LLSTRING(Hint_OpenPack);
+    PLAY_SOUND(denied);
+    false
 };
 
 PLAY_SOUND(drop_item);
