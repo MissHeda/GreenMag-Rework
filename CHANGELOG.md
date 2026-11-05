@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.24
+
+- Changed: a pack's rounds go where the pack was, only what has no room there goes elsewhere
+
 ## 0.1.23
 
 - Changed: the magazine in the hand sits further forward and is turned a little more towards the front

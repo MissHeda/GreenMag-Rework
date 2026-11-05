@@ -63,9 +63,9 @@ private _fnc_magazineCan = {
     QPATHTOF(data\action_unpack.paa),
     {EGVAR(main,enabled)},
     {
-        params ["_unit", "", "_item"];
+        params ["_unit", "_container", "_item"];
 
-        [_unit, _item, false] call FUNC(unpack);
+        [_unit, _item, false, _container] call FUNC(unpack);
     },
     true,
     []
