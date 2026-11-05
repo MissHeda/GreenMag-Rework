@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.32
+
+- Changed: the line saying what to press sits inside the loading display, the minigame's run of hits beside the count
+
 ## 0.1.31
 
 - Fixed: the MK200's box showed an MX SW magazine in the hand

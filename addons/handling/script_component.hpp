@@ -36,6 +36,7 @@
 
 // The minigame: its track, how long a miss holds the hand, the opening's share of the track, and the fastest a round may fly.
 #define UI_GAME_HEIGHT 0.062
+#define UI_PROMPT_HEIGHT 0.03
 #define UI_TRACK_HEIGHT 0.008
 #define GAME_MISS_STALL 0.5
 #define GAME_ZONE_START 0.30

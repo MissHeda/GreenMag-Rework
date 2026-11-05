@@ -74,7 +74,7 @@
             <English>Press %1 on the magazine to go faster, Esc to stop</English>
         </Key>
         <Key ID="STR_gmr_handling_Prompt_Combo">
-            <English>%1 in a row! %2</English>
+            <English>%1 in a row!</English>
         </Key>
         <Key ID="STR_gmr_handling_Prompt_GameMust">
             <English>Press %1 when the round is on the magazine, Esc to stop</English>

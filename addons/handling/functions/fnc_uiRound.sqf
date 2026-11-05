@@ -60,16 +60,17 @@ private _key = (actionKeysNames ["Action", 1, "Keyboard"]) splitString """" join
 private _keyName = if (_key isEqualTo "") then {"Action"} else {_key};
 private _line = switch (true) do {
     case (_waiting): {format [LLSTRING(Prompt_Hold), _keyName]};
-    case (GVAR(op) get "game"): {
-        private _combo = GVAR(op) get "combo";
-        private _text = format [[LLSTRING(Prompt_Game), LLSTRING(Prompt_GameMust)] select (GVAR(op) get "mustHit"), _keyName];
-
-        if (_combo > 1) then {format [LLSTRING(Prompt_Combo), _combo, _text]} else {_text}
-    };
+    case (GVAR(op) get "game"): {format [[LLSTRING(Prompt_Game), LLSTRING(Prompt_GameMust)] select (GVAR(op) get "mustHit"), _keyName]};
     case (GVAR(op) get "hold"): {LLSTRING(Prompt_LetGo)};
     default {LLSTRING(Prompt_Esc)};
 };
 
-(_ui get "prompt") ctrlSetStructuredText parseText format ["<t align='center' size='0.8' color='#c8c8c8' shadow='2'>%1</t>", _line];
+(_ui get "prompt") ctrlSetStructuredText parseText format ["<t align='center' size='0.72' color='#9aa0a8' shadow='0'>%1</t>", _line];
+
+private _combo = [0, GVAR(op) get "combo"] select (GVAR(op) get "game");
+
+(_ui get "combo") ctrlSetStructuredText parseText (["", format [
+    "<t align='right' size='0.8' color='#6beb6b' font='PuristaSemibold' shadow='0'>%1</t>", format [LLSTRING(Prompt_Combo), _combo]
+]] select (_combo > 1));
 
 nil

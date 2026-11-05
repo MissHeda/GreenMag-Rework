@@ -25,7 +25,7 @@ private _capacity = (GVAR(op) get "capacity") max 1;
 private _segments = _capacity min UI_MAX_SEGMENTS;
 private _game = GVAR(op) get "game";
 private _width = UI_WIDTH;
-private _height = [UI_HEIGHT, UI_HEIGHT + UI_GAME_HEIGHT] select _game;
+private _height = ([UI_HEIGHT, UI_HEIGHT + UI_GAME_HEIGHT] select _game) + UI_PROMPT_HEIGHT;
 private _x0 = safeZoneX + (safeZoneW - _width) / 2;
 private _y0 = safeZoneY + safeZoneH * UI_TOP;
 private _all = [];
@@ -66,6 +66,8 @@ private _title = ["RscStructuredText", _textX, _y0 + 0.006, _textW, 0.036] call 
 _title ctrlSetStructuredText parseText format ["<t size='0.85' color='#c9ced6' font='PuristaMedium'>%1</t>", GVAR(op) get "title"];
 
 private _count = ["RscStructuredText", _textX, _y0 + 0.032, _textW, 0.05] call _fnc_make;
+// The run of hits in the minigame, on the free right of the count.
+private _combo = ["RscStructuredText", _textX, _y0 + 0.042, _textW, 0.036] call _fnc_make;
 
 // The strip: a little pill per round.
 private _stripX = _x0 + _pad;
@@ -84,7 +86,8 @@ private _spark = ["RscPicture", _stripX, _stripY - 0.003, _segmentW, UI_STRIP_HE
 _spark ctrlSetFade 1;
 _spark ctrlCommit 0;
 
-private _prompt = ["RscStructuredText", safeZoneX, _y0 + _height + 0.003, safeZoneW, 0.04] call _fnc_make;
+// What to press, on the bottom line of the panel.
+private _prompt = ["RscStructuredText", _x0 + _pad, _y0 + _height - UI_PROMPT_HEIGHT, _width - _pad * 2, UI_PROMPT_HEIGHT] call _fnc_make;
 
 GVAR(op) set ["ui", createHashMapFromArray [
     ["all", _all],
@@ -92,6 +95,7 @@ GVAR(op) set ["ui", createHashMapFromArray [
     ["strip", _strip],
     ["spark", _spark],
     ["prompt", _prompt],
+    ["combo", _combo],
     ["stripX", _stripX],
     ["stripW", _stripW],
     ["segmentW", _segmentW],
