@@ -45,7 +45,9 @@ HAND_BELOW_MIDDLE = 0.02
 
 # The hand turned about the magazine's up from square on its back towards its far side, so the fingers reach its front.
 GRIP_TURN = math.radians(35)
-CLEARANCE = 0.002
+
+# The palm's flesh gives this much around the magazine's back, it is pressed in.
+CLEARANCE = -0.009
 
 # What a human joint does, in degrees. Fingers: the last joint follows the middle one and neighbours stay alike.
 WRIST_FLEX = (-60.0, 60.0)
@@ -53,7 +55,7 @@ WRIST_DEVIATION = (-30.0, 15.0)
 KNUCKLE_MAX = 85.0
 MIDDLE_JOINT_MAX = 100.0
 LAST_JOINT_FOLLOWS = 0.66
-NEIGHBOUR_DIFFERENCE = 20.0
+NEIGHBOUR_DIFFERENCE = 40.0
 THUMB_BASE = (0.0, 50.0)
 THUMB_OPPOSE = (-15.0, 40.0)
 THUMB_MIDDLE = (0.0, 45.0)
@@ -70,8 +72,9 @@ FINGERS_TOGETHER = 0.85
 # The hand's real surface stops this far off the magazine.
 TOUCH = 0.002
 
-# The game's "lefthand" memory point in the hand's bind space, measured in the game.
-LEFTHAND_POINT = [0.063, -0.1092, -0.0474]
+# The game's "lefthand" memory point in the hand's bind space, measured in the game. It moves with the fingers too, so
+# measure it again after changing the grip, or the magazine sits beside where the hand was solved for.
+LEFTHAND_POINT = [0.0385, -0.1174, -0.0416]
 
 # What the right hand does in one cycle: phase, where its fingers pinch (from the magazine's top, or a place on the body),
 # grip, and how far the left hand gives way as the round is pressed.

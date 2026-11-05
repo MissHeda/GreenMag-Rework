@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.26
+
+- Changed: the magazine sits deeper in the hand
+- Fixed: the magazine sat about 2 cm in front of the place the hand closes around
+
 ## 0.1.25
 
 - Changed: an own display replaces the ring and the bar while loading: the magazine, its count and one segment for each of its rounds, lighting with each click
