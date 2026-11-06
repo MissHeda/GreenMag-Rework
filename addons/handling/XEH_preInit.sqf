@@ -1,4 +1,5 @@
 #include "script_component.hpp"
+#include "round_path.hpp"
 
 ADDON = false;
 
@@ -6,6 +7,9 @@ ADDON = false;
 
 // Numbers the operations, so a late timeout can tell whether its operation is still the running one.
 GVAR(opCounter) = 0;
+
+// Where the round in the right hand is through the loading gesture (tools/anim/build_load_gesture.py).
+GVAR(roundPath) = ROUND_PATH;
 
 // Whether the loading gesture is shown for the running operation (fnc_animTick).
 GVAR(animPlaying) = false;

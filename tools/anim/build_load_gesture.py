@@ -22,6 +22,7 @@ SAMPLES = Path(os.environ.get("ARMA3_SAMPLES", r"C:\SteamLibrary\steamapps\commo
 BODY = SAMPLES / "Test_Character_01" / "A3_character_template.p3d"
 OUTPUT = Path(__file__).resolve().parents[2] / "addons" / "handling" / "anims" / "load.rtm"
 PREVIEW_DATA = Path(__file__).resolve().parent / "load_preview.json"
+ROUND_PATH = Path(__file__).resolve().parents[2] / "addons" / "handling" / "round_path.hpp"
 
 
 FRAMES = 25
@@ -58,7 +59,7 @@ WRIST_DEVIATION = (-30.0, 15.0)
 KNUCKLE_MAX = 85.0
 MIDDLE_JOINT_MAX = 100.0
 LAST_JOINT_FOLLOWS = 0.66
-NEIGHBOUR_DIFFERENCE = 40.0
+NEIGHBOUR_DIFFERENCE = 20.0
 THUMB_BASE = (0.0, 50.0)
 THUMB_OPPOSE = (-15.0, 40.0)
 THUMB_MIDDLE = (0.0, 45.0)
@@ -69,8 +70,9 @@ THUMB_BASE_AXIS = np.array([-0.79, 0.26, -0.56])
 THUMB_MIDDLE_AXIS = np.array([-0.75, 0.08, -0.66])
 THUMB_LAST_AXIS = np.array([-0.67, -0.73, 0.10])
 
-# How far the fingers close up beside each other, from the spread of the model's bind pose.
-FINGERS_TOGETHER = 0.85
+# How far the fingers close up beside each other, from the spread of the model's bind pose: past parallel, as the model's
+# knuckles lie further apart than its fingers are thick, so that they touch as a hand around a magazine holds them.
+FINGERS_TOGETHER = 1.8
 
 # The hand's real surface stops this far off the magazine.
 TOUCH = 0.002
@@ -92,6 +94,12 @@ KEYS = [
     (0.70, POUCH, 0.85, 0.0),
     (1.00, ABOVE, 0.55, 0.0),
 ]
+
+# The round between the right thumb and index finger: shown from when they close on it at the pouch until it is pressed
+# in, its middle this far below and in front of the pinch (the thumb presses it from above, at its case), in the magazine's axes.
+ROUND_GRAB = 0.66
+ROUND_PRESS = 0.13
+ROUND_FROM_PINCH = np.array([0.006, 0.0, -0.010])
 
 # The way the right hand's fingers and palm want to point there, in the game's axes; the wrist's limits have the last word.
 RIGHT_AIM = {
@@ -362,45 +370,65 @@ def solve_left_grip(skeleton):
         wrist = wrist + front * 0.001
 
     grip = {"Spread": {}}
-    limit = math.radians(NEIGHBOUR_DIFFERENCE)
 
     for finger, neighbour in (("Middle", None), ("Index", "Middle"), ("Ring", "Middle"), ("Pinky", "Ring")):
         grip["Spread"][finger] = closing_spread(skeleton, axes, finger)
-        spread = axis_rotation(axes["palm"], grip["Spread"][finger])
-        bones = [(f"leftHand{finger}{j}", vertices[f"lefthand{finger.lower()}{j}"]) for j in (1, 2, 3)]
-        tip_vertex = int(np.argmax(np.linalg.norm(bones[2][1] - skeleton.p(bones[2][0]), axis=1)))
         best = None
 
-        for a1 in np.arange(0.0, math.radians(KNUCKLE_MAX) + 0.001, 0.05):
-            if neighbour and abs(a1 - grip[neighbour][0]) > limit:
-                continue
+        # Neighbours alike first; only where the magazine's shape leaves no other way, a little further apart.
+        for allowed in (NEIGHBOUR_DIFFERENCE, NEIGHBOUR_DIFFERENCE * 1.5, NEIGHBOUR_DIFFERENCE * 2.0):
+            limit = math.radians(allowed)
+            best = solve_finger(skeleton, axes, hand, wrist_at, wrist, vertices, box, grip, finger, neighbour, limit)
 
-            for a2 in np.arange(0.0, math.radians(MIDDLE_JOINT_MAX) + 0.001, 0.05):
-                if neighbour and abs(a2 - grip[neighbour][1]) > limit:
-                    continue
-
-                a3 = a2 * LAST_JOINT_FOLLOWS
-                turns = [spread @ axis_rotation(axes["curl"], a1), axis_rotation(axes["curl"], a2), axis_rotation(axes["curl"], a3)]
-                parts = chain(hand, wrist_at, wrist, skeleton, bones, turns)
-                distances = [float(np.min(box.distance(part))) for part in parts]
-
-                if min(distances) < TOUCH:
-                    continue
-
-                tip = box.local(parts[2][tip_vertex])
-
-                if tip[0] <= 0.0:
-                    continue
-
-                # Along the far side, around the front as far as it reaches, and against the magazine.
-                score = distances[0] * 0.5 + distances[1] + distances[2] - 2.0 * min(tip[0], box.front + 0.006) - 2.0 * min(tip[1], 0.0)
-
-                if best is None or score < best[0]:
-                    best = (score, (a1, a2, a3), tip)
+            if best is not None:
+                break
 
         grip[finger] = tuple(float(v) for v in best[1])
         print(f"{finger}: joints {np.round(np.degrees(best[1])).tolist()} tip in the box's axes {np.round(best[2], 3).tolist()}")
 
+    return finish_grip(skeleton, axes, hand, wrist_at, wrist, vertices, box, grip)
+
+
+def solve_finger(skeleton, axes, hand, wrist_at, wrist, vertices, box, grip, finger, neighbour, limit):
+    """The joints of one finger that close it furthest around the magazine without entering it, within limit of its
+    neighbour's; None if there are none."""
+    spread = axis_rotation(axes["palm"], grip["Spread"][finger])
+    bones = [(f"leftHand{finger}{j}", vertices[f"lefthand{finger.lower()}{j}"]) for j in (1, 2, 3)]
+    tip_vertex = int(np.argmax(np.linalg.norm(bones[2][1] - skeleton.p(bones[2][0]), axis=1)))
+    best = None
+
+    for a1 in np.arange(0.0, math.radians(KNUCKLE_MAX) + 0.001, 0.05):
+        if neighbour and abs(a1 - grip[neighbour][0]) > limit:
+            continue
+
+        for a2 in np.arange(0.0, math.radians(MIDDLE_JOINT_MAX) + 0.001, 0.05):
+            if neighbour and abs(a2 - grip[neighbour][1]) > limit:
+                continue
+
+            a3 = a2 * LAST_JOINT_FOLLOWS
+            turns = [spread @ axis_rotation(axes["curl"], a1), axis_rotation(axes["curl"], a2), axis_rotation(axes["curl"], a3)]
+            parts = chain(hand, wrist_at, wrist, skeleton, bones, turns)
+            distances = [float(np.min(box.distance(part))) for part in parts]
+
+            if min(distances) < TOUCH:
+                continue
+
+            tip = box.local(parts[2][tip_vertex])
+
+            if tip[0] <= 0.0:
+                continue
+
+            # Along the far side, around the front as far as it reaches, and against the magazine.
+            score = distances[0] * 0.5 + distances[1] + distances[2] - 2.0 * min(tip[0], box.front + 0.006) - 2.0 * min(tip[1], 0.0)
+
+            if best is None or score < best[0]:
+                best = (score, (a1, a2, a3), tip)
+
+    return best
+
+
+def finish_grip(skeleton, axes, hand, wrist_at, wrist, vertices, box, grip):
+    """The thumb along the magazine's near side; returns the whole grip."""
     bones = [(f"leftHandThumb{j}", vertices[f"lefthandthumb{j}"]) for j in (1, 2, 3)]
     tip_vertex = int(np.argmax(np.linalg.norm(bones[2][1] - skeleton.p(bones[2][0]), axis=1)))
     best = None
@@ -600,6 +628,10 @@ def build():
     print(f"left: wrist flex {left_flex:.0f} deviation {left_deviation:.0f}")
     keys = right_keys(skeleton)
 
+    box = MagazineBox()
+    round_path = []
+    round_preview = []
+
     for phase in phases:
         pose = dict(rest)
         wrist, fingers, palm, pole, grip, give = sample_keys(keys, phase)
@@ -609,6 +641,13 @@ def build():
         pose_arm(skeleton, pose, "left", left_wrist, left_fingers, left_palm, left_pole, left_grip)
         pose_arm(skeleton, pose, "right", wrist, fingers, palm, pole, grip)
 
+        # The round's middle from the magazine's back (which moves with the left hand), in the unit's axes in the game.
+        pinch = wrist + pinch_offset(skeleton, hand_frame(skeleton, "right", fingers, palm), grip)
+        middle = pinch + box.axes @ ROUND_FROM_PINCH
+        back = box.center + (left_wrist - left_wrist_at) - box.axes[:, 0] * (MAG_DEPTH / 2)
+        round_path.append(from_rtm(middle - back))
+        round_preview.append(middle.tolist())
+
         frames.append({
             bone: [*rotation[:, 0], *rotation[:, 1], *rotation[:, 2], *translation]
             for bone, (rotation, translation) in pose.items()
@@ -617,13 +656,24 @@ def build():
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     write_rtm(OUTPUT, skeleton.bones, phases, frames)
 
-    # The magazine in the left hand, for the preview, in the hand's bind space and from the wrist.
-    box = MagazineBox()
+    # The magazine in the left hand, for the preview, in the hand's bind space and from the wrist; the round where it is.
     PREVIEW_DATA.write_text(json.dumps({
         "center": (left_hand_rotation.T @ (box.center - left_wrist_at)).tolist(),
         "axes": (left_hand_rotation.T @ box.axes).tolist(),
         "size": (box.half * 2).tolist(),
+        "round": round_preview,
+        "round_shown": [phase >= ROUND_GRAB or phase <= ROUND_PRESS for phase in phases],
+        "round_axis": box.axes[:, 0].tolist(),
     }), encoding="utf-8")
+
+    # The same for the game: fnc_holdMagazine shows the round there, from the held magazine's back.
+    lines = ["// Generated by tools/anim/build_load_gesture.py: the round in the right hand while loading, one point per",
+             "// frame of load.rtm, its middle from the magazine's back in the unit's axes (right, forward, up), and the",
+             "// gesture's progress from which it is held and at which it is pressed in.",
+             f"#define ROUND_GRAB {ROUND_GRAB}",
+             f"#define ROUND_PRESS {ROUND_PRESS}",
+             "#define ROUND_PATH [" + ", ".join(f"[{x:.4f}, {y:.4f}, {z:.4f}]" for x, y, z in round_path) + "]"]
+    ROUND_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
     print(f"{OUTPUT.name}: {FRAMES} frames, {len(skeleton.bones)} bones")
     print("left wrist in the game's axes:", np.round(from_rtm(left_wrist_at), 3).tolist())

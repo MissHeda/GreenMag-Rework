@@ -1,9 +1,12 @@
 #include "..\script_component.hpp"
 #include "..\mag_backs.hpp"
+#include "..\round_path.hpp"
 /*
  * Author: Miss Heda
  * Shows a magazine in a unit's left hand on this machine, every player seeing it through their own local object. Each
- * frame it is attached anew where the hand is, turned the way the hand holds it.
+ * frame it is attached anew where the hand is, turned the way the hand holds it. A round goes with the right hand
+ * through the loading gesture: taken between thumb and index finger at the pouch, carried up and pressed in from
+ * above, where it goes; GVAR(roundPath) says where it is for the gesture's progress.
  * It goes away with the event of fnc_animTick, and by itself if the unit dies or disappears.
  *
  * Arguments:
@@ -24,10 +27,15 @@ params [["_unit", objNull, [objNull]], ["_model", "", [""]]];
 if (isNull _unit || {_unit distance positionCameraToWorld [0, 0, 0] > MAG_VISIBLE_RANGE}) exitWith {};
 
 deleteVehicle (_unit getVariable [QGVAR(heldMagazine), objNull]);
+deleteVehicle (_unit getVariable [QGVAR(heldRound), objNull]);
 
 private _magazine = createSimpleObject [_model, [0, 0, 0], true];
 
 _unit setVariable [QGVAR(heldMagazine), _magazine];
+
+private _round = createSimpleObject [QPATHTOF(data\round_hand.p3d), [0, 0, 0], true];
+_round hideObject true;
+_unit setVariable [QGVAR(heldRound), _round];
 
 // A magazine made as a part for a weapon has its origin at its top, and lies with its front along X and bottom forward
 // bend towards -X, where this mod's stand with their front along Y. Its box says which it is, and where its middle is.
@@ -67,11 +75,29 @@ private _shift = (((_axisX vectorMultiply (_middle select 0)) vectorAdd (_axisY 
 
 [
     {
-        (_this select 0) params ["_unit", "_magazine", "_axisY", "_axisZ", "_shift"];
+        (_this select 0) params ["_unit", "_magazine", "_axisY", "_axisZ", "_shift", "_round"];
 
         if (isNull _magazine || {!alive _unit}) exitWith {
             deleteVehicle _magazine;
+            deleteVehicle _round;
             [_this select 1] call CBA_fnc_removePerFrameHandler;
+        };
+
+        // The round, while the right hand holds it: from the pinch at the pouch until it is pressed in.
+        private _progress = _unit getUnitMovesInfo 5;
+        private _held = gestureState _unit == QGVAR(load) && {_progress >= ROUND_GRAB || {_progress <= ROUND_PRESS}};
+
+        _round hideObject !_held;
+
+        if (_held) then {
+            private _path = GVAR(roundPath);
+            private _at = (_progress max 0 min 1) * (count _path - 1);
+            private _index = floor _at min (count _path - 2);
+            private _from = _path select _index;
+            private _point = _from vectorAdd (((_path select (_index + 1)) vectorDiff _from) vectorMultiply (_at - _index));
+
+            _round attachTo [_unit, ((_unit selectionPosition ["lefthand", "Memory"]) vectorAdd MAG_FROM_HAND) vectorAdd _point];
+            _round setVectorDirAndUp [MAG_DIR, MAG_UP];
         };
 
         // Attached, not set into place: a magazine model with a geometry of its own (the CAR-95's) would otherwise
@@ -80,7 +106,7 @@ private _shift = (((_axisX vectorMultiply (_middle select 0)) vectorAdd (_axisY 
         _magazine setVectorDirAndUp [_axisY, _axisZ];
     },
     0,
-    [_unit, _magazine, _axisY, _axisZ, _shift]
+    [_unit, _magazine, _axisY, _axisZ, _shift, _round]
 ] call CBA_fnc_addPerFrameHandler;
 
 nil

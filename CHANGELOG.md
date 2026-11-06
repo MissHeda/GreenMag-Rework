@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.41
+
+- Changed: the left hand's fingers lie together around the magazine instead of spread
+- Added: the right hand takes a round between thumb and index finger at the pouch, carries it up and presses it into the magazine from above, where it goes
+
 ## 0.1.40
 
 - Added: streak rewards in the minigame. From x5 on, every 2 hits throw in 1 to 3 random extra rounds, at x15 the magazine in hand fills at once; all of it adjustable in the CBA settings (Minigame) and can be switched off

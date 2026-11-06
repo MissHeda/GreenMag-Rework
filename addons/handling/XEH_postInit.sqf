@@ -8,6 +8,7 @@ if (!hasInterface) exitWith {};
     params ["_unit"];
 
     deleteVehicle (_unit getVariable [QGVAR(heldMagazine), objNull]);
+    deleteVehicle (_unit getVariable [QGVAR(heldRound), objNull]);
 }] call CBA_fnc_addEventHandler;
 
 call FUNC(addContextMenus);

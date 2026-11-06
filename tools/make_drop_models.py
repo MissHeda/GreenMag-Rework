@@ -28,6 +28,7 @@ from make_mag_models import RVMAT, Model, normalise, texture, write_p3d  # noqa:
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "addons" / "items" / "data"
 MATERIAL = "z\\gmr\\addons\\items\\data\\gmr_plain.rvmat"
+MATERIAL_HANDLING = "z\\gmr\\addons\\handling\\data\\gmr_plain.rvmat"
 CARTON = "z\\gmr\\addons\\items\\data\\drop_carton_co.paa"
 
 BRASS = texture(0.78, 0.60, 0.26)
@@ -354,6 +355,11 @@ def main():
 
         lay_down(model)
         write_p3d(OUT / f"{name}.p3d", model, MATERIAL)
+
+    # The round in the right hand while loading (fnc_holdMagazine): along Z, the game's forward of a model, point first.
+    held = Model()
+    cartridge(held, (0, 0, 0), (0, 0, 1))
+    write_p3d(ROOT / "addons" / "handling" / "data" / "round_hand.p3d", held, MATERIAL_HANDLING)
 
     cfg = ["class CfgSkeletons {", "    class Default {", "        isDiscrete = 1;", '        skeletonInherit = "";',
            "        skeletonBones[] = {};", "    };", "};", "class CfgModels {", "    class Default {",
