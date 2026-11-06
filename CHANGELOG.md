@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.37
+
+- Fixed: the minigame's round flies from left to right again
+
 ## 0.1.36
 
 - Changed: new ground models: a printed carton with label, tape and stencilling, a round shaped like one (rim, groove, shoulder, neck, ogive), a belt with its links, a ribbed speedloader

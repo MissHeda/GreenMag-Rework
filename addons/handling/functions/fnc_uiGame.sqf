@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * The minigame's track, every frame: the round flies in from the right once per try, and each try puts the magazine
+ * The minigame's track, every frame: the round flies in from the left once per try, and each try puts the magazine
  * that has to catch it somewhere new on the track, with a narrower opening the longer the run.
  *
  * Arguments:
@@ -34,8 +34,7 @@ if ((GVAR(op) get "attempt") != (GVAR(op) get "attemptShown")) then {
     GVAR(op) set ["zone", _from];
     GVAR(op) set ["zoneSize", _size];
 
-    // The round flies from right to left, so the track is read from the right: what counts as phase 0.3 lies at 0.7.
-    private _left = _stripX + (1 - _from - _size) * _stripW;
+    private _left = _stripX + _from * _stripW;
 
     {
         _x ctrlSetPositionX _left;
@@ -72,7 +71,7 @@ if (_combo != (_ui get "comboShown")) then {
 private _round = _ui get "round";
 private _stalled = CBA_missionTime < (GVAR(op) get "stall");
 
-_round ctrlSetPositionX (_stripX + (1 - ((GVAR(op) get "phase") min 1)) * _stripW - (_ui get "roundW") / 2);
+_round ctrlSetPositionX (_stripX + ((GVAR(op) get "phase") min 1) * _stripW - (_ui get "roundW") / 2);
 _round ctrlCommit 0;
 _round ctrlSetTextColor ([UI_ROUND_COLOR, UI_MISS_COLOR] select _stalled);
 

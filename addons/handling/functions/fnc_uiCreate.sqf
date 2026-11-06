@@ -153,7 +153,7 @@ if (_game) then {
 
     _all append ([_display, [_stripX, _middle - UI_TRACK_HEIGHT / 2, _stripW, UI_TRACK_HEIGHT], UI_OFF_COLOR, UI_TRACK_HEIGHT / 2] call FUNC(uiPanel));
 
-    // The round flies in from the right; the magazine waits on the track to catch it. The green capsule under it is how
+    // The round flies in from the left; the magazine waits on the track to catch it. The green capsule under it is how
     // far off the catch may be, and flashes on a hit.
     private _zoneY = _middle - UI_ZONE_HEIGHT / 2;
     private _glow = ["RscPicture", _stripX, _zoneY, 0, UI_ZONE_HEIGHT, QPATHTOF(data\pill_ca.paa), UI_ZONE_COLOR] call _fnc_make;
@@ -168,9 +168,6 @@ if (_game) then {
     private _roundW = 0.05;
     private _roundH = UI_GAME_HEIGHT * 0.6;
     private _round = ["RscPictureKeepAspect", _stripX, _middle - _roundH / 2, _roundW, _roundH, QPATHTOF(data\round_side_ca.paa), UI_ROUND_COLOR] call _fnc_make;
-
-    // Its point towards the magazine.
-    _round ctrlSetAngle [180, 0.5, 0.5];
 
     _ui set ["glow", _glow];
     _ui set ["hit", _hit];
