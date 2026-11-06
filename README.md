@@ -46,7 +46,8 @@ can also be declared a belt at runtime, on every machine:
 ## Development
 
 `tools/generate_items.py` writes the item configs from its table, `tools/render_items.py` renders the item
-pictures in Blender, `tools/make_icons.py` converts them and draws the menu icons, and `tools/make_sounds.py`
-synthesizes the sounds. `tools/anim/build_load_gesture.py` computes the loading animation from the Arma 3 Samples'
-skeleton, and `tools/anim/preview_rtm.py` shows an RTM on their body in Blender. `tools/make_mag_models.py` writes the magazines shown in the hand. All results are committed,
+pictures in Blender, `tools/make_icons.py` converts them and draws the menu icons, and `tools/cut_sounds.py`
+cuts the loading sounds out of a CC0 recording (BigSoundBank "Gun, loading #4"). `tools/anim/build_load_gesture.py` computes the loading animation from the Arma 3 Samples'
+skeleton, and `tools/anim/preview_rtm.py` shows an RTM on their body in Blender. `tools/make_mag_models.py` writes the magazines shown in the hand,
+`tools/make_drop_models.py` the items lying on the ground and their texture. All results are committed,
 so `hemtt build` needs none of them.
