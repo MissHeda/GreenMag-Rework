@@ -6,7 +6,7 @@
  * Shows a magazine in a unit's left hand on this machine, every player seeing it through their own local object. Each
  * frame it is attached anew where the hand is, turned the way the hand holds it. A round goes with the right hand
  * through the loading gesture: taken between thumb and index finger at the pouch, carried up and pressed in from
- * above, where it goes; GVAR(roundPath) says where it is from the right hand's point for the gesture's progress.
+ * above, where it goes; GVAR(roundPath) says where it is from the right hand's pistol proxy for the gesture's progress.
  * It goes away with the event of fnc_animTick, and by itself if the unit dies or disappears.
  *
  * Arguments:
@@ -102,7 +102,12 @@ private _topFromBack = (MAG_DIR vectorMultiply (_depth / 2)) vectorAdd (_axisZ v
 
             // Away from the magazine it goes with the hand; coming down to it, it goes to the magazine as it is held,
             // whatever magazine it is and wherever the unit's stance put the hands.
-            private _withHand = (_unit selectionPosition ["righthand", "Memory"]) vectorAdd (GVAR(roundPath) call _fnc_along);
+            (GVAR(roundPath) call _fnc_along) params ["_alongSide", "_alongFront", "_alongUp"];
+            (_unit selectionVectorDirAndUp [RIGHT_HAND_PROXY, 1]) params ["_front", "_up"];
+            private _withHand = selectionPosition [_unit, RIGHT_HAND_PROXY, 0];
+            _withHand = _withHand vectorAdd ((_front vectorCrossProduct _up) vectorMultiply _alongSide);
+            _withHand = _withHand vectorAdd (_front vectorMultiply _alongFront);
+            _withHand = _withHand vectorAdd (_up vectorMultiply _alongUp);
             private _back = (_unit selectionPosition ["lefthand", "Memory"]) vectorAdd MAG_FROM_HAND;
             private _withMagazine = (_back vectorAdd _topFromBack) vectorAdd (GVAR(roundPathTop) call _fnc_along);
             private _toMagazine = if (_progress <= ROUND_PRESS) then {1} else {(((_progress - ROUND_ALIGN_FROM) / (1 - ROUND_ALIGN_FROM)) max 0 min 1)};

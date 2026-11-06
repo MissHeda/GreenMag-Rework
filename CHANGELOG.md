@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.44
+
+- Fixed: the round floated beside the right hand's fingers; it goes by the hand's own frame now, measured in the game, so it lies between thumb and index finger
+- Fixed: the right hand stopped above the magazine; it reaches it now, and the round goes into the slot under its fingers
+
 ## 0.1.43
 
 - Fixed: the right hand pressed the round in beside the magazine; it aims at the magazine as it is held now, and the round comes over to the held magazine's top as it goes in, whatever magazine it is

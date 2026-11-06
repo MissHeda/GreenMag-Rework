@@ -66,8 +66,10 @@
 #define MAG_UP [0, 0, 1]
 #define MAG_ACROSS [0.44, -0.90, 0]
 
-// From this progress of the loading gesture the round in the right hand comes over to the held magazine's top.
-#define ROUND_ALIGN_FROM 0.8
+// The proxy on the right hand's bone the round in it goes by, and from this progress of the loading gesture the round
+// comes over to the held magazine's top.
+#define RIGHT_HAND_PROXY "proxy:\a3\characters_f\proxies\pistol.001"
+#define ROUND_ALIGN_FROM 0.93
 
 // Beyond this nobody makes out a magazine in a hand.
 #define MAG_VISIBLE_RANGE 300
