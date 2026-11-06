@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.43
+
+- Fixed: the right hand pressed the round in beside the magazine; it aims at the magazine as it is held now, and the round comes over to the held magazine's top as it goes in, whatever magazine it is
+
 ## 0.1.42
 
 - Fixed: the round floated below the right hand's fingers; it hangs on the right hand itself now

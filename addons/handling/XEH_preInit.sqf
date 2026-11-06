@@ -10,6 +10,7 @@ GVAR(opCounter) = 0;
 
 // Where the round in the right hand is through the loading gesture (tools/anim/build_load_gesture.py).
 GVAR(roundPath) = ROUND_PATH;
+GVAR(roundPathTop) = ROUND_PATH_TOP;
 
 // Whether the loading gesture is shown for the running operation (fnc_animTick).
 GVAR(animPlaying) = false;

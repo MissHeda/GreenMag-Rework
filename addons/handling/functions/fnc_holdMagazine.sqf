@@ -73,9 +73,12 @@ if (_ownAt >= 0 && {QPATHTOF(data) in _model}) then {
 // The back of the magazine lies in the palm, whatever its depth.
 private _shift = (((_axisX vectorMultiply (_middle select 0)) vectorAdd (_axisY vectorMultiply (_middle select 1))) vectorAdd (_axisZ vectorMultiply (_middle select 2))) vectorDiff (MAG_DIR vectorMultiply (_depth / 2));
 
+// The middle of its top, from where its back lies: where the round goes in.
+private _topFromBack = (MAG_DIR vectorMultiply (_depth / 2)) vectorAdd (_axisZ vectorMultiply ((_high select 2) - (_middle select 2)));
+
 [
     {
-        (_this select 0) params ["_unit", "_magazine", "_axisY", "_axisZ", "_shift", "_round"];
+        (_this select 0) params ["_unit", "_magazine", "_axisY", "_axisZ", "_shift", "_round", "_topFromBack"];
 
         if (isNull _magazine || {!alive _unit}) exitWith {
             deleteVehicle _magazine;
@@ -90,14 +93,23 @@ private _shift = (((_axisX vectorMultiply (_middle select 0)) vectorAdd (_axisY 
         _round hideObject !_held;
 
         if (_held) then {
-            private _path = GVAR(roundPath);
-            private _at = (_progress max 0 min 1) * (count _path - 1);
-            private _index = floor _at min (count _path - 2);
-            private _from = _path select _index;
-            private _point = _from vectorAdd (((_path select (_index + 1)) vectorDiff _from) vectorMultiply (_at - _index));
+            private _at = (_progress max 0 min 1) * (count GVAR(roundPath) - 1);
+            private _index = floor _at min (count GVAR(roundPath) - 2);
+            private _fnc_along = {
+                private _from = _this select _index;
+                _from vectorAdd (((_this select (_index + 1)) vectorDiff _from) vectorMultiply (_at - _index))
+            };
 
-            _round attachTo [_unit, (_unit selectionPosition ["righthand", "Memory"]) vectorAdd _point];
-            _round setVectorDirAndUp [MAG_DIR, MAG_UP];
+            // Away from the magazine it goes with the hand; coming down to it, it goes to the magazine as it is held,
+            // whatever magazine it is and wherever the unit's stance put the hands.
+            private _withHand = (_unit selectionPosition ["righthand", "Memory"]) vectorAdd (GVAR(roundPath) call _fnc_along);
+            private _back = (_unit selectionPosition ["lefthand", "Memory"]) vectorAdd MAG_FROM_HAND;
+            private _withMagazine = (_back vectorAdd _topFromBack) vectorAdd (GVAR(roundPathTop) call _fnc_along);
+            private _toMagazine = if (_progress <= ROUND_PRESS) then {1} else {(((_progress - ROUND_ALIGN_FROM) / (1 - ROUND_ALIGN_FROM)) max 0 min 1)};
+
+            _toMagazine = _toMagazine * _toMagazine * (3 - 2 * _toMagazine);
+            _round attachTo [_unit, _withHand vectorAdd ((_withMagazine vectorDiff _withHand) vectorMultiply _toMagazine)];
+            _round setVectorDirAndUp [MAG_DIR, _axisZ];
         };
 
         // Attached, not set into place: a magazine model with a geometry of its own (the CAR-95's) would otherwise
@@ -106,7 +118,7 @@ private _shift = (((_axisX vectorMultiply (_middle select 0)) vectorAdd (_axisY 
         _magazine setVectorDirAndUp [_axisY, _axisZ];
     },
     0,
-    [_unit, _magazine, _axisY, _axisZ, _shift, _round]
+    [_unit, _magazine, _axisY, _axisZ, _shift, _round, _topFromBack]
 ] call CBA_fnc_addPerFrameHandler;
 
 nil
