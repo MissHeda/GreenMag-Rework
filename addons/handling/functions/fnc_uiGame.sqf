@@ -61,15 +61,19 @@ if (_key isNotEqualTo (_ui get "comboShown")) then {
         format [[LLSTRING(Streak_1), LLSTRING(Streak_2), LLSTRING(Streak_3), LLSTRING(Streak_4)] select (_tier - 1), _combo]
     };
 
+    // A reward takes the place of the streak for its moment: both in one line run out of the panel.
+    private _colour = ["#ffffff", "#9be89b", "#ffd75a", "#ff9a3c", "#ff4d4d"] select _tier;
+
     if (_bonus) then {
         _tier = _tier max 2;
-        _text = format ["%1  %2", GVAR(op) get "bonusText", _text];
+        _text = GVAR(op) get "bonusText";
+        _colour = "#6beb6b";
     };
 
     (_ui get "combo") ctrlSetStructuredText parseText format [
         "<t align='right' size='%1' color='%2' font='PuristaBold' shadow='%3'>%4</t>",
-        [0, 0.85, 1.0, 1.15, 1.3] select _tier,
-        ["#ffffff", "#9be89b", "#ffd75a", "#ff9a3c", "#ff4d4d"] select _tier,
+        [0, 0.85, 0.95, 1.05, 1.15] select _tier,
+        _colour,
         [0, 0, 1, 2, 2] select _tier,
         _text
     ];

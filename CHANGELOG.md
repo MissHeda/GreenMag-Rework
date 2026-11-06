@@ -4,6 +4,8 @@
 
 First release on the Steam Workshop. Everything below led up to it.
 
+- Fixed: a minigame reward and the streak shared one line and ran out of the loading display; the reward now shows on its own for its moment
+
 ## 0.1.44
 
 - Fixed: the round floated beside the right hand's fingers; it goes by the hand's own frame now, measured in the game, so it lies between thumb and index finger

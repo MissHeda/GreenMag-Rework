@@ -19,29 +19,76 @@ it, and does not load together with its compat patches. Requires CBA. ACE3 is op
 
 ## Magazines of other mods
 
-Most are recognised by themselves. For the others there are two easy ways, no compat patch needed:
+Most magazines work by themselves: GreenMag Rework reads the caliber from their class name, ammo and description.
+For the rest there are two ways without any code:
 
 - **Universal ammunition** fits every magazine, known or not. With ACE it is in the Ammunition tab of its Arsenal.
-- **The setting "Ammo rules"** names the caliber of a magazine: `vn_m16: 556x45, CUP_30Rnd_9x39: 9x39`. Part of the
-  class name is enough. The caliber names are the classes in `addons/items/cfg/calibers.hpp`.
+- **The server setting "Ammo rules"** names a magazine's caliber: `vn_m16: 556x45, CUP_30Rnd_9x39: 9x39`. Part of the
+  class name is enough. The caliber names are listed in `addons/items/cfg/calibers.hpp`.
 
-## For other mods
+## For modders: add your magazines and ammo
 
-A magazine can state what it is in `CfgMagazines`; every entry is optional:
+**1. Your magazine takes an existing caliber.** One line in its class, nothing else to load or require: without
+GreenMag the line is simply ignored.
 
 ```cpp
-class my_30Rnd_Mag: CA_Magazine {
-    gmr_caliber = "556x45"; // a class of gmr_calibers
-    gmr_variant = "tracer"; // a class of its variants
-    gmr_belt = 0;           // 1 refills from belts
-    gmr_speedload = 1;      // a speedloader works on it
-    gmr_disabled = 0;       // 1 leaves it out completely
+class CfgMagazines {
+    class CA_Magazine;
+    class my_30Rnd_Mag: CA_Magazine {
+        gmr_caliber = "556x45";   // which rounds fit, see calibers.hpp
+    };
 };
 ```
 
-New calibers are classes of `gmr_calibers` at the config root, see `addons/items/cfg/calibers.hpp`. A magazine
-can also be declared a belt at runtime, on every machine:
-`[["my_100Rnd_Belt"]] call gmr_main_fnc_registerBelts`.
+Optional lines, only if you need them:
+
+| line | does |
+| --- | --- |
+| `gmr_belt = 1;` | refills from belts instead of loose rounds |
+| `gmr_variant = "tracer";` | the kind of round inside (advanced ammunition) |
+| `gmr_speedload = 0;` | the speedloader does not work on it |
+| `gmr_disabled = 1;` | GreenMag leaves this magazine alone |
+
+**2. Your own kind of ammunition** (a new caliber): name it once, then give it a round and, if you like, a box. This
+part needs `"gmr_items"` in your `requiredAddons`, so it belongs in an optional compat PBO.
+
+```cpp
+class gmr_calibers {
+    class plasma {
+        displayName = "Plasma Cell";
+        tokens[] = {"plasma"};          // magazines with this in their class name use it
+        packs[] = {20};                 // box sizes
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+};
+
+class CfgWeapons {
+    class gmr_round_base;
+    class gmr_pack_base;
+
+    // The names must be exactly gmr_round_<caliber>_basic and gmr_pack_<caliber>_basic_<size>.
+    class gmr_round_plasma_basic: gmr_round_base {
+        scope = 2;
+        displayName = "Plasma Cell";
+        picture = "\my_mod\data\plasma_cell.paa";
+        gmr_caliber = "plasma";
+        gmr_variant = "basic";
+        gmr_round = "gmr_round_plasma_basic";
+    };
+    class gmr_pack_plasma_basic_20: gmr_pack_base {
+        displayName = "Plasma Cells (20)";
+        picture = "\my_mod\data\plasma_box.paa";
+        gmr_rounds = 20;
+        gmr_caliber = "plasma";
+        gmr_variant = "basic";
+        gmr_round = "gmr_round_plasma_basic";
+    };
+};
+```
+
+That is all: your magazines with "plasma" in their name now load from Plasma Cells, round by round.
 
 ## Development
 
