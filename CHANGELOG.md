@@ -128,7 +128,7 @@ First release on the Steam Workshop. Everything below led up to it.
 
 ## 0.1.22
 
-- Added: with ACE, link loose belts into the machine gun someone is firing, or your own, so an ammo bearer only carries belts (idea by Guide [ISO])
+- Added: with ACE, link loose belts into the machine gun someone is firing, or your own, so an ammo bearer only carries belts (idea by Guide)
 - Added: split a loose belt in two, in the inventory's context menu and the ACE menu
 
 ## 0.1.21
