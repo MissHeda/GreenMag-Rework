@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.42
+
+- Fixed: the round floated below the right hand's fingers; it hangs on the right hand itself now
+
 ## 0.1.41
 
 - Changed: the left hand's fingers lie together around the magazine instead of spread

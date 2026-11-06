@@ -6,7 +6,7 @@
  * Shows a magazine in a unit's left hand on this machine, every player seeing it through their own local object. Each
  * frame it is attached anew where the hand is, turned the way the hand holds it. A round goes with the right hand
  * through the loading gesture: taken between thumb and index finger at the pouch, carried up and pressed in from
- * above, where it goes; GVAR(roundPath) says where it is for the gesture's progress.
+ * above, where it goes; GVAR(roundPath) says where it is from the right hand's point for the gesture's progress.
  * It goes away with the event of fnc_animTick, and by itself if the unit dies or disappears.
  *
  * Arguments:
@@ -96,7 +96,7 @@ private _shift = (((_axisX vectorMultiply (_middle select 0)) vectorAdd (_axisY 
             private _from = _path select _index;
             private _point = _from vectorAdd (((_path select (_index + 1)) vectorDiff _from) vectorMultiply (_at - _index));
 
-            _round attachTo [_unit, ((_unit selectionPosition ["lefthand", "Memory"]) vectorAdd MAG_FROM_HAND) vectorAdd _point];
+            _round attachTo [_unit, (_unit selectionPosition ["righthand", "Memory"]) vectorAdd _point];
             _round setVectorDirAndUp [MAG_DIR, MAG_UP];
         };
 
