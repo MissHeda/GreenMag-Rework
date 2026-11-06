@@ -44,6 +44,14 @@ if (EGVAR(main,roundCounter)) then {
     ];
 };
 
+if (_ui getOrDefault ["classic", false]) then {
+    (_ui get "ring") ctrlSetText format ["\A3\Ui_f\data\IGUI\Cfg\HoldActions\progress\progress_%1_ca.paa", round (24 * _shown / _capacity)];
+
+    if (EGVAR(main,roundCounter)) then {
+        (_ui get "count") ctrlSetStructuredText parseText format ["<t align='center' size='1.1' font='PuristaSemibold' shadow='2'>%1 / %2</t>", _shown, _capacity];
+    };
+};
+
 if ((GVAR(op) get "played") > 0) then {
     private _spark = _ui get "spark";
     private _at = (_lit - 1) max 0;
@@ -65,7 +73,7 @@ private _line = switch (true) do {
     default {LLSTRING(Prompt_Esc)};
 };
 
-(_ui get "prompt") ctrlSetStructuredText parseText format ["<t align='center' size='0.72' color='#9aa0a8' shadow='0'>%1</t>", _line];
+(_ui get "prompt") ctrlSetStructuredText parseText format ["<t align='center' size='0.72' color='#9aa0a8' shadow='%2'>%1</t>", _line, [0, 2] select (_ui getOrDefault ["classic", false])];
 
 private _combo = [0, GVAR(op) get "combo"] select (GVAR(op) get "game");
 

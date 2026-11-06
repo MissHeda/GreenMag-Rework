@@ -202,6 +202,24 @@
         <Key ID="STR_gmr_main_Setting_ArsenalRounds_Desc">
             <English>Single rounds are listed in the\nammunition tab of ACE Arsenal.</English>
         </Key>
+        <Key ID="STR_gmr_main_Setting_UniversalAmmo">
+            <English>Universal ammunition</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_UniversalAmmo_Desc">
+            <English>Rounds and belts that fit\nany magazine of any caliber.\n\nOff: they are hidden in the arsenal\nand nothing can be loaded from them.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_LoadDisplay">
+            <English>Loading display</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_LoadDisplay_Desc">
+            <English>What you see while loading.\n\nPanel: magazine, round count\nand the minigame, if it is on.\n\nClassic ring: the hold ring of the\noriginal GreenMag, without minigame.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_LoadDisplay_Panel">
+            <English>Panel</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_LoadDisplay_Classic">
+            <English>Classic ring</English>
+        </Key>
         <Key ID="STR_gmr_main_Setting_LoadGame">
             <English>Loading minigame</English>
         </Key>

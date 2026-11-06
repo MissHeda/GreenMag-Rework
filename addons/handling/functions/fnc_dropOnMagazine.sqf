@@ -35,7 +35,7 @@ private _capacity = _magazine select MAG_CAPACITY;
 
 private _isBelt = (_facts select ITEM_KIND) == "belt";
 private _fits = (_magazine select MAG_OK)
-    && {(_facts select ITEM_CALIBER) in [_magazine select MAG_CALIBER, "universal"]}
+    && {(_facts select ITEM_CALIBER) in [_magazine select MAG_CALIBER, ["", "universal"] select EGVAR(main,universalAmmo)]}
     && {_isBelt isEqualTo (_magazine select MAG_BELT)};
 
 if (!_fits) exitWith {

@@ -20,6 +20,7 @@ class CfgWeapons {
 
     // The context menu's "Unpack" hangs on the pack base, the menus tell the kinds apart by gmr_kind.
     class gmr_round_base: gmr_item_base {
+        model = QPATHTOF(data\drop_round.p3d);
         gmr_kind = "round";
         gmr_rounds = 1;
     };
@@ -28,6 +29,7 @@ class CfgWeapons {
         scope = 2;
     };
     class gmr_belt_base: gmr_item_base {
+        model = QPATHTOF(data\drop_belt.p3d);
         gmr_kind = "belt";
     };
 
@@ -38,6 +40,7 @@ class CfgWeapons {
         displayName = CSTRING(Speedloader);
         descriptionShort = CSTRING(Speedloader_Desc);
         picture = QPATHTOF(data\speedloader.paa);
+        model = QPATHTOF(data\drop_speedloader.p3d);
 
         class ItemInfo: CBA_MiscItem_ItemInfo {
             mass = 2;

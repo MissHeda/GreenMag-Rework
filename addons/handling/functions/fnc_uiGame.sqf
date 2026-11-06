@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * The minigame's track, every frame: the round flies across once per try, and each try puts the magazine, the slot to hit,
+ * The minigame's track, every frame: the round flies across once per try, and each try puts the opening to hit
  * somewhere new on the track, with a narrower opening the longer the run.
  *
  * Arguments:
@@ -40,10 +40,12 @@ if ((GVAR(op) get "attempt") != (GVAR(op) get "attemptShown")) then {
         _x ctrlCommit 0;
     } forEach [_ui get "glow", _ui get "hit"];
 
-    private _slot = _ui get "slot";
+    (_ui get "edges") params ["_left", "_right"];
 
-    _slot ctrlSetPositionX (_stripX + (_from + _size / 2) * _stripW - (_ui get "slotW") / 2);
-    _slot ctrlCommit 0;
+    _left ctrlSetPositionX (_stripX + _from * _stripW);
+    _left ctrlCommit 0;
+    _right ctrlSetPositionX (_stripX + (_from + _size) * _stripW - UI_EDGE_WIDTH);
+    _right ctrlCommit 0;
 };
 
 private _round = _ui get "round";

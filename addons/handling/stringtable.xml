@@ -25,6 +25,9 @@
         <Key ID="STR_gmr_handling_Hint_NoAmmo">
             <English>You have no fitting rounds or belts.</English>
         </Key>
+        <Key ID="STR_gmr_handling_Hint_UniversalOff">
+            <English>Universal ammunition is turned off.</English>
+        </Key>
         <Key ID="STR_gmr_handling_Hint_NoVersion">
             <English>This magazine has no version for that kind of round.</English>
         </Key>

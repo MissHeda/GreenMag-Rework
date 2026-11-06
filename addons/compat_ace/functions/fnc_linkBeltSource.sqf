@@ -46,6 +46,6 @@ private _source = [];
     if (_rounds > 0) exitWith {
         _source = [_x, _rounds, _missing];
     };
-} forEach [_facts select MAG_BELT_TYPE, UNIVERSAL_BELT];
+} forEach ([_facts select MAG_BELT_TYPE] + ([[], [UNIVERSAL_BELT]] select EGVAR(main,universalAmmo)));
 
 _source

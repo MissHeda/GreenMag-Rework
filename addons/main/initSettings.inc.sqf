@@ -60,6 +60,11 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
     [CBA_SETTINGS_SERVER, _rules], true, 1
 ] call CBA_fnc_addSetting;
 
+[
+    QGVAR(universalAmmo), "CHECKBOX", [LLSTRING(Setting_UniversalAmmo), LLSTRING(Setting_UniversalAmmo_Desc)],
+    [CBA_SETTINGS_SERVER, _rules], true, 1
+] call CBA_fnc_addSetting;
+
 // Lists
 [
     QGVAR(advancedAmmo), "LIST", [LLSTRING(Setting_AmmoSystem), LLSTRING(Setting_AmmoSystem_Desc)],
@@ -178,4 +183,11 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 [
     QGVAR(guardNotice), "CHECKBOX", [LLSTRING(Setting_GuardNotice), LLSTRING(Setting_GuardNotice_Desc)],
     [CBA_SETTINGS_CLIENT, _menu], false, 0
+] call CBA_fnc_addSetting;
+
+// Lists
+[
+    QGVAR(loadDisplay), "LIST", [LLSTRING(Setting_LoadDisplay), LLSTRING(Setting_LoadDisplay_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu],
+    [[0, 1], [LLSTRING(Setting_LoadDisplay_Panel), LLSTRING(Setting_LoadDisplay_Classic)], 0], 0
 ] call CBA_fnc_addSetting;

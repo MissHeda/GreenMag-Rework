@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.34
+
+- Added: views at the top of ACE Arsenal's sort list in the ammunition tab: fitting ammunition (default), rounds only, boxes only, belts only
+- Added: "Universal ammunition" server setting, on by default; off hides it and nothing loads from it
+- Added: "Loading display" setting: the panel (default) or the original GreenMag's hold ring, without minigame
+- Added: models for rounds, boxes, belts and the speedloader lying on the ground
+- Changed: the original's boxes of 10 to 60 rounds are back beside the real ones
+- Changed: more room in the loading display; the minigame's opening is a straight band with bright edges
+
 ## 0.1.33
 
 - Changed: packs come in the sizes the real cartridges are boxed in: 50 for pistol rounds, 20 for rifle rounds (5.45 in 30, 5.56 also as 30 on stripper clips, 7.92 in 15), 10 for the large calibers, 5 and 25 for shotgun shells

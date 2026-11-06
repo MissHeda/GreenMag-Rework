@@ -16,5 +16,17 @@
         <Key ID="STR_gmr_compat_ace_BeltNotLinked">
             <English>Belt not linked</English>
         </Key>
+        <Key ID="STR_gmr_compat_ace_View_Fitting">
+            <English>Fitting ammunition</English>
+        </Key>
+        <Key ID="STR_gmr_compat_ace_View_Rounds">
+            <English>Rounds only</English>
+        </Key>
+        <Key ID="STR_gmr_compat_ace_View_Packs">
+            <English>Boxes only</English>
+        </Key>
+        <Key ID="STR_gmr_compat_ace_View_Belts">
+            <English>Belts only</English>
+        </Key>
     </Package>
 </Project>

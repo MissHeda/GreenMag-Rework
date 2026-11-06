@@ -151,7 +151,7 @@ GVAR(opCounter) = GVAR(opCounter) + 1;
 
 // What the display starts from: the first magazine's rounds, or the whole belt item.
 private _startShown = if (_kind == "unloadBelt") then {_capacity} else {_amounts param [0, 0]};
-private _game = EGVAR(main,loadGame) && {!_belt};
+private _game = EGVAR(main,loadGame) && {!_belt} && {EGVAR(main,loadDisplay) == 0};
 private _beat = (_time / _need) max GAME_MIN_BEAT;
 
 if (_game) then {

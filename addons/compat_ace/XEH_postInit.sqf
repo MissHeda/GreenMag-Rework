@@ -77,6 +77,7 @@ if (!hasInterface) exitWith {};
     if (_button != 61 + GVAR(arsenalSlot) * 2) exitWith {};
 
     [_display] call FUNC(arsenalFilter);
+    [_display] call FUNC(arsenalViews);
 
     if (EGVAR(main,arsenalHighlight)) then {
         [_display] call FUNC(arsenalHighlight);

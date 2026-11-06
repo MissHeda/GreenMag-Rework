@@ -22,6 +22,8 @@
 
 params [["_class", "", [""]], ["_rounds", 0, [0]], ["_ammunition", "", [""]]];
 
+if (_ammunition in [UNIVERSAL_ROUND, UNIVERSAL_BELT] && {!EGVAR(main,universalAmmo)}) exitWith {["", LLSTRING(Hint_UniversalOff)]};
+
 if (_ammunition in ["", UNIVERSAL_ROUND, UNIVERSAL_BELT]) exitWith {[_class, ""]};
 
 private _type = ([_class] call EFUNC(main,magazineInfo)) select MAG_TYPE;

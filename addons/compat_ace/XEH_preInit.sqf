@@ -4,6 +4,10 @@ ADDON = false;
 
 #include "XEH_PREP.hpp"
 
+// The view of the ammunition tab picked in the sort list (fnc_arsenalViews): "fitting", "round", "pack", "belt" or "all".
+GVAR(arsenalView) = "fitting";
+GVAR(viewsBusy) = false;
+
 // A tab of its own in ACE Arsenal, which takes these items out of its Misc list.
 GVAR(arsenalSlot) = [
     [

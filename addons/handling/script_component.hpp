@@ -17,8 +17,10 @@
 #define IDC_LIST_BACKPACK 619
 
 // The display while loading (fnc_uiCreate): place and size in screen units, its colours, and the most segments in its strip.
-#define UI_WIDTH 0.44
-#define UI_HEIGHT 0.118
+#define UI_WIDTH 0.46
+#define UI_PAD 0.014
+#define UI_GAP 0.012
+#define UI_TILE_HEIGHT 0.07
 #define UI_TOP 0.78
 #define UI_RADIUS 0.014
 #define UI_STRIP_HEIGHT 0.014
@@ -35,9 +37,15 @@
 #define UI_MISS_COLOR [1, 0.3, 0.2, 1]
 
 // The minigame: its track, how long a miss holds the hand, the opening's share of the track, and the fastest a round may fly.
-#define UI_GAME_HEIGHT 0.062
+#define UI_GAME_HEIGHT 0.044
 #define UI_PROMPT_HEIGHT 0.03
-#define UI_TRACK_HEIGHT 0.008
+#define UI_TRACK_HEIGHT 0.006
+#define UI_ZONE_HEIGHT 0.016
+#define UI_EDGE_WIDTH 0.0016
+
+// The classic display: the game's hold-action ring, its width in screen units and how far below the middle it sits.
+#define UI_RING_SIZE 0.09
+#define UI_RING_DROP 0.06
 #define GAME_MISS_STALL 0.5
 #define GAME_ZONE_START 0.30
 #define GAME_ZONE_SHRINK 0.02

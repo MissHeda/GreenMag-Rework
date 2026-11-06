@@ -12,6 +12,7 @@
 
 // The list of items, and the colour of what fits one of the unit's weapons.
 #define ARSENAL_ITEM_LIST 15
+#define ARSENAL_SORT 17
 #define ARSENAL_FITS_COLOR [0.45, 0.95, 0.45, 1]
 
 // As long as ACE takes to link a box into a machine gun.

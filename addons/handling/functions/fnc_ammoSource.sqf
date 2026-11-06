@@ -33,7 +33,7 @@ private _hasUniversal = false;
     if ((_facts select ITEM_KIND) == (["round", "belt"] select _belt)) then {
         private _key = [_x, _facts select ITEM_BELT_TYPE] select _belt;
 
-        if (_key == _universal) then {
+        if (_key == _universal && {EGVAR(main,universalAmmo)}) then {
             _hasUniversal = true;
         };
 

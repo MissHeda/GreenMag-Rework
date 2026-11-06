@@ -35,7 +35,7 @@ private _hidden = [];
 // Until the background count (XEH_postInit) is through, nothing is hidden for it.
 private _usedOnly = EGVAR(main,arsenalUsedCalibers) && {!isNil QGVAR(usedCalibers)};
 
-if (_hidden isEqualTo [] && {!_usedOnly}) exitWith {};
+if (_hidden isEqualTo [] && {!_usedOnly} && {EGVAR(main,universalAmmo)}) exitWith {};
 
 for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
     private _item = _list lnbData [_row, 0];
@@ -45,7 +45,9 @@ for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
         private _caliber = _facts select ITEM_CALIBER;
         private _key = format ["%1:%2:%3", ["round", "belt"] select ((_facts select ITEM_KIND) == "belt"), _caliber, _facts select ITEM_VARIANT];
 
-        if ((_facts select ITEM_KIND) in _hidden || {_usedOnly && {_caliber isNotEqualTo ""} && {!(_key in GVAR(usedCalibers))}}) then {
+        if ((_facts select ITEM_KIND) in _hidden
+            || {_caliber == "universal" && {!EGVAR(main,universalAmmo)}}
+            || {_usedOnly && {_caliber isNotEqualTo ""} && {!(_key in GVAR(usedCalibers))}}) then {
             _list lnbDeleteRow _row;
         };
     };
