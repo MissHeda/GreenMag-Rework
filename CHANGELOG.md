@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.39
+
+- Changed: unloading sounds like rounds falling and bouncing, from studio recordings of cartridge cases on concrete (BigSoundBank, CC0)
+
 ## 0.1.38
 
 - Changed: new sounds for a round going in, taking the magazine and a full magazine, cut from a real recording of a magazine being loaded (BigSoundBank "Gun, loading #4", CC0); with and without ACE alike

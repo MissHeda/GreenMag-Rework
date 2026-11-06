@@ -1,5 +1,5 @@
-// Real recordings: the rounds going in, the grab and the full magazine from a CC0 recording in this mod, the rest the
-// game's own, played from where they lie. The clicks climb in pitch as the spring tightens.
+// Real recordings: the rounds going in and out, the grab and the full magazine from CC0 recordings in this mod, the rest
+// the game's own, played from where they lie. The clicks climb in pitch as the spring tightens.
 #define SOUND(fileName,file,volume,pitch) class TRIPLES(ADDON,sound,fileName) {\
     name = QUOTE(TRIPLES(ADDON,sound,fileName));\
     sound[] = {file, volume, pitch};\
@@ -14,8 +14,16 @@
 #define CLICK_2 QPATHTOF(sounds\click_2.ogg)
 #define CLICK_3 QPATHTOF(sounds\click_3.ogg)
 #define CLICK_4 QPATHTOF(sounds\click_4.ogg)
-#define RATTLE QPATHTOF(soundsattle.ogg)
+#define RATTLE QPATHTOF(sounds
+attle.ogg)
 #define SEAT QPATHTOF(sounds\seat.ogg)
+
+// BigSoundBank's cartridge cases falling on concrete (CC0): a round falling out while unloading.
+#define DROP_1 QPATHTOF(sounds\drop_1.ogg)
+#define DROP_2 QPATHTOF(sounds\drop_2.ogg)
+#define DROP_3 QPATHTOF(sounds\drop_3.ogg)
+#define DROP_4 QPATHTOF(sounds\drop_4.ogg)
+#define DROP_5 QPATHTOF(sounds\drop_5.ogg)
 #define BOLT_1 "A3\Sounds_F\weapons\Other\reload_bolt_1"
 #define BOLT_2 "A3\Sounds_F\weapons\Other\reload_bolt_2"
 #define BOLT_3 "A3\Sounds_F\weapons\Other\reload_bolt_3"
@@ -38,12 +46,12 @@ class CfgSounds {
     SOUND(round_in_7,CLICK_3,1.6,1.12);
     SOUND(round_in_8,CLICK_4,1.6,1.15);
 
-    SOUND(round_out_1,BRASS_1,1.5,0.92);
-    SOUND(round_out_2,BRASS_2,1.5,0.96);
-    SOUND(round_out_3,BRASS_3,1.5,1.0);
-    SOUND(round_out_4,BRASS_4,1.5,1.0);
-    SOUND(round_out_5,BRASS_6,1.5,1.04);
-    SOUND(round_out_6,BRASS_7,1.5,1.08);
+    SOUND(round_out_1,DROP_1,1.4,0.97);
+    SOUND(round_out_2,DROP_2,1.4,1.0);
+    SOUND(round_out_3,DROP_3,1.4,0.98);
+    SOUND(round_out_4,DROP_4,1.4,1.02);
+    SOUND(round_out_5,DROP_5,1.4,1.0);
+    SOUND(round_out_6,DROP_1,1.4,1.04);
 
     SOUND(belt_link_1,BRASS_5,1.5,0.72);
     SOUND(belt_link_2,BRASS_6,1.5,0.76);
