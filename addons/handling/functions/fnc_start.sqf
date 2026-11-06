@@ -190,6 +190,8 @@ GVAR(op) = createHashMapFromArray [
     ["attempt", 0],
     ["attemptShown", -1],
     ["combo", 0],
+    ["bonusText", ""],
+    ["bonusUntil", -1],
     ["tried", false],
     ["zone", 0],
     ["zoneSize", 0],

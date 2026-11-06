@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.40
+
+- Added: streak rewards in the minigame. From x5 on, every 2 hits throw in 1 to 3 random extra rounds, at x15 the magazine in hand fills at once; all of it adjustable in the CBA settings (Minigame) and can be switched off
+
 ## 0.1.39
 
 - Changed: unloading sounds like rounds falling and bouncing, from studio recordings of cartridge cases on concrete (BigSoundBank, CC0)

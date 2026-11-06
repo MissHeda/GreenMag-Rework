@@ -229,6 +229,36 @@
         <Key ID="STR_gmr_main_Topic_Minigame">
             <English>Minigame</English>
         </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewards">
+            <English>Streak rewards</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewards_Desc">
+            <English>A long run of hits pays out extra\nrounds that go in for free in time,\nnot in ammunition.\n\nAt the jackpot streak the magazine\nin hand fills at once.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewardStart">
+            <English>First reward at streak</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewardStart_Desc">
+            <English>The streak of hits that pays out\nthe first extra round, x5 for one.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewardStep">
+            <English>Next reward every</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewardStep_Desc">
+            <English>After the first reward, another one\nevery this many hits.\n\n2 with the first at x5:\nx5, x7, x9 and so on.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewardMaxRounds">
+            <English>Most extra rounds</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewardMaxRounds_Desc">
+            <English>Each reward gives a random number\nof extra rounds, from 1 up to one\nmore per reward in the streak.\n\nNever more than this at once.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewardJackpot">
+            <English>Jackpot streak</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_GameRewardJackpot_Desc">
+            <English>At this streak, and every multiple\nof it, the magazine in hand fills\nat once.\n\n0 turns the jackpot off.</English>
+        </Key>
         <Key ID="STR_gmr_main_Setting_GameMustHit">
             <English>Without a press</English>
         </Key>

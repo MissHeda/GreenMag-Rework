@@ -88,6 +88,15 @@
         <Key ID="STR_gmr_handling_Streak_4">
             <English>x%1  Unstoppable!</English>
         </Key>
+        <Key ID="STR_gmr_handling_Reward_Round">
+            <English>+%1 round</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Reward_Rounds">
+            <English>+%1 rounds</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Reward_Full">
+            <English>Jackpot! +%1</English>
+        </Key>
         <Key ID="STR_gmr_handling_Prompt_GameMust">
             <English>Press %1 when the round is on the magazine, Esc to stop</English>
         </Key>

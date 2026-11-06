@@ -10,6 +10,7 @@ PREP(contextMagazine);
 PREP(dropOnMagazine);
 PREP(finish);
 PREP(gamePress);
+PREP(gameReward);
 PREP(handModel);
 PREP(holdMagazine);
 PREP(listRowAt);

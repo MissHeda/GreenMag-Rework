@@ -52,6 +52,9 @@
 #define GAME_ZONE_MIN 0.12
 #define GAME_MIN_BEAT 0.25
 
+// How long a streak reward stays beside the count, in seconds.
+#define GAME_REWARD_SHOW 1.5
+
 // The magazine as one holds it to load it: across the body, its broad side to the front, its front towards the right
 // hand, its back in the left palm, the fingers around its far side and front, the thumb on its near side. From the
 // unit's "lefthand" point to the middle of its back (right, forward, up), the depth the hand is shaped around, the way

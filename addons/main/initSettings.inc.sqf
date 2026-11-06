@@ -107,9 +107,35 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 ] call CBA_fnc_addSetting;
 
 // ----- Server: minigame -----
+// Numbers
+[
+    QGVAR(gameRewardStart), "SLIDER", [LLSTRING(Setting_GameRewardStart), LLSTRING(Setting_GameRewardStart_Desc)],
+    [CBA_SETTINGS_SERVER, _minigame], [2, 30, 5, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(gameRewardStep), "SLIDER", [LLSTRING(Setting_GameRewardStep), LLSTRING(Setting_GameRewardStep_Desc)],
+    [CBA_SETTINGS_SERVER, _minigame], [1, 10, 2, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(gameRewardMaxRounds), "SLIDER", [LLSTRING(Setting_GameRewardMaxRounds), LLSTRING(Setting_GameRewardMaxRounds_Desc)],
+    [CBA_SETTINGS_SERVER, _minigame], [1, 10, 3, 0], 1
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(gameRewardJackpot), "SLIDER", [LLSTRING(Setting_GameRewardJackpot), LLSTRING(Setting_GameRewardJackpot_Desc)],
+    [CBA_SETTINGS_SERVER, _minigame], [0, 50, 15, 0], 1
+] call CBA_fnc_addSetting;
+
 // Switches
 [
     QGVAR(loadGame), "CHECKBOX", [LLSTRING(Setting_LoadGame), LLSTRING(Setting_LoadGame_Desc)],
+    [CBA_SETTINGS_SERVER, _minigame], true, 1
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(gameRewards), "CHECKBOX", [LLSTRING(Setting_GameRewards), LLSTRING(Setting_GameRewards_Desc)],
     [CBA_SETTINGS_SERVER, _minigame], true, 1
 ] call CBA_fnc_addSetting;
 

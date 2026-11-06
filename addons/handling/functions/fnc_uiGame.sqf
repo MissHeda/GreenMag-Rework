@@ -48,15 +48,22 @@ if ((GVAR(op) get "attempt") != (GVAR(op) get "attemptShown")) then {
     _catcher ctrlCommit 0;
 };
 
-// The streak beside the count grows louder the longer it runs.
+// The streak beside the count grows louder the longer it runs; a reward it paid out shows there for a moment.
 private _combo = GVAR(op) get "combo";
+private _bonus = CBA_missionTime < (GVAR(op) get "bonusUntil");
+private _key = [_combo, [-1, GVAR(op) get "bonusUntil"] select _bonus];
 
-if (_combo != (_ui get "comboShown")) then {
-    _ui set ["comboShown", _combo];
+if (_key isNotEqualTo (_ui get "comboShown")) then {
+    _ui set ["comboShown", _key];
 
     private _tier = {_combo >= _x} count [2, 5, 10, 20];
     private _text = if (_tier == 0) then {""} else {
         format [[LLSTRING(Streak_1), LLSTRING(Streak_2), LLSTRING(Streak_3), LLSTRING(Streak_4)] select (_tier - 1), _combo]
+    };
+
+    if (_bonus) then {
+        _tier = _tier max 2;
+        _text = format ["%1  %2", GVAR(op) get "bonusText", _text];
     };
 
     (_ui get "combo") ctrlSetStructuredText parseText format [

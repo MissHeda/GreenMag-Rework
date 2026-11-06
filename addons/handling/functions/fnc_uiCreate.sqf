@@ -173,7 +173,7 @@ if (_game) then {
     _ui set ["hit", _hit];
     _ui set ["catcher", _catcher];
     _ui set ["catcherW", _catcherW];
-    _ui set ["comboShown", -1];
+    _ui set ["comboShown", []];
     _ui set ["round", _round];
     _ui set ["roundW", _roundW];
 

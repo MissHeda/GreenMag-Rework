@@ -37,6 +37,9 @@ if (_phase >= _from && {_phase <= _from + (GVAR(op) get "zoneSize")}) then {
     GVAR(op) set ["attempt", (GVAR(op) get "attempt") + 1];
     GVAR(op) set ["combo", (GVAR(op) get "combo") + 1];
     PLAY_SOUND(drop_item);
+
+    // A long enough streak pays out extra rounds, the longest a full magazine.
+    call FUNC(gameReward);
 } else {
     GVAR(op) set ["stall", CBA_missionTime + GAME_MISS_STALL];
     GVAR(op) set ["combo", 0];
