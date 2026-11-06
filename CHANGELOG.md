@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.36
+
+- Changed: new ground models: a printed carton with label, tape and stencilling, a round shaped like one (rim, groove, shoulder, neck, ogive), a belt with its links, a ribbed speedloader
+- Fixed: items floated above the ground; they are centred like the game's own now
+- Changed: the minigame's round flies in from the right and the magazine on the track has to catch it; the rounds no longer stack in the opening
+
 ## 0.1.35
 
 - Fixed: a magazine whose model has a geometry of its own (the CAR-95's) shoved the unit across the map while loading

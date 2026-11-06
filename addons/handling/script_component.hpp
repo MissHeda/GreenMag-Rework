@@ -37,11 +37,11 @@
 #define UI_MISS_COLOR [1, 0.3, 0.2, 1]
 
 // The minigame: its track, how long a miss holds the hand, the opening's share of the track, and the fastest a round may fly.
-#define UI_GAME_HEIGHT 0.044
+#define UI_GAME_HEIGHT 0.06
 #define UI_PROMPT_HEIGHT 0.03
 #define UI_TRACK_HEIGHT 0.006
 #define UI_ZONE_HEIGHT 0.026
-#define UI_STACK_MAX 12
+#define UI_CATCHER_HEIGHT 0.056
 
 // The classic display: the game's hold-action ring, its width in screen units and how far below the middle it sits.
 #define UI_RING_SIZE 0.09

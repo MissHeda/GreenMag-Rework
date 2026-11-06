@@ -1,8 +1,8 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * The minigame's track, every frame: the round flies across once per try, and each try puts the magazine, the
- * opening to hit, somewhere new on the track, the rounds of the run standing in it, with a narrower opening the longer the run.
+ * The minigame's track, every frame: the round flies in from the right once per try, and each try puts the magazine
+ * that has to catch it somewhere new on the track, with a narrower opening the longer the run.
  *
  * Arguments:
  * None
@@ -34,24 +34,19 @@ if ((GVAR(op) get "attempt") != (GVAR(op) get "attemptShown")) then {
     GVAR(op) set ["zone", _from];
     GVAR(op) set ["zoneSize", _size];
 
+    // The round flies from right to left, so the track is read from the right: what counts as phase 0.3 lies at 0.7.
+    private _left = _stripX + (1 - _from - _size) * _stripW;
+
     {
-        _x ctrlSetPositionX (_stripX + _from * _stripW);
+        _x ctrlSetPositionX _left;
         _x ctrlSetPositionW (_size * _stripW);
         _x ctrlCommit 0;
     } forEach [_ui get "glow", _ui get "hit"];
 
-    // The run so far stands in the magazine, as many rounds as fit in it.
-    private _size2 = _ui get "stackSize";
-    private _step = _size2 * 0.42;
-    private _left = _stripX + _from * _stripW + UI_ZONE_HEIGHT * 0.35;
-    private _room = floor ((_size * _stripW - UI_ZONE_HEIGHT * 0.7 - _size2) / _step) + 1;
-    private _standing = (GVAR(op) get "combo") min _room;
+    private _catcher = _ui get "catcher";
 
-    {
-        _x ctrlSetPositionX (_left + _forEachIndex * _step - _size2 * 0.3);
-        _x ctrlSetFade ([1, 0] select (_forEachIndex < _standing));
-        _x ctrlCommit 0;
-    } forEach (_ui get "stack");
+    _catcher ctrlSetPositionX (_left + _size * _stripW / 2 - (_ui get "catcherW") / 2);
+    _catcher ctrlCommit 0;
 };
 
 // The streak beside the count grows louder the longer it runs.
@@ -59,14 +54,6 @@ private _combo = GVAR(op) get "combo";
 
 if (_combo != (_ui get "comboShown")) then {
     _ui set ["comboShown", _combo];
-
-    // A miss empties the magazine at once.
-    {
-        if (_forEachIndex >= _combo) then {
-            _x ctrlSetFade 1;
-            _x ctrlCommit 0;
-        };
-    } forEach (_ui get "stack");
 
     private _tier = {_combo >= _x} count [2, 5, 10, 20];
     private _text = if (_tier == 0) then {""} else {
@@ -85,7 +72,7 @@ if (_combo != (_ui get "comboShown")) then {
 private _round = _ui get "round";
 private _stalled = CBA_missionTime < (GVAR(op) get "stall");
 
-_round ctrlSetPositionX (_stripX + ((GVAR(op) get "phase") min 1) * _stripW - (_ui get "roundW") / 2);
+_round ctrlSetPositionX (_stripX + (1 - ((GVAR(op) get "phase") min 1)) * _stripW - (_ui get "roundW") / 2);
 _round ctrlCommit 0;
 _round ctrlSetTextColor ([UI_ROUND_COLOR, UI_MISS_COLOR] select _stalled);
 

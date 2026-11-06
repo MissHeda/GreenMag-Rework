@@ -61,11 +61,16 @@ class Model:
     def __init__(self):
         self.points = []
         self.faces = []
+        self.uvs = {}
 
-    def face(self, corners, surface):
+    def face(self, corners, surface, uvs=None):
+        """A face; uvs, one (u, v) per corner with v down the texture, else the texture spans it corner to corner."""
         start = len(self.points)
         self.points += list(corners)
         self.faces.append((tuple(range(start, start + len(corners))), surface))
+
+        if uvs is not None:
+            self.uvs[len(self.faces) - 1] = list(uvs)
 
     def sweep(self, rings, surface, caps=True):
         """Closes a body from rings of corners, listed from the bottom up, all in the same turning sense."""
@@ -314,7 +319,7 @@ def write_p3d(path, model, material=""):
 
         for slot in range(4):
             if slot < len(corners):
-                u, v = uv4[slot]
+                u, v = model.uvs.get(index, uv4)[slot]
                 data += struct.pack("<iiff", corners[slot], index, u, v)
             else:
                 data += struct.pack("<iiff", 0, 0, 0.0, 0.0)

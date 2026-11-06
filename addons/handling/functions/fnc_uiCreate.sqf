@@ -153,8 +153,8 @@ if (_game) then {
 
     _all append ([_display, [_stripX, _middle - UI_TRACK_HEIGHT / 2, _stripW, UI_TRACK_HEIGHT], UI_OFF_COLOR, UI_TRACK_HEIGHT / 2] call FUNC(uiPanel));
 
-    // The opening is the magazine: a green capsule on the track, which flashes on a hit. The rounds of the run so far
-    // stand in it side by side, as they would in the magazine.
+    // The round flies in from the right; the magazine waits on the track to catch it. The green capsule under it is how
+    // far off the catch may be, and flashes on a hit.
     private _zoneY = _middle - UI_ZONE_HEIGHT / 2;
     private _glow = ["RscPicture", _stripX, _zoneY, 0, UI_ZONE_HEIGHT, QPATHTOF(data\pill_ca.paa), UI_ZONE_COLOR] call _fnc_make;
 
@@ -162,25 +162,20 @@ if (_game) then {
     _hit ctrlSetFade 1;
     _hit ctrlCommit 0;
 
-    private _stackSize = UI_ZONE_HEIGHT * 0.8;
-    private _stack = [];
-
-    for "_i" from 1 to UI_STACK_MAX do {
-        private _standing = ["RscPictureKeepAspect", _stripX, _middle - _stackSize / 2, _stackSize, _stackSize, QPATHTOF(data\round_side_ca.paa), UI_ROUND_COLOR] call _fnc_make;
-        _standing ctrlSetAngle [-90, 0.5, 0.5];
-        _standing ctrlSetFade 1;
-        _standing ctrlCommit 0;
-        _stack pushBack _standing;
-    };
+    private _catcherW = UI_CATCHER_HEIGHT * 3 / 4;
+    private _catcher = ["RscPictureKeepAspect", _stripX, _middle - UI_CATCHER_HEIGHT / 2, _catcherW, UI_CATCHER_HEIGHT, GVAR(op) get "picture"] call _fnc_make;
 
     private _roundW = 0.05;
     private _roundH = UI_GAME_HEIGHT * 0.6;
     private _round = ["RscPictureKeepAspect", _stripX, _middle - _roundH / 2, _roundW, _roundH, QPATHTOF(data\round_side_ca.paa), UI_ROUND_COLOR] call _fnc_make;
 
+    // Its point towards the magazine.
+    _round ctrlSetAngle [180, 0.5, 0.5];
+
     _ui set ["glow", _glow];
     _ui set ["hit", _hit];
-    _ui set ["stack", _stack];
-    _ui set ["stackSize", _stackSize];
+    _ui set ["catcher", _catcher];
+    _ui set ["catcherW", _catcherW];
     _ui set ["comboShown", -1];
     _ui set ["round", _round];
     _ui set ["roundW", _roundW];
