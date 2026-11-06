@@ -14,8 +14,7 @@
 #define CLICK_2 QPATHTOF(sounds\click_2.ogg)
 #define CLICK_3 QPATHTOF(sounds\click_3.ogg)
 #define CLICK_4 QPATHTOF(sounds\click_4.ogg)
-#define RATTLE QPATHTOF(sounds
-attle.ogg)
+#define RATTLE QPATHTOF(sounds\rattle.ogg)
 #define SEAT QPATHTOF(sounds\seat.ogg)
 
 // BigSoundBank's cartridge cases falling on concrete (CC0): a round falling out while unloading.
