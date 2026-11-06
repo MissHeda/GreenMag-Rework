@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0
+
+First release on the Steam Workshop. Everything below led up to it.
+
 ## 0.1.44
 
 - Fixed: the round floated beside the right hand's fingers; it goes by the hand's own frame now, measured in the game, so it lies between thumb and index finger
