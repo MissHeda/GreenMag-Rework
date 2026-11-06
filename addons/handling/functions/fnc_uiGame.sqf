@@ -1,8 +1,8 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * The minigame's track, every frame: the round flies across once per try, and each try puts the opening to hit
- * somewhere new on the track, with a narrower opening the longer the run.
+ * The minigame's track, every frame: the round flies across once per try, and each try puts the magazine, the
+ * opening to hit, somewhere new on the track, the rounds of the run standing in it, with a narrower opening the longer the run.
  *
  * Arguments:
  * None
@@ -40,12 +40,46 @@ if ((GVAR(op) get "attempt") != (GVAR(op) get "attemptShown")) then {
         _x ctrlCommit 0;
     } forEach [_ui get "glow", _ui get "hit"];
 
-    (_ui get "edges") params ["_left", "_right"];
+    // The run so far stands in the magazine, as many rounds as fit in it.
+    private _size2 = _ui get "stackSize";
+    private _step = _size2 * 0.42;
+    private _left = _stripX + _from * _stripW + UI_ZONE_HEIGHT * 0.35;
+    private _room = floor ((_size * _stripW - UI_ZONE_HEIGHT * 0.7 - _size2) / _step) + 1;
+    private _standing = (GVAR(op) get "combo") min _room;
 
-    _left ctrlSetPositionX (_stripX + _from * _stripW);
-    _left ctrlCommit 0;
-    _right ctrlSetPositionX (_stripX + (_from + _size) * _stripW - UI_EDGE_WIDTH);
-    _right ctrlCommit 0;
+    {
+        _x ctrlSetPositionX (_left + _forEachIndex * _step - _size2 * 0.3);
+        _x ctrlSetFade ([1, 0] select (_forEachIndex < _standing));
+        _x ctrlCommit 0;
+    } forEach (_ui get "stack");
+};
+
+// The streak beside the count grows louder the longer it runs.
+private _combo = GVAR(op) get "combo";
+
+if (_combo != (_ui get "comboShown")) then {
+    _ui set ["comboShown", _combo];
+
+    // A miss empties the magazine at once.
+    {
+        if (_forEachIndex >= _combo) then {
+            _x ctrlSetFade 1;
+            _x ctrlCommit 0;
+        };
+    } forEach (_ui get "stack");
+
+    private _tier = {_combo >= _x} count [2, 5, 10, 20];
+    private _text = if (_tier == 0) then {""} else {
+        format [[LLSTRING(Streak_1), LLSTRING(Streak_2), LLSTRING(Streak_3), LLSTRING(Streak_4)] select (_tier - 1), _combo]
+    };
+
+    (_ui get "combo") ctrlSetStructuredText parseText format [
+        "<t align='right' size='%1' color='%2' font='PuristaBold' shadow='%3'>%4</t>",
+        [0, 0.85, 1.0, 1.15, 1.3] select _tier,
+        ["#ffffff", "#9be89b", "#ffd75a", "#ff9a3c", "#ff4d4d"] select _tier,
+        [0, 0, 1, 2, 2] select _tier,
+        _text
+    ];
 };
 
 private _round = _ui get "round";

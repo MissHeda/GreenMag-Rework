@@ -18,6 +18,28 @@ import sys
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "addons" / "handling" / "data"
+MATERIAL = "z\\gmr\\addons\\handling\\data\\gmr_plain.rvmat"
+
+# A plain material: lit like the game's own models, a little shine, a flat normal map.
+RVMAT = """ambient[] = {1, 1, 1, 1};
+diffuse[] = {1, 1, 1, 1};
+forcedDiffuse[] = {0, 0, 0, 0};
+emmisive[] = {0, 0, 0, 1};
+specular[] = {0.12, 0.12, 0.12, 1};
+specularPower = 40;
+PixelShaderID = "Normal";
+VertexShaderID = "Basic";
+class Stage1 {
+    texture = "#(argb,8,8,3)color(0.5,0.5,1,1,NOHQ)";
+    uvSource = "tex";
+    class uvTransform {
+        aside[] = {1, 0, 0};
+        up[] = {0, 1, 0};
+        dir[] = {0, 0, 0};
+        pos[] = {0, 0, 0};
+    };
+};
+"""
 
 
 def texture(red, green, blue):
@@ -263,8 +285,9 @@ def ammo_box():
     return model
 
 
-def write_p3d(path, model):
-    """One visual LOD: points, flat normals and faces, the winding as the game's models have it."""
+def write_p3d(path, model, material=""):
+    """One visual LOD: points, flat normals and faces, the winding as the game's models have it. Every face gets the
+    material, without which the game lights a face flat and dark."""
     normals = []
 
     for corners, _surface in model.faces:
@@ -297,7 +320,7 @@ def write_p3d(path, model):
                 data += struct.pack("<iiff", 0, 0, 0.0, 0.0)
 
         data += struct.pack("<I", 0)
-        data += surface.encode("ascii") + b"\0" + b"\0"
+        data += surface.encode("ascii") + b"\0" + material.encode("ascii") + b"\0"
 
     data += b"TAGG"
     data += b"\x01" + b"#EndOfFile#\0" + struct.pack("<i", 0)
@@ -343,12 +366,13 @@ def models():
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "gmr_plain.rvmat").write_text(RVMAT, encoding="utf-8", newline="\n")
     preview = Path(sys.argv[1]) if len(sys.argv) > 1 else None
     names = []
     backs = []
 
     for name, model, back in models():
-        write_p3d(OUT / f"{name}.p3d", model)
+        write_p3d(OUT / f"{name}.p3d", model, MATERIAL)
         names.append(name)
         backs.append(f'["{name}", {back:.4f}]')
 

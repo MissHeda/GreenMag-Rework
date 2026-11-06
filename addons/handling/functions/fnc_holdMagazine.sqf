@@ -3,7 +3,7 @@
 /*
  * Author: Miss Heda
  * Shows a magazine in a unit's left hand on this machine, every player seeing it through their own local object. Each
- * frame it is put into the hand, turned the way the hand holds it, which needs no attachment.
+ * frame it is attached anew where the hand is, turned the way the hand holds it.
  * It goes away with the event of fnc_animTick, and by itself if the unit dies or disappears.
  *
  * Arguments:
@@ -74,8 +74,10 @@ private _shift = (((_axisX vectorMultiply (_middle select 0)) vectorAdd (_axisY 
             [_this select 1] call CBA_fnc_removePerFrameHandler;
         };
 
-        _magazine setPosWorld (_unit modelToWorldVisualWorld (((_unit selectionPosition ["lefthand", "Memory"]) vectorAdd MAG_FROM_HAND) vectorDiff _shift));
-        _magazine setVectorDirAndUp [_unit vectorModelToWorldVisual _axisY, _unit vectorModelToWorldVisual _axisZ];
+        // Attached, not set into place: a magazine model with a geometry of its own (the CAR-95's) would otherwise
+        // shove the unit across the map. Attached, its turn is the unit's own.
+        _magazine attachTo [_unit, ((_unit selectionPosition ["lefthand", "Memory"]) vectorAdd MAG_FROM_HAND) vectorDiff _shift];
+        _magazine setVectorDirAndUp [_axisY, _axisZ];
     },
     0,
     [_unit, _magazine, _axisY, _axisZ, _shift]

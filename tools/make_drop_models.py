@@ -3,7 +3,9 @@
     python tools/make_drop_models.py [preview folder]
 
 A loose round, a carton of rounds in three sizes (up to 20, up to 40 and up to 60 rounds), a piece of linked belt and
-the speedloader. Real sizes, in metres, standing on the origin: X across, Y up, Z along. With a preview folder every
+the speedloader. Real sizes, in metres, standing on the origin: X across, Y up, Z along. An item on the ground lies
+the way the game lays it: what its model has along Z points up. So every model is built standing, then turned a
+quarter round X before it is written (lay_down), and loose rounds lie along X, which stays level either way. With a preview folder every
 model is also written there as OBJ.
 
 It shares the model writer with tools/make_mag_models.py.
@@ -14,15 +16,22 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from make_mag_models import BRASS, COPPER, STEEL, Model, texture, write_obj, write_p3d  # noqa: E402
+from make_mag_models import BRASS, COPPER, RVMAT, STEEL, Model, texture, write_obj, write_p3d  # noqa: E402
 
 OUT = Path(__file__).resolve().parent.parent / "addons" / "items" / "data"
+MATERIAL = "z\\gmr\\addons\\items\\data\\gmr_plain.rvmat"
 
-CARDBOARD = texture(0.55, 0.42, 0.26)
-CARDBOARD_DARK = texture(0.42, 0.31, 0.18)
+CARDBOARD = texture(0.72, 0.58, 0.40)
+CARDBOARD_DARK = texture(0.62, 0.49, 0.33)
 LABEL = texture(0.86, 0.84, 0.76)
 STRIPE = texture(0.18, 0.32, 0.16)
 POLYMER = texture(0.08, 0.08, 0.085)
+
+
+def lay_down(model):
+    """Turns the model a quarter round X, so its Y (up while built) becomes the Z the game stands an item on."""
+    model.points = [(x, -z, y) for x, y, z in model.points]
+    return model
 
 
 def cartridge(model, x, y, z, length=0.057, radius=0.0048, along="z"):
@@ -39,7 +48,7 @@ def cartridge(model, x, y, z, length=0.057, radius=0.0048, along="z"):
 
 def round_model():
     model = Model()
-    cartridge(model, 0, 0.0048, 0)
+    cartridge(model, 0, 0.0048, 0, along="x")
     return model
 
 
@@ -89,8 +98,11 @@ def main():
         "drop_speedloader": speedloader(),
     }
 
+    (OUT / "gmr_plain.rvmat").write_text(RVMAT, encoding="utf-8", newline="\n")
+
     for name, model in models.items():
-        write_p3d(OUT / f"{name}.p3d", model)
+        lay_down(model)
+        write_p3d(OUT / f"{name}.p3d", model, MATERIAL)
 
         if preview:
             preview.mkdir(parents=True, exist_ok=True)

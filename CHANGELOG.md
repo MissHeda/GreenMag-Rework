@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.35
+
+- Fixed: a magazine whose model has a geometry of its own (the CAR-95's) shoved the unit across the map while loading
+- Fixed: items on the ground stood on end; they lie flat now, and every model has a material, so it is lit like the game's own
+- Changed: the minigame's opening is the magazine again, shaped like a round, and the rounds of the run stand in it
+- Added: a streak beside the count that grows louder the longer the run: Nice, On fire, Unstoppable
+
 ## 0.1.34
 
 - Added: views at the top of ACE Arsenal's sort list in the ammunition tab: fitting ammunition (default), rounds only, boxes only, belts only

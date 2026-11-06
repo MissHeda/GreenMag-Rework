@@ -75,10 +75,4 @@ private _line = switch (true) do {
 
 (_ui get "prompt") ctrlSetStructuredText parseText format ["<t align='center' size='0.72' color='#9aa0a8' shadow='%2'>%1</t>", _line, [0, 2] select (_ui getOrDefault ["classic", false])];
 
-private _combo = [0, GVAR(op) get "combo"] select (GVAR(op) get "game");
-
-(_ui get "combo") ctrlSetStructuredText parseText (["", format [
-    "<t align='right' size='0.8' color='#6beb6b' font='PuristaSemibold' shadow='0'>%1</t>", format [LLSTRING(Prompt_Combo), _combo]
-]] select (_combo > 1));
-
 nil

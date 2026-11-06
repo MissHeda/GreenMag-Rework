@@ -40,8 +40,8 @@
 #define UI_GAME_HEIGHT 0.044
 #define UI_PROMPT_HEIGHT 0.03
 #define UI_TRACK_HEIGHT 0.006
-#define UI_ZONE_HEIGHT 0.016
-#define UI_EDGE_WIDTH 0.0016
+#define UI_ZONE_HEIGHT 0.026
+#define UI_STACK_MAX 12
 
 // The classic display: the game's hold-action ring, its width in screen units and how far below the middle it sits.
 #define UI_RING_SIZE 0.09

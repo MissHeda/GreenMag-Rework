@@ -76,8 +76,17 @@
         <Key ID="STR_gmr_handling_Prompt_Game">
             <English>Press %1 on the magazine to go faster, Esc to stop</English>
         </Key>
-        <Key ID="STR_gmr_handling_Prompt_Combo">
-            <English>%1 in a row!</English>
+        <Key ID="STR_gmr_handling_Streak_1">
+            <English>x%1</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Streak_2">
+            <English>x%1  Nice!</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Streak_3">
+            <English>x%1  On fire!</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Streak_4">
+            <English>x%1  Unstoppable!</English>
         </Key>
         <Key ID="STR_gmr_handling_Prompt_GameMust">
             <English>Press %1 when the round is on the magazine, Esc to stop</English>
