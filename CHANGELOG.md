@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.6
+
+- Changed: the stripper clip minigame sits low on the screen, with more room between its rows; the round count is no longer cut off at the bottom
+- Changed: the line saying it goes on by itself when left alone stands there all along and only lights up while it does, instead of popping up
+
 ## 1.2.5
 
 - Changed: the stripper clip minigame sits as low as the other minigame, in place of the loading panel, and is wider, so its steps, the arrow's words and the instructions fit

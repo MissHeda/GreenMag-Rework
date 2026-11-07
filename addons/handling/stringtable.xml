@@ -124,11 +124,8 @@
         <Key ID="STR_gmr_handling_Clip_Step2">
             <English>2  PRESS DOWN</English>
         </Key>
-        <Key ID="STR_gmr_handling_Clip_AutoSoon">
-            <English>Doing nothing? It goes on by itself in %1 s (slower)</English>
-        </Key>
-        <Key ID="STR_gmr_handling_Clip_AutoNow">
-            <English>Going on by itself, slower - grab it to go faster</English>
+        <Key ID="STR_gmr_handling_Clip_Auto">
+            <English>Left alone for %1 s, it goes on by itself - slower than by hand</English>
         </Key>
         <Key ID="STR_gmr_handling_Clip_Drag">
             <English>DRAG</English>

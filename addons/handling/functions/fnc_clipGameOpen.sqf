@@ -60,16 +60,16 @@ private _roundW = CG_ROUND_WIDTH;
 private _width = CG_WIDTH;
 private _height = CG_HEIGHT;
 private _x0 = safeZoneX + (safeZoneW - _width) / 2;
-// Its bottom where the loading panel's is with the other minigame (fnc_uiCreate), which it stands in for.
-private _y0 = safeZoneY + safeZoneH * UI_TOP + CG_PANEL_BOTTOM - _height;
+// Low on the screen, in place of the loading panel (fnc_uiCreate), which it stands in for.
+private _y0 = safeZoneY + safeZoneH - _height - CG_BOTTOM_GAP;
 
 [_display, [_x0, _y0, _width, _height], UI_PANEL_COLOR, UI_RADIUS] call FUNC(uiPanel);
 
 private _title = ["RscStructuredText", _x0 + UI_PAD, _y0 + UI_PAD - 0.004, _width - UI_PAD * 2, 0.034] call _fnc_make;
 _title ctrlSetStructuredText parseText format ["<t size='0.85' color='#c9ced6' font='PuristaMedium'>%1</t>", GVAR(op) get "title"];
 
-private _count = ["RscStructuredText", _x0 + UI_PAD, _y0 + UI_PAD + 0.026, _width - UI_PAD * 2, 0.04] call _fnc_make;
-private _combo = ["RscStructuredText", _x0 + UI_PAD, _y0 + UI_PAD + 0.03, _width - UI_PAD * 2, 0.036] call _fnc_make;
+private _count = ["RscStructuredText", _x0 + UI_PAD, _y0 + CG_COUNT_TOP, _width - UI_PAD * 2, CG_COUNT_HEIGHT] call _fnc_make;
+private _combo = ["RscStructuredText", _x0 + UI_PAD, _y0 + CG_COUNT_TOP + 0.008, _width - UI_PAD * 2, CG_COUNT_HEIGHT - 0.008] call _fnc_make;
 
 // The magazine, cut open: its walls, its floor, the feed lips, and the top rounds of what is in it.
 private _magW = _roundW + 0.016;
@@ -123,12 +123,19 @@ _handle ctrlShow false;
 _band ctrlShow false;
 
 // Below the magazine: whether it goes on by itself (fnc_uiClipGame), and what to do, in up to three lines.
-private _auto = ["RscStructuredText", _x0 + UI_PAD, _magTop + _magH + 0.008, _width - UI_PAD * 2, 0.03] call _fnc_make;
-private _hint = ["RscStructuredText", _x0 + UI_PAD, _magTop + _magH + 0.04, _width - UI_PAD * 2, _y0 + _height - (_magTop + _magH + 0.04) - 0.004] call _fnc_make;
+private _autoTop = _magTop + _magH + CG_ROW_GAP;
+private _auto = ["RscStructuredText", _x0 + UI_PAD, _autoTop, _width - UI_PAD * 2, 0.03] call _fnc_make;
+private _hintTop = _autoTop + 0.03 + CG_ROW_GAP * 0.5;
+private _hint = ["RscStructuredText", _x0 + UI_PAD, _hintTop, _width - UI_PAD * 2, _y0 + _height - _hintTop - UI_PAD * 0.5] call _fnc_make;
+
+// Without "must hit": the line that says it goes on by itself stands there all along, lit while it does.
+if !(GVAR(op) get "mustHit") then {
+    _auto ctrlSetStructuredText parseText format ["<t align='center' size='0.74' color='#6f8fae' font='PuristaMedium'>%1</t>", format [LLSTRING(Clip_Auto), CG_AUTO_WAIT]];
+};
 
 // What to do, shown where to do it: the two steps, a path of dots from the clip to the guide, a word on the clip,
 // and an arrow under the thumb mark that bobs the way to pull.
-private _stepsBar = ["RscStructuredText", _x0 + UI_PAD, _y0 + UI_PAD + 0.07, _width - UI_PAD * 2, 0.03] call _fnc_make;
+private _stepsBar = ["RscStructuredText", _x0 + UI_PAD, _y0 + CG_STEPS_TOP, _width - UI_PAD * 2, 0.03] call _fnc_make;
 private _dots = [];
 
 for "_i" from 1 to CG_DOTS do {
@@ -150,7 +157,7 @@ GVAR(op) set ["cg", createHashMapFromArray [
     ["combo", _combo],
     ["hint", _hint],
     ["auto", _auto],
-    ["autoShown", ""],
+    ["autoShown", false],
     ["stepsBar", _stepsBar],
     ["stepsShown", ""],
     ["dots", _dots],
