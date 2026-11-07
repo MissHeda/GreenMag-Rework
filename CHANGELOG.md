@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.7
+
+- Changed: the stripper clip minigame's line about going on by itself counts down the seconds left alone ("Doing it by itself in 3 s"), and is short enough not to be cut off
+
 ## 1.2.6
 
 - Changed: the stripper clip minigame sits low on the screen, with more room between its rows; the round count is no longer cut off at the bottom

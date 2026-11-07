@@ -197,19 +197,21 @@ if (_hint isNotEqualTo (_cg get "hintShown")) then {
     (_cg get "hint") ctrlSetStructuredText parseText format ["<t align='center' size='0.72' color='#9aa0a8'>%1</t>", _hint];
 };
 
-// Without the server's "must hit" the line about going on by itself stands all along (fnc_clipGameOpen); it lights
-// up while the clip or its rounds go on by themselves.
+// Without the server's "must hit" the line about going on by itself stands all along (fnc_clipGameOpen) and counts
+// down the seconds left alone; it lights up while the clip or its rounds go on by themselves.
 if !(GVAR(op) get "mustHit") then {
     private _idle = CBA_missionTime - (_cg get "stageStart");
     private _waiting = (_stage == "place" && {!(_cg get "dragging")}) || {_stage == "push" && {!(_cg get "held")}};
     private _active = _waiting && {_idle >= CG_AUTO_WAIT};
+    private _left = [CG_AUTO_WAIT, ceil (CG_AUTO_WAIT - _idle)] select _waiting;
+    private _key = [_active, _left];
 
-    if (_active isNotEqualTo (_cg get "autoShown")) then {
-        _cg set ["autoShown", _active];
+    if (_key isNotEqualTo (_cg get "autoShown")) then {
+        _cg set ["autoShown", _key];
         (_cg get "auto") ctrlSetStructuredText parseText format [
             "<t align='center' size='0.74' color='%1' font='PuristaMedium'>%2</t>",
-            ["#6f8fae", "#8fc7ff"] select _active,
-            format [LLSTRING(Clip_Auto), CG_AUTO_WAIT]
+            ["#6f8fae", "#8fc7ff"] select (_active || {_waiting && {_left <= 3}}),
+            [format [LLSTRING(Clip_AutoIn), _left], LLSTRING(Clip_AutoNow)] select _active
         ];
     };
 };

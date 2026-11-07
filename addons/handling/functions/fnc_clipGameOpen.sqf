@@ -130,7 +130,7 @@ private _hint = ["RscStructuredText", _x0 + UI_PAD, _hintTop, _width - UI_PAD * 
 
 // Without "must hit": the line that says it goes on by itself stands there all along, lit while it does.
 if !(GVAR(op) get "mustHit") then {
-    _auto ctrlSetStructuredText parseText format ["<t align='center' size='0.74' color='#6f8fae' font='PuristaMedium'>%1</t>", format [LLSTRING(Clip_Auto), CG_AUTO_WAIT]];
+    _auto ctrlSetStructuredText parseText format ["<t align='center' size='0.74' color='#6f8fae' font='PuristaMedium'>%1</t>", format [LLSTRING(Clip_AutoIn), CG_AUTO_WAIT]];
 };
 
 // What to do, shown where to do it: the two steps, a path of dots from the clip to the guide, a word on the clip,
@@ -157,7 +157,7 @@ GVAR(op) set ["cg", createHashMapFromArray [
     ["combo", _combo],
     ["hint", _hint],
     ["auto", _auto],
-    ["autoShown", false],
+    ["autoShown", []],
     ["stepsBar", _stepsBar],
     ["stepsShown", ""],
     ["dots", _dots],
