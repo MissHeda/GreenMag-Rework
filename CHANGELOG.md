@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Changed: packs on the ground are now the carton from their inventory picture, with the same colour, print, coloured band and flap, for every caliber and variant, in three sizes
+
 ## 1.0.0
 
 First release on the Steam Workshop. Everything below led up to it.

@@ -1,15 +1,16 @@
 """Writes the models this mod's items show when they lie on the ground, as plain MLOD P3D, and their texture.
 
-    python tools/make_drop_models.py [preview folder]
+    python tools/make_drop_models.py [--faces FACES_FOLDER] [preview folder]
 
-A loose round, a printed carton of rounds in three sizes (up to 20, up to 40 and up to 60 rounds), a piece of linked
-belt and the speedloader, all in real sizes, in metres.
+A loose round, a piece of linked belt and the speedloader, in real sizes, in metres, and every pack's carton: the
+carton of its inventory picture, with its print, in three sizes (up to 20, up to 40 and up to 60 rounds). Its texture
+is put together from the sides tools/render_pack_textures.py renders; without --faces the textures stay as they are.
 
 How the game lays an item down, as its own (a3\\weapons_f\\ammo\\mag_firstaidkit.p3d, mag_map.p3d) show: centred on
 the origin, flat along Z, which points up on the ground. Each model here is built standing (X across, Y up, Z along),
 centred, and turned a quarter round X before it is written (lay_down).
 
-The carton's texture is drawn here (Pillow) and made a PAA with HEMTT. With a preview folder every model is also
+The cartons' textures are put together here (Pillow) and made PAA with HEMTT. With a preview folder every model is also
 written there as OBJ, mirrored the way the game shows it, with its texture as PNG.
 """
 
@@ -19,7 +20,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageFilter
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -29,7 +30,14 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "addons" / "items" / "data"
 MATERIAL = "z\\gmr\\addons\\items\\data\\gmr_plain.rvmat"
 MATERIAL_HANDLING = "z\\gmr\\addons\\handling\\data\\gmr_plain.rvmat"
-CARTON = "z\\gmr\\addons\\items\\data\\drop_carton_co.paa"
+PACKS = OUT / "packs"
+PACKS_PATH = "z\\gmr\\addons\\items\\data\\packs"
+
+import generate_items as ITEM_TABLE  # noqa: E402
+
+# The carton of the inventory picture (render_items.CARTON), in metres: along, across, high. Bigger packs, same carton.
+CARTON = (0.097, 0.0586, 0.0366)
+CARTON_SCALES = {"s": 1.0, "m": 1.2, "l": 1.4}
 
 BRASS = texture(0.78, 0.60, 0.26)
 BRASS_DARK = texture(0.60, 0.44, 0.17)
@@ -38,101 +46,73 @@ STEEL = texture(0.20, 0.21, 0.22)
 POLYMER = texture(0.08, 0.08, 0.085)
 POLYMER_LIGHT = texture(0.16, 0.16, 0.17)
 
-# Where each side of the carton is on its texture: (left, top, width, height), as shares of it.
-ATLAS = {
-    "top": (0.0, 0.0, 0.5, 1.0),
-    "side": (0.5, 0.0, 0.5, 0.5),
-    "end": (0.5, 0.5, 0.25, 0.5),
-    "bottom": (0.75, 0.5, 0.25, 0.5),
+# Where each side of the carton is on its texture: (left, top, width, height) in pixels; the plain board serves the
+# sides without print (back, bottom, the end without the flap).
+SIZE = 512
+REGIONS = {
+    "top": (0, 0, 349, 211),
+    "front": (0, 211, 349, 132),
+    "end": (0, 343, 211, 132),
+    "plain": (360, 8, 144, 144),
 }
-SIZE = 1024
 
 
 # ----- Texture -----
 
-def font(name, size):
-    return ImageFont.truetype(str(Path("C:/Windows/Fonts") / name), size)
-
-
-def cardboard(width, height, seed):
-    """Brown board with its fibres, a little uneven."""
+def fibres(image, seed):
+    """Fine grain of board and a slightly uneven colour, over print and all."""
     rng = random.Random(seed)
-    image = Image.new("RGB", (width, height), (176, 138, 92))
-    pixels = image.load()
+    grain = Image.effect_noise(image.size, 22).filter(ImageFilter.GaussianBlur(0.5)).load()
+    patches = Image.effect_noise((image.width // 32, image.height // 32), 40).resize(image.size, Image.BICUBIC).load()
+    out = image.convert("RGB")
+    pixels = out.load()
 
-    for y in range(height):
-        row = rng.uniform(-6, 6)
-
-        for x in range(width):
-            grain = rng.uniform(-9, 9) + row
+    for y in range(out.height):
+        for x in range(out.width):
+            shift = (grain[x, y] - 128) * 0.05 + (patches[x, y] - 128) * 0.018 + rng.uniform(-1.5, 1.5)
             r, g, b = pixels[x, y]
-            pixels[x, y] = (int(r + grain), int(g + grain * 0.85), int(b + grain * 0.6))
+            pixels[x, y] = (int(r + shift), int(g + shift * 0.9), int(b + shift * 0.7))
 
-    return image.filter(ImageFilter.GaussianBlur(0.6))
-
-
-def draw_carton():
-    atlas = Image.new("RGB", (SIZE, SIZE))
-
-    def region(name):
-        left, top, w, h = ATLAS[name]
-        return int(left * SIZE), int(top * SIZE), int(w * SIZE), int(h * SIZE)
-
-    # Top: the printed label, a band in olive, the tape over the lid's seam.
-    x, y, w, h = region("top")
-    top = cardboard(w, h, 1)
-    d = ImageDraw.Draw(top)
-    d.rectangle([int(w * 0.43), 0, int(w * 0.57), h], fill=(150, 112, 70))
-    d.line([(w // 2, 0), (w // 2, h)], fill=(110, 80, 48), width=2)
-    lx0, ly0, lx1, ly1 = int(w * 0.12), int(h * 0.2), int(w * 0.88), int(h * 0.8)
-    d.rectangle([lx0, ly0, lx1, ly1], fill=(232, 228, 214), outline=(40, 40, 36), width=4)
-    d.rectangle([lx0, int(h * 0.27), lx1, int(h * 0.33)], fill=(54, 84, 46))
-    d.rectangle([lx0, int(h * 0.67), lx1, int(h * 0.73)], fill=(54, 84, 46))
-    big = font("impact.ttf", 58)
-    small = font("bahnschrift.ttf", 30)
-    mono = font("consolab.ttf", 24)
-
-    for text, face, at in (("CARTRIDGES", big, 0.40), ("BALL  -  LINKED OR LOOSE", small, 0.50), ("LOT GMR-26-1107", mono, 0.58)):
-        d.text((w // 2, int(h * at)), text, font=face, fill=(28, 28, 26), anchor="mm")
-
-    atlas.paste(top, (x, y))
-
-    # Long side: stencilled print and the arrows that say which way is up.
-    x, y, w, h = region("side")
-    side = cardboard(w, h, 2)
-    d = ImageDraw.Draw(side)
-    d.text((w // 2, int(h * 0.46)), "AMMUNITION", font=font("impact.ttf", 60), fill=(44, 34, 24), anchor="mm")
-    d.text((w // 2, int(h * 0.7)), "KEEP DRY  -  THIS SIDE UP", font=font("bahnschrift.ttf", 22), fill=(60, 46, 32), anchor="mm")
-    d.line([(0, int(h * 0.12)), (w, int(h * 0.12))], fill=(120, 88, 54), width=3)
-    d.line([(0, int(h * 0.88)), (w, int(h * 0.88))], fill=(120, 88, 54), width=3)
-    atlas.paste(side, (x, y))
-
-    # End: the flap with its fold and a small mark.
-    x, y, w, h = region("end")
-    end = cardboard(w, h, 3)
-    d = ImageDraw.Draw(end)
-    d.line([(0, int(h * 0.5)), (w, int(h * 0.5))], fill=(112, 82, 50), width=3)
-    d.rectangle([int(w * 0.3), int(h * 0.18), int(w * 0.7), int(h * 0.38)], outline=(44, 34, 24), width=3)
-    d.text((w // 2, int(h * 0.28)), "GM", font=font("impact.ttf", 40), fill=(44, 34, 24), anchor="mm")
-    atlas.paste(end, (x, y))
-
-    # Bottom: plain board.
-    x, y, w, h = region("bottom")
-    atlas.paste(cardboard(w, h, 4), (x, y))
-    return atlas
+    return out
 
 
-def write_texture(preview):
-    png = (preview or OUT) / "drop_carton_co.png"
-    png.parent.mkdir(parents=True, exist_ok=True)
-    draw_carton().save(png)
-    subprocess.run(["hemtt", "utils", "paa", "convert", str(png), str(OUT / "drop_carton_co.paa")], check=True,
-                   capture_output=True)
+def carton_texture(faces, name):
+    """The atlas of one pack's carton from the sides render_pack_textures.py rendered."""
+    sides = {side: Image.open(faces / f"face_{name}_{side}.png").convert("RGBA") for side in ("top", "front", "end", "back")}
+    back = sides["back"]
+    # The board's own colour, from the middle of the plain back, also fills the round corners the bevel leaves open.
+    board = back.getpixel((back.width // 2, back.height // 2))
+    atlas = Image.new("RGBA", (SIZE, SIZE), board)
 
-    if preview is None:
-        png.unlink()
+    for side in ("top", "front", "end"):
+        left, top, w, h = REGIONS[side]
+        flat = Image.new("RGBA", sides[side].size, board)
+        flat.alpha_composite(sides[side])
+        atlas.paste(flat.resize((w, h), Image.LANCZOS), (left, top))
 
-    return png
+    return fibres(atlas, sum(map(ord, name)))
+
+
+def pack_names():
+    for caliber, (_, _, _, _, variants) in ITEM_TABLE.CALIBERS.items():
+        for variant in {"basic": None} | variants:
+            yield f"{caliber}_{variant}"
+
+
+def write_textures(faces, preview):
+    """Every carton's PAA; the PNGs stay in the preview folder, else beside the faces."""
+    PACKS.mkdir(parents=True, exist_ok=True)
+    folder = preview or faces
+    folder.mkdir(parents=True, exist_ok=True)
+
+    for name in pack_names():
+        png = folder / f"carton_{name}_co.png"
+        carton_texture(faces, name).save(png)
+        subprocess.run(["hemtt", "utils", "paa", "convert", str(png), str(PACKS / f"carton_{name}_co.paa")], check=True,
+                       capture_output=True)
+
+    print("carton textures written")
+    return folder
 
 
 # ----- Models -----
@@ -147,38 +127,26 @@ def cross(a, b):
     return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
 
 
-def mapped_box(model, centre, size, surface, regions):
-    """A box whose every side shows its region of the texture upright, seen from outside. The game's axes are
-    left-handed, so seen from outside along -n with up U, right is U x (-n)."""
-    hx, hy, hz = (value / 2 for value in size)
-    cx, cy, cz = centre
-    sides = {
-        "top": ((0, 1, 0), (0, 0, 1)),
-        "bottom": ((0, -1, 0), (0, 0, -1)),
-        "front": ((0, 0, 1), (0, 1, 0)),
-        "back": ((0, 0, -1), (0, 1, 0)),
-        "left": ((-1, 0, 0), (0, 1, 0)),
-        "right": ((1, 0, 0), (0, 1, 0)),
-    }
+def mapped_box(model, size, surface, sides):
+    """A box round the origin whose every side shows its region of the texture upright, seen from outside.
+    sides: (outward normal, up, (left, top, width, height) as shares of the texture). The game's axes are left-handed,
+    so seen from outside along -n with up U, right is U x (-n)."""
+    half = [value / 2 for value in size]
 
-    for name, (normal, up) in sides.items():
+    for normal, up, (left, top, rw, rh) in sides:
         right = cross(up, tuple(-value for value in normal))
-        half = {0: hx, 1: hy, 2: hz}
         axis_n = [abs(value) for value in normal].index(1)
         axis_r = [abs(value) for value in right].index(1)
         axis_u = [abs(value) for value in up].index(1)
-        depth = half[axis_n] * normal[axis_n]
-        w, h = half[axis_r], half[axis_u]
         corners = []
         uvs = []
-        left, top, rw, rh = regions[name]
 
         # Corners in the turning sense of Model.box: right then up, which with its winding faces outwards.
         for su, sv in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
-            point = [cx, cy, cz]
-            point[axis_n] += depth
-            point[axis_r] += right[axis_r] * su * w
-            point[axis_u] += up[axis_u] * sv * h
+            point = [0.0, 0.0, 0.0]
+            point[axis_n] = half[axis_n] * normal[axis_n]
+            point[axis_r] = right[axis_r] * su * half[axis_r]
+            point[axis_u] = up[axis_u] * sv * half[axis_u]
             corners.append(tuple(point))
             uvs.append((left + (su + 1) / 2 * rw, top + (1 - (sv + 1) / 2) * rh))
 
@@ -195,17 +163,26 @@ def mapped_box(model, centre, size, surface, regions):
         model.face(tuple(corners), surface, uvs)
 
 
-def carton(width, height, length):
+def share(region):
+    left, top, w, h = REGIONS[region]
+    return left / SIZE, top / SIZE, w / SIZE, h / SIZE
+
+
+def carton(surface, scale):
+    """The picture's carton, standing: its length along Z, its front with the band towards +X, the flap's end at +Z.
+    Blender's carton (render_items: length X, front -Y, lid +Z) becomes this one by (x, y, z) -> (-y, z, x), which
+    mirrors it once: the game's left-handed axes mirror it back, so the print reads as in the picture."""
     model = Model()
-    regions = {
-        "top": ATLAS["top"],
-        "bottom": ATLAS["bottom"],
-        "front": ATLAS["end"],
-        "back": ATLAS["end"],
-        "left": ATLAS["side"],
-        "right": ATLAS["side"],
-    }
-    mapped_box(model, (0, 0, 0), (width, height, length), CARTON, regions)
+    along, across, high = (value * scale for value in CARTON)
+    sides = [
+        ((0, 1, 0), (-1, 0, 0), share("top")),
+        ((0, -1, 0), (1, 0, 0), share("plain")),
+        ((1, 0, 0), (0, 1, 0), share("front")),
+        ((-1, 0, 0), (0, 1, 0), share("plain")),
+        ((0, 0, 1), (0, 1, 0), share("end")),
+        ((0, 0, -1), (0, 1, 0), share("plain")),
+    ]
+    mapped_box(model, (across, high, along), surface, sides)
     return model
 
 
@@ -335,14 +312,20 @@ def write_preview(path, model, png):
 
 
 def main():
+    args = sys.argv[1:]
+    faces = None
+
+    if "--faces" in args:
+        at = args.index("--faces")
+        faces = Path(args[at + 1])
+        del args[at:at + 2]
+
+    preview = Path(args[0]) if args else None
     OUT.mkdir(parents=True, exist_ok=True)
-    preview = Path(sys.argv[1]) if len(sys.argv) > 1 else None
-    png = write_texture(preview)
+    PACKS.mkdir(parents=True, exist_ok=True)
+    pngs = write_textures(faces, preview) if faces else None
     models = {
         "drop_round": round_model(),
-        "drop_pack_s": carton(0.052, 0.030, 0.068),
-        "drop_pack_m": carton(0.060, 0.045, 0.078),
-        "drop_pack_l": carton(0.068, 0.060, 0.090),
         "drop_belt": belt_model(),
         "drop_speedloader": speedloader(),
     }
@@ -351,23 +334,40 @@ def main():
 
     for name, model in models.items():
         if preview:
-            write_preview(preview / f"{name}.obj", model, png)
+            write_preview(preview / f"{name}.obj", model, None)
 
         lay_down(model)
         write_p3d(OUT / f"{name}.p3d", model, MATERIAL)
+
+    packs = []
+
+    for name in pack_names():
+        for size, scale in CARTON_SCALES.items():
+            model = carton(f"{PACKS_PATH}\\carton_{name}_co.paa", scale)
+
+            if preview and pngs and size == "s":
+                write_preview(preview / f"pack_{name}.obj", model, pngs / f"carton_{name}_co.png")
+
+            lay_down(model)
+            write_p3d(PACKS / f"pack_{name}_{size}.p3d", model, MATERIAL)
+            packs.append(f"pack_{name}_{size}")
 
     # The round in the right hand while loading (fnc_holdMagazine): along Z, the game's forward of a model, point first.
     held = Model()
     cartridge(held, (0, 0, 0), (0, 0, 1))
     write_p3d(ROOT / "addons" / "handling" / "data" / "round_hand.p3d", held, MATERIAL_HANDLING)
 
-    cfg = ["class CfgSkeletons {", "    class Default {", "        isDiscrete = 1;", '        skeletonInherit = "";',
-           "        skeletonBones[] = {};", "    };", "};", "class CfgModels {", "    class Default {",
-           '        sectionsInherit = "";', "        sections[] = {};", '        skeletonName = "";', "    };"]
-    cfg += [f"    class {name}: Default {{}};" for name in models]
-    cfg.append("};")
-    (OUT / "model.cfg").write_text("\n".join(cfg) + "\n", encoding="utf-8", newline="\n")
-    print(f"{len(models)} drop models and their texture written: {', '.join(models)}")
+    def model_cfg(names):
+        cfg = ["class CfgSkeletons {", "    class Default {", "        isDiscrete = 1;", '        skeletonInherit = "";',
+               "        skeletonBones[] = {};", "    };", "};", "class CfgModels {", "    class Default {",
+               '        sectionsInherit = "";', "        sections[] = {};", '        skeletonName = "";', "    };"]
+        cfg += [f"    class {name}: Default {{}};" for name in names]
+        cfg.append("};")
+        return "\n".join(cfg) + "\n"
+
+    (OUT / "model.cfg").write_text(model_cfg(models), encoding="utf-8", newline="\n")
+    (PACKS / "model.cfg").write_text(model_cfg(packs), encoding="utf-8", newline="\n")
+    print(f"{len(models)} drop models and {len(packs)} cartons written")
 
 
 if __name__ == "__main__":

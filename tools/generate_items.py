@@ -192,7 +192,7 @@ def rounds_and_packs():
                     f"class gmr_pack_{caliber}_{variant}_{size}: gmr_pack_base {{"
                     f'displayName = "{name} Pack ({size} rds)"; '
                     f'picture = "\\z\\gmr\\addons\\items\\data\\pack_{caliber}_{variant}.paa"; '
-                    f'model = "\\z\\gmr\\addons\\items\\data\\drop_pack_{pack_model(size)}.p3d"; '
+                    f'model = "\\z\\gmr\\addons\\items\\data\\packs\\pack_{caliber}_{variant}_{pack_model(size)}.p3d"; '
                     f"scopeArsenal = {shown}; scopeCurator = {shown}; gmr_rounds = {size}; "
                     f'gmr_caliber = "{caliber}"; gmr_variant = "{variant}"; gmr_round = "{round_class}"; '
                     f"class ItemInfo: CBA_MiscItem_ItemInfo {{mass = {mass(round_mass * size * PACK_MASS_FACTOR)};}};}};"

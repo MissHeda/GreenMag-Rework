@@ -457,58 +457,66 @@ def build_shell(variant):
     return build
 
 
+# The carton the packs come in, in mm: tools/render_pack_textures.py builds the ground model's texture from it.
+CARTON = (97, 58.6, 36.6)
+
+
+def pack_carton(caliber, variant, label, variant_label):
+    """The printed carton, lid up, its front (with the band) towards -Y and the tuck flap on +X."""
+    universal = caliber == "universal"
+    base = (0.045, 0.06, 0.03) if universal else (0.13, 0.07, 0.028)
+    kraft = material(f"kraft_{caliber}", base, 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
+    flap = material(f"kraft_flap_{caliber}", tuple(v * 0.72 for v in base), 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
+    ink = material(f"ink_{caliber}", (0.82, 0.80, 0.72) if universal else (0.002, 0.002, 0.002), 0.0, 0.9)
+
+    width, depth, height = CARTON
+    top = height
+
+    block("carton", (width, depth, height), (0, 0, height / 2), kraft, 1.1)
+    block("flap", (0.7, depth * 0.94, height * 0.70), (width / 2 + 0.25, 0, height * 0.60), flap, 0.25)
+    block("flap_tuck", (0.5, depth * 0.40, height * 0.20), (width / 2 + 0.55, 0, height * 0.16), flap, 0.15)
+
+    # A printed frame on the lid, and a band in the colour of the rounds' tips along its front.
+    inset_x = width * 0.44
+    inset_y = depth * 0.40
+    line = 0.9
+
+    for x, y, sx, sy in (
+        (0, inset_y, inset_x * 2, line), (0, -inset_y, inset_x * 2, line),
+        (inset_x, 0, line, inset_y * 2), (-inset_x, 0, line, inset_y * 2),
+    ):
+        block("rule", (sx, sy, 0.06), (x, y, top + 0.03), ink)
+
+    if variant in TIPS:
+        colour = material(f"band_{variant}", TIPS[variant], 0.0, 0.6)
+        block("band", (inset_x * 2, depth * 0.16, 0.08), (0, -inset_y + depth * 0.09, top + 0.04), colour)
+        block("band_side", (width * 0.98, 0.25, height * 0.18), (0, -depth / 2 - 0.05, height * 0.72), colour)
+
+    font = bpy.data.fonts.load(FONT) if Path(FONT).exists() else None
+
+    def lid_text(body, y, text_size):
+        bpy.ops.object.text_add(location=(0, y, top + 0.1))
+        text = bpy.context.object
+        text.data.body = body
+        text.data.align_x = "CENTER"
+        text.data.align_y = "CENTER"
+        text.data.size = text_size
+        text.data.extrude = 0.015
+
+        if font:
+            text.data.font = font
+
+        text.data.materials.append(ink)
+
+    lid_text(label.upper(), depth * 0.14, width * (0.125 if len(label) <= 10 else 0.095))
+    lid_text("BALL" if variant == "basic" else variant_label.upper(), -depth * 0.10, width * 0.062)
+
+
 def build_pack(caliber, variant, label, variant_label):
     def build(camera):
         add_key_light()
-        universal = caliber == "universal"
-        base = (0.045, 0.06, 0.03) if universal else (0.13, 0.07, 0.028)
-        kraft = material(f"kraft_{caliber}", base, 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
-        flap = material(f"kraft_flap_{caliber}", tuple(v * 0.72 for v in base), 0.0, 0.72, wear=0.06, bump=0.10, bump_scale=9.0)
-        ink = material(f"ink_{caliber}", (0.82, 0.80, 0.72) if universal else (0.002, 0.002, 0.002), 0.0, 0.9)
-
-        width = 97
-        depth = 58.6
-        height = 36.6
-        top = height
-
-        block("carton", (width, depth, height), (0, 0, height / 2), kraft, 1.1)
-        block("flap", (0.7, depth * 0.94, height * 0.70), (width / 2 + 0.25, 0, height * 0.60), flap, 0.25)
-        block("flap_tuck", (0.5, depth * 0.40, height * 0.20), (width / 2 + 0.55, 0, height * 0.16), flap, 0.15)
-
-        # A printed frame on the lid, and a band in the colour of the rounds' tips along its front.
-        inset_x = width * 0.44
-        inset_y = depth * 0.40
-        line = 0.9
-
-        for x, y, sx, sy in (
-            (0, inset_y, inset_x * 2, line), (0, -inset_y, inset_x * 2, line),
-            (inset_x, 0, line, inset_y * 2), (-inset_x, 0, line, inset_y * 2),
-        ):
-            block("rule", (sx, sy, 0.06), (x, y, top + 0.03), ink)
-
-        if variant in TIPS:
-            colour = material(f"band_{variant}", TIPS[variant], 0.0, 0.6)
-            block("band", (inset_x * 2, depth * 0.16, 0.08), (0, -inset_y + depth * 0.09, top + 0.04), colour)
-            block("band_side", (width * 0.98, 0.25, height * 0.18), (0, -depth / 2 - 0.05, height * 0.72), colour)
-
-        font = bpy.data.fonts.load(FONT) if Path(FONT).exists() else None
-
-        def lid_text(body, y, text_size):
-            bpy.ops.object.text_add(location=(0, y, top + 0.1))
-            text = bpy.context.object
-            text.data.body = body
-            text.data.align_x = "CENTER"
-            text.data.align_y = "CENTER"
-            text.data.size = text_size
-            text.data.extrude = 0.015
-
-            if font:
-                text.data.font = font
-
-            text.data.materials.append(ink)
-
-        lid_text(label.upper(), depth * 0.14, width * (0.125 if len(label) <= 10 else 0.095))
-        lid_text("BALL" if variant == "basic" else variant_label.upper(), -depth * 0.10, width * 0.062)
+        pack_carton(caliber, variant, label, variant_label)
+        width, depth, height = CARTON
 
         # Two of its own rounds in front of it, as big as they are next to the same carton: only very long ones shrink.
         if caliber == "12g":
@@ -630,4 +638,5 @@ def main():
     render("speedloader", build_speedloader, folder, name_filter)
 
 
-main()
+if __name__ == "__main__":
+    main()

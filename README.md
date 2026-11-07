@@ -96,5 +96,6 @@ That is all: your magazines with "plasma" in their name now load from Plasma Cel
 pictures in Blender, `tools/make_icons.py` converts them and draws the menu icons, and `tools/cut_sounds.py`
 cuts the loading and unloading sounds out of CC0 recordings from BigSoundBank (see its header). `tools/anim/build_load_gesture.py` computes the loading animation from the Arma 3 Samples'
 skeleton, and `tools/anim/preview_rtm.py` shows an RTM on their body in Blender. `tools/make_mag_models.py` writes the magazines shown in the hand,
-`tools/make_drop_models.py` the items lying on the ground and their texture. All results are committed,
+`tools/make_drop_models.py` the items lying on the ground; the packs' cartons take their texture from
+`tools/render_pack_textures.py`, which renders the sides of the inventory picture's carton. All results are committed,
 so `hemtt build` needs none of them.
