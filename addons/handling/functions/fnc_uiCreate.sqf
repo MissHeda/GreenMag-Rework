@@ -166,8 +166,10 @@ GVAR(op) set ["ui", createHashMapFromArray [
     ["classic", false]
 ]];
 
-// The stripper clip minigame is a window of its own, played with the mouse (fnc_clipGameOpen).
+// The stripper clip minigame is a window of its own, played with the mouse (fnc_clipGameOpen). It shows the count
+// itself and sits where this panel would, so this one stays hidden (it still keeps the count for fnc_uiRound).
 if (_game && {_clipGame}) then {
+    {_x ctrlShow false} forEach _all;
     call FUNC(clipGameOpen);
 };
 

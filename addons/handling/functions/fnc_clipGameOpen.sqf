@@ -60,8 +60,8 @@ private _roundW = CG_ROUND_WIDTH;
 private _width = CG_WIDTH;
 private _height = CG_HEIGHT;
 private _x0 = safeZoneX + (safeZoneW - _width) / 2;
-// Just above the loading panel (fnc_uiCreate), so the magazine is near where the eyes already are.
-private _y0 = safeZoneY + safeZoneH * UI_TOP - _height - CG_ABOVE_PANEL;
+// Its bottom where the loading panel's is with the other minigame (fnc_uiCreate), which it stands in for.
+private _y0 = safeZoneY + safeZoneH * UI_TOP + CG_PANEL_BOTTOM - _height;
 
 [_display, [_x0, _y0, _width, _height], UI_PANEL_COLOR, UI_RADIUS] call FUNC(uiPanel);
 
@@ -122,11 +122,13 @@ private _handle = ["RscPicture", 0, 0, CG_HANDLE, CG_HANDLE * 4 / 3, QPATHTOF(da
 _handle ctrlShow false;
 _band ctrlShow false;
 
-private _hint = ["RscStructuredText", _x0 + UI_PAD, _y0 + _height - UI_PROMPT_HEIGHT * 1.6 - 0.006, _width - UI_PAD * 2, UI_PROMPT_HEIGHT * 1.6] call _fnc_make;
+// Below the magazine: whether it goes on by itself (fnc_uiClipGame), and what to do, in up to three lines.
+private _auto = ["RscStructuredText", _x0 + UI_PAD, _magTop + _magH + 0.008, _width - UI_PAD * 2, 0.03] call _fnc_make;
+private _hint = ["RscStructuredText", _x0 + UI_PAD, _magTop + _magH + 0.04, _width - UI_PAD * 2, _y0 + _height - (_magTop + _magH + 0.04) - 0.004] call _fnc_make;
 
 // What to do, shown where to do it: the two steps, a path of dots from the clip to the guide, a word on the clip,
 // and an arrow under the thumb mark that bobs the way to pull.
-private _stepsBar = ["RscStructuredText", _x0 + UI_PAD, _y0 + UI_PAD + 0.07, _width * 0.45, 0.03] call _fnc_make;
+private _stepsBar = ["RscStructuredText", _x0 + UI_PAD, _y0 + UI_PAD + 0.07, _width - UI_PAD * 2, 0.03] call _fnc_make;
 private _dots = [];
 
 for "_i" from 1 to CG_DOTS do {
@@ -139,14 +141,16 @@ _dragLabel ctrlSetStructuredText parseText format ["<t size='0.75' color='#6beb6
 private _arrow = ["RscPictureKeepAspect", 0, 0, 0.03, 0.03, QPATHTOF(data\round_side_ca.paa), UI_GAUGE_COLOR] call _fnc_make;
 _arrow ctrlSetAngle [90, 0.5, 0.5];
 
-private _pullLabel = ["RscStructuredText", 0, 0, 0.12, 0.026] call _fnc_make;
-_pullLabel ctrlSetStructuredText parseText format ["<t size='0.75' color='#ffd75a' font='PuristaBold'>%1</t>", LLSTRING(Clip_Pull)];
+private _pullLabel = ["RscStructuredText", 0, 0, 0.13, 0.026] call _fnc_make;
+_pullLabel ctrlSetStructuredText parseText format ["<t size='0.75' color='#ffd75a' font='PuristaBold' align='right'>%1</t>", LLSTRING(Clip_Pull)];
 
 GVAR(op) set ["cg", createHashMapFromArray [
     ["display", _display],
     ["count", _count],
     ["combo", _combo],
     ["hint", _hint],
+    ["auto", _auto],
+    ["autoShown", ""],
     ["stepsBar", _stepsBar],
     ["stepsShown", ""],
     ["dots", _dots],

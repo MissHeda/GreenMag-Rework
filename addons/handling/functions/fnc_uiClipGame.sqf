@@ -158,10 +158,10 @@ private _bob = 0.008 * ((sin (_time * 400) + 1) / 2);
 private _arrowY = _py + 0.002 + _travel * _roundH + 0.004 + _bob;
 
 _arrow ctrlShow _showArrow;
-_arrow ctrlSetPosition [_px + _clipW + 0.006, _arrowY, 0.03, 0.03];
+_arrow ctrlSetPosition [_px - 0.042, _arrowY, 0.03, 0.03];
 _arrow ctrlCommit 0;
 _pullLabel ctrlShow _showArrow;
-_pullLabel ctrlSetPosition [_px + _clipW + 0.036, _arrowY + 0.002, 0.12, 0.026];
+_pullLabel ctrlSetPosition [_px - 0.176, _arrowY + 0.002, 0.13, 0.026];
 _pullLabel ctrlCommit 0;
 
 // The two steps, the one at hand lit.
@@ -195,6 +195,27 @@ private _hint = switch (true) do {
 if (_hint isNotEqualTo (_cg get "hintShown")) then {
     _cg set ["hintShown", _hint];
     (_cg get "hint") ctrlSetStructuredText parseText format ["<t align='center' size='0.72' color='#9aa0a8'>%1</t>", _hint];
+};
+
+// Without the server's "must hit" it goes on by itself when left alone: a countdown first, then why it moves.
+private _autoText = "";
+
+if !(GVAR(op) get "mustHit") then {
+    private _idle = CBA_missionTime - (_cg get "stageStart");
+    private _waiting = (_stage == "place" && {!(_cg get "dragging")}) || {_stage == "push" && {!(_cg get "held")}};
+
+    if (_waiting) then {
+        _autoText = if (_idle >= CG_AUTO_WAIT) then {
+            LLSTRING(Clip_AutoNow)
+        } else {
+            if (_idle >= CG_AUTO_WAIT - CG_AUTO_WARN) then {format [LLSTRING(Clip_AutoSoon), ceil (CG_AUTO_WAIT - _idle)]} else {""}
+        };
+    };
+};
+
+if (_autoText isNotEqualTo (_cg get "autoShown")) then {
+    _cg set ["autoShown", _autoText];
+    (_cg get "auto") ctrlSetStructuredText parseText format ["<t align='center' size='0.74' color='#8fc7ff' font='PuristaMedium'>%1</t>", _autoText];
 };
 
 nil

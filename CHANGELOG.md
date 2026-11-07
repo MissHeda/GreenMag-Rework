@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.5
+
+- Changed: the stripper clip minigame sits as low as the other minigame, in place of the loading panel, and is wider, so its steps, the arrow's words and the instructions fit
+- Added: without "must hit" a countdown says when the clip minigame goes on by itself, and then that it does so slower and how to go faster
+
 ## 1.2.4
 
 - Changed: the stripper clip minigame sits just above the loading panel instead of high up the screen
