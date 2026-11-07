@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
+- Changed: the packs' cartons on the ground are printed paperboard now: board grain, rounded and rubbed edges, knocked corners, the tuck flaps in relief, a barcode and lot print on the back, a matte material with a normal map
+- Added: the cartons cast shadows
+
 ## 1.0.1
 
 - Changed: packs on the ground are now the carton from their inventory picture, with the same colour, print, coloured band and flap, for every caliber and variant, in three sizes

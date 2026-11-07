@@ -290,9 +290,20 @@ def ammo_box():
     return model
 
 
-def write_p3d(path, model, material=""):
+def write_p3d(path, model, material="", shadow=None):
     """One visual LOD: points, flat normals and faces, the winding as the game's models have it. Every face gets the
-    material, without which the game lights a face flat and dark."""
+    material, without which the game lights a face flat and dark. shadow, a closed model of shared points, is written
+    as the shadow volume LOD (resolution 10000) without texture or material."""
+    lods = [(model, material, 1.0)] + ([(shadow, "", 10000.0)] if shadow else [])
+    data = bytearray(b"MLOD" + struct.pack("<ii", 257, len(lods)))
+
+    for lod_model, lod_material, resolution in lods:
+        data += lod_bytes(lod_model, lod_material, resolution)
+
+    path.write_bytes(bytes(data))
+
+
+def lod_bytes(model, material, resolution):
     normals = []
 
     for corners, _surface in model.faces:
@@ -303,8 +314,7 @@ def write_p3d(path, model, material=""):
         n = (u[2] * v[1] - u[1] * v[2], u[0] * v[2] - u[2] * v[0], u[1] * v[0] - u[0] * v[1])
         normals.append(normalise(n))
 
-    data = bytearray(b"MLOD" + struct.pack("<ii", 257, 1))
-    data += b"P3DM" + struct.pack("<iiiiiI", 0x1C, 0x100, len(model.points), len(normals), len(model.faces), 0)
+    data = bytearray(b"P3DM" + struct.pack("<iiiiiI", 0x1C, 0x100, len(model.points), len(normals), len(model.faces), 0))
 
     for x, y, z in model.points:
         data += struct.pack("<fffI", x, y, z, 0)
@@ -329,8 +339,36 @@ def write_p3d(path, model, material=""):
 
     data += b"TAGG"
     data += b"\x01" + b"#EndOfFile#\0" + struct.pack("<i", 0)
-    data += struct.pack("<f", 1.0)
-    path.write_bytes(bytes(data))
+    data += struct.pack("<f", resolution)
+    return data
+
+
+def welded(model, shrink=1.0):
+    """The model as one closed surface for a shadow volume: equal points merged, quads split into triangles in their
+    own winding, scaled towards the origin by shrink so the shadow does not flicker on the model's own skin."""
+    points = []
+    index = {}
+    faces = []
+
+    for corners, _surface in model.faces:
+        ids = []
+
+        for i in corners:
+            key = tuple(round(value, 6) for value in model.points[i])
+
+            if key not in index:
+                index[key] = len(points)
+                points.append(tuple(value * shrink for value in model.points[i]))
+
+            ids.append(index[key])
+
+        for k in range(1, len(ids) - 1):
+            faces.append(((ids[0], ids[k], ids[k + 1]), ""))
+
+    shadow = Model()
+    shadow.points = points
+    shadow.faces = faces
+    return shadow
 
 
 def write_obj(path, model):

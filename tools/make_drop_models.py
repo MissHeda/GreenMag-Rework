@@ -4,7 +4,8 @@
 
 A loose round, a piece of linked belt and the speedloader, in real sizes, in metres, and every pack's carton: the
 carton of its inventory picture, with its print, in three sizes (up to 20, up to 40 and up to 60 rounds). Its texture
-is put together from the sides tools/render_pack_textures.py renders; without --faces the textures stay as they are.
+is put together from the sides tools/render_pack_textures.py renders, made into worn, printed paperboard with a
+normal map; without --faces the textures stay as they are. Every carton has a shadow volume LOD.
 
 How the game lays an item down, as its own (a3\\weapons_f\\ammo\\mag_firstaidkit.p3d, mag_map.p3d) show: centred on
 the origin, flat along Z, which points up on the ground. Each model here is built standing (X across, Y up, Z along),
@@ -20,11 +21,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageFilter
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from make_mag_models import RVMAT, Model, normalise, texture, write_p3d  # noqa: E402
+from make_mag_models import RVMAT, Model, normalise, texture, welded, write_p3d  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "addons" / "items" / "data"
@@ -46,73 +48,280 @@ STEEL = texture(0.20, 0.21, 0.22)
 POLYMER = texture(0.08, 0.08, 0.085)
 POLYMER_LIGHT = texture(0.16, 0.16, 0.17)
 
-# Where each side of the carton is on its texture: (left, top, width, height) in pixels; the plain board serves the
-# sides without print (back, bottom, the end without the flap).
-SIZE = 512
+# Where each side of the carton is on its texture: (left, top, width, height) in pixels, 5 px per mm. Both ends show
+# the tuck flap, as a real carton has one at each end.
+W, H = 1024, 512
 REGIONS = {
-    "top": (0, 0, 349, 211),
-    "front": (0, 211, 349, 132),
-    "end": (0, 343, 211, 132),
-    "plain": (360, 8, 144, 144),
+    "top": (0, 0, 485, 293),
+    "front": (0, 293, 485, 183),
+    "back": (512, 0, 485, 183),
+    "end": (512, 183, 293, 183),
+    "bottom": (512, 366, 485, 146),
 }
+# The end's tuck flap and its tab, as shares of the end (render_items.pack_carton: flap 94 % wide from 25 to 95 % of
+# the height, tab 40 % wide from 6 to 26 %); y counts down from the lid.
+FLAP = (0.03, 0.05, 0.97, 0.75)
+TAB = (0.30, 0.74, 0.70, 0.94)
+# The pale core of the board, where an edge is worn through the printed skin.
+CORE = np.array([0.80, 0.73, 0.62], dtype=np.float32)
+FONTS = Path("C:/Windows/Fonts")
+NOHQ = f"{PACKS_PATH}\\carton_nohq.paa"
+CARTON_RVMAT = f"{PACKS_PATH}\\gmr_carton.rvmat"
 
 
 # ----- Texture -----
 
-def fibres(image, seed):
-    """Fine grain of board and a slightly uneven colour, over print and all."""
+def noise(rng, height, width, scale, stretch=1.0):
+    """Smooth noise in -1..1: random values on a grid scale pixels apart (stretch times that across), scaled up."""
+    grid = rng.random((max(2, int(height / scale)), max(2, int(width / (scale * stretch)))))
+    image = Image.fromarray((grid * 255).astype(np.uint8)).resize((width, height), Image.BICUBIC)
+    return np.asarray(image, dtype=np.float32) / 127.5 - 1
+
+
+def border_distance(w, h):
+    """Per pixel of a side: the distance to its nearest edge and to its nearest corner, in pixels."""
+    x = np.minimum(np.arange(w), np.arange(w)[::-1]).astype(np.float32)
+    y = np.minimum(np.arange(h), np.arange(h)[::-1]).astype(np.float32)
+    edge = np.minimum(x[None, :], y[:, None])
+    corner = np.hypot(x[None, :], y[:, None])
+    return edge, corner
+
+
+def line_mask(size, lines, width=1, blur=0.6):
+    image = Image.new("L", size, 0)
+    draw = ImageDraw.Draw(image)
+
+    for points in lines:
+        draw.line(points, fill=255, width=width)
+
+    return np.asarray(image.filter(ImageFilter.GaussianBlur(blur)), dtype=np.float32) / 255
+
+
+_LAYERS = None
+
+
+def layers():
+    """What every carton shares, as they all come off the same die and wear the same way: the worn edges, dirt, board
+    grain and the relief for the normal map. Made once, from a fixed seed."""
+    global _LAYERS
+
+    if _LAYERS is not None:
+        return _LAYERS
+
+    rng = np.random.default_rng(1107)
+    wear = np.zeros((H, W), np.float32)
+    shade = np.ones((H, W), np.float32)
+    height = np.zeros((H, W), np.float32)
+
+    # Board: fibres running along the sheet, a finer grain, and a few flecks of recycled board.
+    streaks = noise(rng, H, W, 1.4, 7.0)
+    grain = noise(rng, H, W, 2.5)
+    shade *= 1 + 0.035 * streaks + 0.025 * grain + 0.02 * noise(rng, H, W, 40)
+    flecks = rng.random((H, W))
+    shade[flecks < 0.0012] *= 0.72
+    shade[flecks > 0.9994] *= 1.12
+    height += 0.25 * streaks + 0.2 * grain + 1.2 * noise(rng, H, W, 90)
+
+    for side, (left, top, w, h) in REGIONS.items():
+        edge, corner = border_distance(w, h)
+        area = (slice(top, top + h), slice(left, left + w))
+
+        # Edges and corners rubbed through to the core, more at the corners, in ragged patches.
+        ragged = noise(rng, h, w, 2.0) * 0.5 + 0.5
+        patches = noise(rng, h, w, 14.0) * 0.5 + 0.5
+        band = np.clip(1 - edge / 3.5, 0, 1) ** 1.5
+        knock = np.clip(1 - corner / 16, 0, 1)
+        wear[area] = np.clip((band * (0.25 + patches * 0.75) + knock * 0.8 + ragged * 0.45 - 1.1) * 2.5, 0, 1)
+
+        # Rounded edges of the fold, a few dents where it was knocked.
+        height[area] -= 3.0 * np.clip(1 - edge / 5, 0, 1) ** 2 + 0.9 * wear[area]
+
+        # The sides carry dirt towards the ground, and every side some soft smudges.
+        dirt = 1 - 0.05 * np.clip(noise(rng, h, w, 55), 0, 1)
+
+        if side in ("front", "back", "end"):
+            fall = (np.arange(h, dtype=np.float32) / h)[:, None] ** 3
+            dirt *= 1 - 0.08 * fall * (0.6 + 0.4 * noise(rng, h, w, 12))
+
+        shade[area] *= dirt
+
+        # Scuffs: a few thin light scratches on the large sides.
+        if side in ("top", "front", "back", "bottom"):
+            strokes = []
+
+            for _ in range(int(rng.integers(1, 4))):
+                x0, y0 = rng.random() * w, rng.random() * h
+                angle = rng.random() * math.pi
+                length = 10 + rng.random() * 45
+                strokes.append([(x0, y0), (x0 + math.cos(angle) * length, y0 + math.sin(angle) * length)])
+
+            scuff = line_mask((w, h), strokes, 1, 0.5)
+            wear[area] = np.maximum(wear[area], scuff * 0.16)
+            height[area] -= 0.6 * scuff
+
+    # The end's tuck flap: folded down from the lid, lying on the end with a dark gap round its free edges.
+    left, top, w, h = REGIONS["end"]
+    fx0, fy0, fx1, fy1 = (FLAP[0] * w, FLAP[1] * h, FLAP[2] * w, FLAP[3] * h)
+    tx0, ty0, tx1, ty1 = (TAB[0] * w, TAB[1] * h, TAB[2] * w, TAB[3] * h)
+    outline = [(fx0, fy0), (fx0, fy1), (tx0, fy1), (tx0, ty1), (tx1, ty1), (tx1, fy1), (fx1, fy1), (fx1, fy0)]
+    gap = line_mask((w, h), [outline], 1, 0.5)
+    fold = line_mask((w, h), [[(fx0, fy0), (fx1, fy0)]], 2, 0.8)
+    raised = Image.new("L", (w, h), 0)
+    draw = ImageDraw.Draw(raised)
+    draw.rectangle([fx0, fy0, fx1, fy1], fill=255)
+    draw.rectangle([tx0, fy1, tx1, ty1], fill=255)
+    raised = np.asarray(raised.filter(ImageFilter.GaussianBlur(0.8)), dtype=np.float32) / 255
+    area = (slice(top, top + h), slice(left, left + w))
+    shade[area] *= (1 - 0.45 * gap) * (1 - 0.25 * fold)
+    height[area] += 1.4 * raised - 2.2 * fold
+
+    _LAYERS = wear, shade, height
+    return _LAYERS
+
+
+def normal_map():
+    """The relief as a DirectX normal map, the way the game reads it: green is down the texture."""
+    height = layers()[2]
+    dy, dx = np.gradient(height)
+    strength = 0.55
+    n = np.dstack((-dx * strength, -dy * strength, np.ones_like(height)))
+    n /= np.linalg.norm(n, axis=2, keepdims=True)
+    return Image.fromarray(((n * 0.5 + 0.5) * 255).round().astype(np.uint8), "RGB")
+
+
+def font(name, size):
+    return ImageFont.truetype(str(FONTS / name), size)
+
+
+def barcode(draw, left, top, width, height, ink, seed):
     rng = random.Random(seed)
-    grain = Image.effect_noise(image.size, 22).filter(ImageFilter.GaussianBlur(0.5)).load()
-    patches = Image.effect_noise((image.width // 32, image.height // 32), 40).resize(image.size, Image.BICUBIC).load()
-    out = image.convert("RGB")
-    pixels = out.load()
+    x = left
 
-    for y in range(out.height):
-        for x in range(out.width):
-            shift = (grain[x, y] - 128) * 0.05 + (patches[x, y] - 128) * 0.018 + rng.uniform(-1.5, 1.5)
-            r, g, b = pixels[x, y]
-            pixels[x, y] = (int(r + shift), int(g + shift * 0.9), int(b + shift * 0.7))
+    while x < left + width:
+        bar = rng.choice((1, 1, 2, 3))
 
-    return out
+        if rng.random() < 0.55:
+            draw.rectangle([x, top, x + bar - 1, top + height], fill=ink)
+
+        x += bar
+
+    digits = "".join(str(rng.randrange(10)) for _ in range(12))
+    draw.text((left + width / 2, top + height + 2), digits, font=font("consola.ttf", 11), fill=ink, anchor="mt")
 
 
-def carton_texture(faces, name):
-    """The atlas of one pack's carton from the sides render_pack_textures.py rendered."""
+def small_print(atlas, label, variant_label, ink, seed):
+    """What a carton carries on its back and stamped on its flaps: barcode, what is inside, how to keep it, the lot."""
+    draw = ImageDraw.Draw(atlas)
+    left, top, w, h = REGIONS["back"]
+    barcode(draw, left + 22, top + 52, 120, 60, ink, seed)
+    lines = (
+        (f"{label.upper()}  -  {'BALL' if variant_label == 'Basic' else variant_label.upper()}", font("bahnschrift.ttf", 19)),
+        ("CARTRIDGES FOR SMALL ARMS", font("bahnschrift.ttf", 14)),
+        ("KEEP DRY  -  STORE AWAY FROM HEAT", font("bahnschrift.ttf", 12)),
+        ("LOT GMR-26-1107", font("consolab.ttf", 13)),
+    )
+    y = top + 48
+
+    for text, face in lines:
+        draw.text((left + 172, y), text, font=face, fill=ink)
+        y += face.size + 9
+
+    # The lot stamped on the flap, a little uneven.
+    left, top, w, h = REGIONS["end"]
+    stamp = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(stamp).text((w / 2, h * 0.52), "26-1107  A", font=font("consolab.ttf", 14), fill=170, anchor="mm")
+    atlas.paste(Image.new("RGB", (w, h), ink), (left, top), stamp)
+
+
+def carton_texture(faces, name, label, variant_label):
+    """The atlas of one pack's carton: the sides render_pack_textures.py rendered, made into printed paperboard."""
     sides = {side: Image.open(faces / f"face_{name}_{side}.png").convert("RGBA") for side in ("top", "front", "end", "back")}
     back = sides["back"]
-    # The board's own colour, from the middle of the plain back, also fills the round corners the bevel leaves open.
     board = back.getpixel((back.width // 2, back.height // 2))
-    atlas = Image.new("RGBA", (SIZE, SIZE), board)
+    universal = name.startswith("universal")
+    ink = (214, 208, 190) if universal else (22, 21, 20)
+    atlas = Image.new("RGBA", (W, H), board)
 
-    for side in ("top", "front", "end"):
+    for side in ("top", "front", "end", "back"):
         left, top, w, h = REGIONS[side]
         flat = Image.new("RGBA", sides[side].size, board)
         flat.alpha_composite(sides[side])
         atlas.paste(flat.resize((w, h), Image.LANCZOS), (left, top))
 
-    return fibres(atlas, sum(map(ord, name)))
+    atlas = atlas.convert("RGB")
+    small_print(atlas, label, variant_label, ink, sum(map(ord, name)))
+
+    rgb = np.asarray(atlas, dtype=np.float32) / 255
+    paper = np.array(board[:3], dtype=np.float32) / 255
+    wear, shade, _ = layers()
+    rng = np.random.default_rng(sum(map(ord, name)))
+
+    # Print on board: unevenly taken up, a little thinner in patches.
+    printed = np.clip((np.linalg.norm(rgb - paper, axis=2) - 0.04) / 0.10, 0, 1)
+    fade = np.clip(0.08 + 0.10 * noise(rng, H, W, 4) + 0.06 * noise(rng, H, W, 30), 0, 0.3)
+    rgb += (paper - rgb) * (printed * fade)[..., None]
+
+    rgb *= shade[..., None]
+    rgb = rgb * (1 - wear[..., None]) + CORE * wear[..., None]
+    return Image.fromarray((np.clip(rgb, 0, 1) * 255).round().astype(np.uint8), "RGB")
 
 
 def pack_names():
-    for caliber, (_, _, _, _, variants) in ITEM_TABLE.CALIBERS.items():
-        for variant in {"basic": None} | variants:
-            yield f"{caliber}_{variant}"
+    """(file name, label, variant label) of every pack."""
+    for caliber, (label, _, _, _, variants) in ITEM_TABLE.CALIBERS.items():
+        for variant, (variant_label, _) in ({"basic": ("Basic", ())} | variants).items():
+            yield f"{caliber}_{variant}", label, variant_label
+
+
+def paa(png, target):
+    subprocess.run(["hemtt", "utils", "paa", "convert", str(png), str(target)], check=True, capture_output=True)
 
 
 def write_textures(faces, preview):
-    """Every carton's PAA; the PNGs stay in the preview folder, else beside the faces."""
+    """Every carton's PAA, their shared normal map and material; the PNGs stay in the preview folder, else beside the
+    faces."""
     PACKS.mkdir(parents=True, exist_ok=True)
     folder = preview or faces
     folder.mkdir(parents=True, exist_ok=True)
 
-    for name in pack_names():
+    for name, label, variant_label in pack_names():
         png = folder / f"carton_{name}_co.png"
-        carton_texture(faces, name).save(png)
-        subprocess.run(["hemtt", "utils", "paa", "convert", str(png), str(PACKS / f"carton_{name}_co.paa")], check=True,
-                       capture_output=True)
+        carton_texture(faces, name, label, variant_label).save(png)
+        paa(png, PACKS / f"carton_{name}_co.paa")
 
+    png = folder / "carton_nohq.png"
+    normal_map().save(png)
+    paa(png, PACKS / "carton_nohq.paa")
+    (PACKS / "gmr_carton.rvmat").write_text(carton_rvmat(), encoding="utf-8", newline="\n")
     print("carton textures written")
     return folder
+
+
+def carton_rvmat():
+    """Matte paperboard: the shared normal map, barely any shine, no environment to speak of."""
+    stages = (
+        NOHQ,
+        "#(argb,8,8,3)color(0.5,0.5,0.5,1,DT)",
+        "#(argb,8,8,3)color(0.5,0.5,0.5,0,MC)",
+        "#(argb,8,8,3)color(1,1,1,1,AS)",
+        "#(argb,8,8,3)color(1,0.16,0.22,1,SMDI)",
+        "#(ai,64,64,1)fresnel(1.4,0.2)",
+        "a3\\data_f\\env_land_co.paa",
+    )
+    lines = [
+        "ambient[] = {1, 1, 1, 1};", "diffuse[] = {1, 1, 1, 1};", "forcedDiffuse[] = {0, 0, 0, 0};",
+        "emmisive[] = {0, 0, 0, 1};", "specular[] = {0.35, 0.35, 0.35, 1};", "specularPower = 14;",
+        'PixelShaderID = "Super";', 'VertexShaderID = "Super";',
+    ]
+
+    for index, texture_path in enumerate(stages, 1):
+        lines += [
+            f"class Stage{index} {{", f'    texture = "{texture_path}";', '    uvSource = "tex";', "    class uvTransform {",
+            "        aside[] = {1, 0, 0};", "        up[] = {0, 1, 0};", "        dir[] = {0, 0, 0};", "        pos[] = {0, 0, 0};",
+            "    };", "};",
+        ]
+
+    return "\n".join(lines) + "\n"
 
 
 # ----- Models -----
@@ -165,7 +374,7 @@ def mapped_box(model, size, surface, sides):
 
 def share(region):
     left, top, w, h = REGIONS[region]
-    return left / SIZE, top / SIZE, w / SIZE, h / SIZE
+    return left / W, top / H, w / W, h / H
 
 
 def carton(surface, scale):
@@ -176,11 +385,11 @@ def carton(surface, scale):
     along, across, high = (value * scale for value in CARTON)
     sides = [
         ((0, 1, 0), (-1, 0, 0), share("top")),
-        ((0, -1, 0), (1, 0, 0), share("plain")),
+        ((0, -1, 0), (1, 0, 0), share("bottom")),
         ((1, 0, 0), (0, 1, 0), share("front")),
-        ((-1, 0, 0), (0, 1, 0), share("plain")),
+        ((-1, 0, 0), (0, 1, 0), share("back")),
         ((0, 0, 1), (0, 1, 0), share("end")),
-        ((0, 0, -1), (0, 1, 0), share("plain")),
+        ((0, 0, -1), (0, 1, 0), share("end")),
     ]
     mapped_box(model, (across, high, along), surface, sides)
     return model
@@ -341,7 +550,7 @@ def main():
 
     packs = []
 
-    for name in pack_names():
+    for name, _, _ in pack_names():
         for size, scale in CARTON_SCALES.items():
             model = carton(f"{PACKS_PATH}\\carton_{name}_co.paa", scale)
 
@@ -349,7 +558,7 @@ def main():
                 write_preview(preview / f"pack_{name}.obj", model, pngs / f"carton_{name}_co.png")
 
             lay_down(model)
-            write_p3d(PACKS / f"pack_{name}_{size}.p3d", model, MATERIAL)
+            write_p3d(PACKS / f"pack_{name}_{size}.p3d", model, CARTON_RVMAT, welded(model, 0.98))
             packs.append(f"pack_{name}_{size}")
 
     # The round in the right hand while loading (fnc_holdMagazine): along Z, the game's forward of a model, point first.
