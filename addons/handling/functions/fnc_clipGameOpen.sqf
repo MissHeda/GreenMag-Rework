@@ -106,7 +106,8 @@ private _seatTop = _magTop - _clipH;
 private _tableX = _x0 + UI_PAD + 0.02;
 private _tableTop = _magTop + (_magH - _clipH) / 2;
 
-private _ghost = ["RscText", _seatX - 0.01, _seatTop, _roundW + 0.012, _clipH, "", [0.42, 0.92, 0.42, 0.10]] call _fnc_make;
+// Exactly the magazine's width, between the guide's walls, from the clip's top down to the magazine.
+private _ghost = ["RscText", _magX, _seatTop, _magW, _clipH, "", [0.42, 0.92, 0.42, 0.10]] call _fnc_make;
 
 // The clip: its steel strip along the rims, and its rounds.
 private _strip = ["RscText", _tableX - 0.008, _tableTop, 0.006, _clipH, "", CG_STEEL] call _fnc_make;

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.11
+
+- Fixed: the green target in the stripper clip minigame sat a little off the magazine; it now matches the magazine and the guide exactly
+- Fixed: the speedloader on the ground was a plain black block; it is now the steel clip guide of its picture
+- Changed: stripper clips on the ground have a bright steel strip like in their picture, and the strip no longer sticks out below the rounds, so they lie flat
+
 ## 1.2.10
 
 - Fixed: boxes of loose rounds on the ground still wore their first, darker texture from 1.0.1, which no longer fit the model; they now show the printed cardboard of their inventory picture like the boxes of clips

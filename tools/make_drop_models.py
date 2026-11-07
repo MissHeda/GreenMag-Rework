@@ -50,6 +50,8 @@ COPPER = texture(0.72, 0.40, 0.20)
 STEEL = texture(0.20, 0.21, 0.22)
 POLYMER = texture(0.08, 0.08, 0.085)
 POLYMER_LIGHT = texture(0.16, 0.16, 0.17)
+CLIP_STEEL = texture(0.56, 0.57, 0.58)
+GUIDE_STEEL = texture(0.34, 0.35, 0.36)
 
 # Where each side of the carton is on its texture: (left, top, width, height) in pixels, 5 px per mm. Both ends show
 # the tuck flap, as a real carton has one at each end.
@@ -496,24 +498,28 @@ def clip_model(rounds):
         x = (index - (rounds - 1) / 2) * pitch
         cartridge(model, (x, 0, 0), (0, 0, 1), length, radius)
 
+    # The strip and its folded edges stay within the rounds' height, so the clip lies flat on its rounds, and they are
+    # bright stamped steel as in its picture.
     strip = pitch * rounds + 0.003
     base = -length / 2
-    model.box((0, 0, base + 0.0015), (strip, radius * 2.5, 0.003), STEEL)
-    model.box((0, radius * 1.15, base + 0.004), (strip, 0.0008, 0.005), STEEL)
-    model.box((0, -radius * 1.15, base + 0.004), (strip, 0.0008, 0.005), STEEL)
+    model.box((0, 0, base + 0.0012), (strip, radius * 1.9, 0.0024), CLIP_STEEL)
+    model.box((0, radius * 0.92, base + 0.0035), (strip, 0.0012, 0.006), CLIP_STEEL)
+    model.box((0, -radius * 0.92, base + 0.0035), (strip, 0.0012, 0.006), CLIP_STEEL)
     return model
 
 
 def speedloader():
-    """A rifle magazine loader: a sleeve over the magazine's top, its thumb plunger and grip ribs."""
+    """The stripper clip guide of its picture, lying on its back: a steel channel the clip slides down, its walls with
+    their lips folded in, and at one end the foot that sits on the magazine and the tab to hold it by."""
     model = Model()
-    model.box((0, 0, 0), (0.030, 0.07, 0.066), POLYMER)
-    model.box((0, 0.039, -0.008), (0.014, 0.008, 0.03), POLYMER_LIGHT)
+    model.box((0, 0.00075, 0), (0.022, 0.0015, 0.05), GUIDE_STEEL)
 
-    for index in range(5):
-        model.box((0.0155, -0.02 + index * 0.009, 0), (0.0012, 0.004, 0.05), POLYMER_LIGHT)
-        model.box((-0.0155, -0.02 + index * 0.009, 0), (0.0012, 0.004, 0.05), POLYMER_LIGHT)
+    for side in (-1, 1):
+        model.box((side * 0.0105, 0.005, 0), (0.002, 0.008, 0.05), GUIDE_STEEL)
+        model.box((side * 0.0082, 0.0085, 0), (0.0045, 0.0012, 0.05), GUIDE_STEEL)
 
+    model.box((0, 0.007, -0.029), (0.03, 0.014, 0.008), GUIDE_STEEL)
+    model.box((0, 0.001, -0.041), (0.012, 0.002, 0.016), GUIDE_STEEL)
     return model
 
 
