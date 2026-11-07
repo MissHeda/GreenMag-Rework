@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.3
+
+- Fixed: refilling from the menus with loose rounds in the inventory took the loose rounds and the round minigame even with clips and a speedloader; whole clips go first now whenever the speedloader takes them
+- Added: a hint when clips go in round by round, and why (no speedloader, or the speedloader set to loose rounds only)
+- Added: one line per fill in the RPT saying where the rounds came from and whether the clip minigame ran
+
 ## 1.2.2
 
 - Changed: a new stripper clip minigame in a window of its own, played with the mouse: the magazine stands cut open with the speedloader's guide on top; drag the clip into the guide, then grab the thumb mark and pull the rounds down. Pull steadily: the spring lets them through slower the fuller the magazine, and pulled too far ahead they jam and spring back. Esc stops, what went in stays in
