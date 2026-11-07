@@ -100,6 +100,12 @@
         <Key ID="STR_gmr_handling_Reward_Full">
             <English>Jackpot! +%1</English>
         </Key>
+        <Key ID="STR_gmr_handling_Hint_NoSpeedloader">
+            <English>Without a speedloader the rounds come off the clip one by one.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Hint_SpeedloaderLoose">
+            <English>The speedloader is set to loose rounds only on this server: the clip goes round by round.</English>
+        </Key>
         <Key ID="STR_gmr_handling_Speedloader_Badge">
             <English>SPEEDLOADER</English>
         </Key>

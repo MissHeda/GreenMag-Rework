@@ -127,9 +127,9 @@ if (_kind == "fill" && {!_belt} && {_from != "loose"}) then {
 private _speedloader = _kind == "fill" && {_speedload} && {"gmr_speedloader" in _counts};
 private _clipsWhole = _speedloader && {_clips isNotEqualTo []} && {EGVAR(main,speedloaderMode) != 1};
 
-// From the menus whole clips only when they fill what there is room for, or there are no loose rounds to do it.
+// From the menus: whole clips whenever the speedloader takes them, ten rounds at a time; else loose rounds first.
 if (_from == "auto") then {
-    _from = ["mixed", "clips"] select (_clipsWhole && {_clipRounds >= _need || {_loose == 0}});
+    _from = ["mixed", "clips"] select _clipsWhole;
 };
 
 private _clipLoading = _clipsWhole && {_from == "clips"};
@@ -220,6 +220,16 @@ private _startShown = if (_kind == "unloadBelt") then {_capacity} else {_amounts
 private _game = EGVAR(main,loadGame) && {!_belt} && {EGVAR(main,loadDisplay) == 0};
 // Whole clips have their own minigame (fnc_clipGameTick), pressed at the clip's pace rather than a round's.
 private _clipGame = _game && {_clipLoading};
+
+// Clips that go in round by round say why: no speedloader, or the server set it to loose rounds only.
+if (_from == "clips" && {!_clipLoading} && {_clipRounds > 0}) then {
+    hintSilent ([LLSTRING(Hint_NoSpeedloader), LLSTRING(Hint_SpeedloaderLoose)] select _speedloader);
+};
+
+// Why loading took the way it did, for when it is not the one expected (the RPT).
+if (_kind == "fill" && {!_belt}) then {
+    INFO_8("Fill %1 from %2: %3 rounds loose, %4 on clips, speedloader %5 (mode %6), whole clips %7, clip minigame %8.",_class,_from,_loose,_clipRounds,_speedloader,EGVAR(main,speedloaderMode),_clipLoading,_clipGame);
+};
 private _beat = [(_time / _need) max GAME_MIN_BEAT, _time / _need] select _clipGame;
 
 if (_game) then {
