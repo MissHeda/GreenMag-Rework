@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+- Changed: the speedloader shows in the arsenal's own views (rounds, packs, belts), and among the fitting ammunition while a weapon takes a caliber that comes on stripper clips
+
 ## 1.1.0
 
 - Added: stripper clips for the calibers issued on them (5.56x45, 5.45x39, 5.8x42 and 7.62x39 on 10-round clips, 7.62x51, 7.62x54R, 7.92x57 and .303 on 5-round clips), in every variant, and cartons of three clips

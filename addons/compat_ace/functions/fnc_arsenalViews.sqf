@@ -2,7 +2,8 @@
 /*
  * Author: Miss Heda
  * Puts this mod's views at the top of ACE Arsenal's sort list while the ammunition tab is open: only the ammunition the
- * unit's weapons take (the default), only rounds, only packs, only belts. ACE's own sorts below them show everything.
+ * unit's weapons take (the default), only rounds, only packs, only belts; the speedloader shows in each. ACE's own sorts
+ * below them show everything.
  * Then takes out of the list what the chosen view does not show.
  *
  * ACE fills the sort list anew with every fill of the panel, so this runs after each one. Picking a view fills the
@@ -95,6 +96,12 @@ if (GVAR(arsenalView) == "all") exitWith {};
 
 private _fitting = if (GVAR(arsenalView) == "fitting") then {call FUNC(arsenalFits)} else {[]};
 
+// The mod's tools (the speedloader) show in every view; among the fitting ammunition only while a weapon takes a caliber
+// that comes on stripper clips.
+private _toolsFit = _fitting isEqualTo [] || {
+    (keys (_fitting select 0)) findIf {isClass (configFile >> "CfgWeapons" >> format ["gmr_clip_%1_basic", _x])} >= 0
+};
+
 for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
     private _item = _list lnbData [_row, 0];
 
@@ -107,10 +114,10 @@ for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
             _kind = "pack";
         };
 
-        private _shown = if (_fitting isEqualTo []) then {
-            _kind == GVAR(arsenalView)
-        } else {
-            ((_fitting select ([0, 1] select (_kind == "belt"))) getOrDefault [_facts select ITEM_CALIBER, false])
+        private _shown = switch (true) do {
+            case (_kind == ""): {_toolsFit};
+            case (_fitting isEqualTo []): {_kind == GVAR(arsenalView)};
+            default {((_fitting select ([0, 1] select (_kind == "belt"))) getOrDefault [_facts select ITEM_CALIBER, false])};
         };
 
         if (!_shown) then {
