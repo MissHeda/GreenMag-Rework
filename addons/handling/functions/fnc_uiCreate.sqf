@@ -102,7 +102,7 @@ _all append ([_display, [_x0 + _pad, _y0 + _pad, _tileWidth, _tileHeight], UI_TI
 private _textX = _x0 + _pad * 2 + _tileWidth;
 private _textW = _width - _tileWidth - _pad * 3;
 
-// The speedloader at work on loose rounds: its badge in the title row, with how much faster, pulsing with each round.
+// The speedloader at work on loose rounds: its icon and how much faster in the title row, pulsing with each round.
 private _boost = GVAR(op) getOrDefault ["boost", 1];
 private _badgeW = [0, UI_BADGE_WIDTH] select (_boost > 1);
 private _title = ["RscStructuredText", _textX, _y0 + _pad - 0.004, _textW - _badgeW, 0.034] call _fnc_make;
@@ -118,7 +118,7 @@ if (_boost > 1) then {
 
     _badge = ["RscStructuredText", _badgeX + 0.026, _y0 + _pad - 0.002, _badgeW - 0.028, 0.03] call _fnc_make;
     _badge ctrlSetStructuredText parseText format [
-        "<t size='0.78' color='#ffd75a' font='PuristaBold' align='center'>%1 x%2</t>", LLSTRING(Speedloader_Badge), (round (_boost * 10)) / 10
+        "<t size='0.85' color='#ffd75a' font='PuristaBold' align='center'>x%1</t>", (round (_boost * 10)) / 10
     ];
 };
 

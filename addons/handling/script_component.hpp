@@ -87,7 +87,7 @@
 #define UI_GAUGE_COLOR [0.96, 0.72, 0.30, 1]
 
 // The speedloader's badge while it speeds up loose rounds, and the trail behind the flying round.
-#define UI_BADGE_WIDTH 0.13
+#define UI_BADGE_WIDTH 0.068
 #define UI_BADGE_COLOR [1, 0.84, 0.35, 0.16]
 #define UI_TRAIL [[0.012, 0.45], [0.024, 0.25], [0.036, 0.12]]
 

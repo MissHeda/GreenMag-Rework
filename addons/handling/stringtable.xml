@@ -106,9 +106,6 @@
         <Key ID="STR_gmr_handling_Hint_SpeedloaderLoose">
             <English>The speedloader is set to loose rounds only on this server: the clip goes round by round.</English>
         </Key>
-        <Key ID="STR_gmr_handling_Speedloader_Badge">
-            <English>SPEEDLOADER</English>
-        </Key>
         <Key ID="STR_gmr_handling_Prompt_ClipGame">
             <English>Load the clips with the mouse, Esc to stop</English>
         </Key>

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.12
+
+- Fixed: the speedloader badge in the loading panel was cut off and shortened the title; it is now its icon and the speed factor (x2)
+
 ## 1.2.11
 
 - Fixed: the green target in the stripper clip minigame sat a little off the magazine; it now matches the magazine and the guide exactly
