@@ -89,8 +89,7 @@ private _tileWidth = _tileHeight * 3 / 4;
 private _stripTop = _pad + _tileHeight + UI_GAP;
 private _trackTop = _stripTop + UI_STRIP_HEIGHT + UI_GAP;
 private _clipGame = GVAR(op) getOrDefault ["clipGame", false];
-private _gameHeight = [UI_GAME_HEIGHT, UI_CLIP_GAME_HEIGHT] select _clipGame;
-private _lineTop = [_stripTop + UI_STRIP_HEIGHT, _trackTop + _gameHeight] select _game;
+private _lineTop = [_stripTop + UI_STRIP_HEIGHT, _trackTop + UI_GAME_HEIGHT] select (_game && {!_clipGame});
 _lineTop = _lineTop + UI_GAP;
 private _height = _lineTop + UI_PROMPT_HEIGHT + _pad * 0.5;
 private _x0 = safeZoneX + (safeZoneW - _width) / 2;
@@ -167,52 +166,9 @@ GVAR(op) set ["ui", createHashMapFromArray [
     ["classic", false]
 ]];
 
-// The stripper clip minigame: the clip above the track, the magazine with its guide (the green opening) on it, the
-// thumb's pressure gauge below with its green and red stretches.
+// The stripper clip minigame is a window of its own, played with the mouse (fnc_clipGameOpen).
 if (_game && {_clipGame}) then {
-    private _ui = GVAR(op) get "ui";
-    private _rowTop = _y0 + _trackTop;
-    private _clipH = 0.046;
-    private _middle = _rowTop + _clipH + 0.012;
-
-    _all append ([_display, [_stripX, _middle - UI_TRACK_HEIGHT / 2, _stripW, UI_TRACK_HEIGHT], UI_OFF_COLOR, UI_TRACK_HEIGHT / 2] call FUNC(uiPanel));
-
-    private _zoneY = _middle - UI_ZONE_HEIGHT / 2;
-    private _glow = ["RscPicture", _stripX, _zoneY, 0, UI_ZONE_HEIGHT, QPATHTOF(data\pill_ca.paa), UI_ZONE_COLOR] call _fnc_make;
-    private _hit = ["RscPicture", _stripX, _zoneY, 0, UI_ZONE_HEIGHT, QPATHTOF(data\pill_ca.paa), UI_ON_COLOR] call _fnc_make;
-    _hit ctrlSetFade 1;
-    _hit ctrlCommit 0;
-
-    private _catcherH = 0.05;
-    private _catcherW = _catcherH * 3 / 4;
-    private _catcher = ["RscPictureKeepAspect", _stripX, _middle - _catcherH * 0.3, _catcherW, _catcherH, GVAR(op) get "picture"] call _fnc_make;
-
-    private _clip = ["RscPictureKeepAspect", _stripX, _rowTop, UI_CLIP_WIDTH, _clipH, GVAR(op) get "clipPicture"] call _fnc_make;
-
-    // The gauge: its track, the green stretch the rounds move in, the red one that jams, and the pressure filling it.
-    private _gaugeY = _rowTop + UI_CLIP_GAME_HEIGHT - UI_GAUGE_HEIGHT;
-    private _gauge = [];
-
-    _gauge pushBack (["RscPicture", _stripX, _gaugeY, _stripW, UI_GAUGE_HEIGHT, QPATHTOF(data\pill_ca.paa), UI_OFF_COLOR] call _fnc_make);
-    _gauge pushBack (["RscPicture", _stripX + _stripW * CLIP_PRESSURE_GREEN, _gaugeY, _stripW * (CLIP_PRESSURE_RED - CLIP_PRESSURE_GREEN), UI_GAUGE_HEIGHT, QPATHTOF(data\pill_ca.paa), UI_ZONE_COLOR] call _fnc_make);
-    _gauge pushBack (["RscPicture", _stripX + _stripW * CLIP_PRESSURE_RED, _gaugeY, _stripW * (1 - CLIP_PRESSURE_RED), UI_GAUGE_HEIGHT, QPATHTOF(data\pill_ca.paa), [1, 0.3, 0.2, 0.35]] call _fnc_make);
-
-    private _fill = ["RscPicture", _stripX, _gaugeY + UI_GAUGE_HEIGHT * 0.2, 0.0001, UI_GAUGE_HEIGHT * 0.6, QPATHTOF(data\pill_ca.paa), UI_GAUGE_COLOR] call _fnc_make;
-    _gauge pushBack _fill;
-
-    _ui set ["glow", _glow];
-    _ui set ["hit", _hit];
-    _ui set ["catcher", _catcher];
-    _ui set ["catcherW", _catcherW];
-    _ui set ["comboShown", []];
-    _ui set ["clip", _clip];
-    _ui set ["clipW", UI_CLIP_WIDTH];
-    _ui set ["clipY", _rowTop];
-    _ui set ["sink", 0.012];
-    _ui set ["gauge", _gauge];
-    _ui set ["gaugeFill", _fill];
-
-    call FUNC(uiClipGame);
+    call FUNC(clipGameOpen);
 };
 
 if (_game && {!_clipGame}) then {

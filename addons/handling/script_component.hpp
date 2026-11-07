@@ -52,23 +52,31 @@
 #define GAME_ZONE_MIN 0.12
 #define GAME_MIN_BEAT 0.25
 
-// The stripper clip minigame: seat the clip in the guide over the magazine as it sweeps past, then hold to press the
-// rounds down. The thumb's pressure climbs while held, faster the fuller the magazine (the spring), and falls when let
-// go; the rounds move while it is in the green, and past the red the clip jams for a moment. Without the server's
-// "must hit" a clip seats itself after a few passes and the rounds go down slowly without pressing.
-#define UI_CLIP_GAME_HEIGHT 0.1
-#define UI_CLIP_WIDTH 0.075
-#define UI_GAUGE_HEIGHT 0.012
+// The stripper clip minigame, in a window of its own played with the mouse (fnc_clipGameOpen, fnc_clipGameTick): the
+// window's size and place, a round's size in it, the magazine's top and height, the colours of steel and the guide.
+// Dropped this close to the guide, the clip slides in; left alone this long without "must hit", it does by itself.
+// Pressing, the rounds go at most this many times the normal pace, less by the spring share as the magazine fills;
+// pulled this many rounds ahead of them, they jam for this long. The thumb's mark, and how far from it a press takes.
+#define CG_WIDTH 0.4
+#define CG_HEIGHT 0.54
+#define CG_TOP 0.12
+#define CG_ROUND_WIDTH 0.066
+#define CG_ROUND_HEIGHT 0.018
+#define CG_MAG_TOP 0.27
+#define CG_MAG_HEIGHT 0.22
+#define CG_STEEL [0.30, 0.31, 0.33, 1]
+#define CG_GUIDE [0.16, 0.17, 0.18, 1]
+#define CG_SNAP_X 0.035
+#define CG_SNAP_Y 0.045
+#define CG_AUTO_WAIT 2
+#define CG_PUSH_RATE 1.6
+#define CG_SPRING 0.45
+#define CG_JAM_SLACK 1.6
+#define CG_JAM_STALL 0.6
+#define CG_STRIP_TIME 0.35
+#define CG_HANDLE 0.026
+#define CG_GRAB_RANGE 0.035
 #define UI_GAUGE_COLOR [0.96, 0.72, 0.30, 1]
-#define CLIP_SWEEP_TIME 1.3
-#define CLIP_AUTO_PASSES 2
-#define CLIP_PRESSURE_RISE 0.85
-#define CLIP_PRESSURE_SPRING 0.75
-#define CLIP_PRESSURE_FALL 2.4
-#define CLIP_PRESSURE_GREEN 0.2
-#define CLIP_PRESSURE_RED 0.82
-#define CLIP_JAM_STALL 0.7
-#define CLIP_AUTO_RATE 0.5
 
 // The speedloader's badge while it speeds up loose rounds, and the trail behind the flying round.
 #define UI_BADGE_WIDTH 0.13

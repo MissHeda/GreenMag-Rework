@@ -60,7 +60,7 @@ private _time = (GVAR(op) get "time") max 0.01;
 private _progress = 0;
 
 if (GVAR(op) get "clipGame") then {
-    [_step, _pressed, _wasPressed] call FUNC(clipGameTick);
+    [_step] call FUNC(clipGameTick);
 
     _progress = (_time * (GVAR(op) get "pushed") / (_need max 1)) min _time;
 } else {

@@ -226,7 +226,8 @@ if (_game) then {
     _time = _beat * _need;
 };
 
-private _clipPicture = if (_clips isEqualTo []) then {""} else {([_clips select 0 select 0] call EFUNC(main,itemInfo)) select ITEM_PICTURE};
+// The rounds on one clip, as the minigame draws it (fnc_clipGameOpen).
+private _clipSize = if (_clips isEqualTo []) then {10} else {_clips select 0 select 2};
 
 GVAR(op) = createHashMapFromArray [
     ["id", GVAR(opCounter)],
@@ -250,13 +251,11 @@ GVAR(op) = createHashMapFromArray [
     ["clipGame", _clipGame],
     // How much faster the speedloader makes loose rounds, shown in the display (fnc_uiCreate); 1 when it does not.
     ["boost", [1, 1 / (_looseBoost max 0.01)] select (_kind == "fill" && {!_belt} && {!_clipLoading} && {_looseBoost < 1})],
-    ["clipPicture", _clipPicture],
-    ["stage", "insert"],
+    ["clipSize", _clipSize],
+    ["stage", "place"],
     ["stepIndex", 0],
-    ["stepDone", 0],
+    ["stepsDone", 0],
     ["pushed", 0],
-    ["pressure", 0],
-    ["passes", 0],
     ["title", format [[LLSTRING(Title_Unload), LLSTRING(Title_Fill)] select (_kind == "fill"), _name]],
     ["picture", _picture],
     ["created", CBA_missionTime],

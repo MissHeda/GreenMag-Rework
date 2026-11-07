@@ -5,6 +5,7 @@ PREP(applyBeltItem);
 PREP(applyFill);
 PREP(applyUnload);
 PREP(begin);
+PREP(clipGameOpen);
 PREP(clipGameTick);
 PREP(clipsOf);
 PREP(combineBelts);

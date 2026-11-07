@@ -31,6 +31,13 @@ private _ui = _op get "ui";
 
 {ctrlDelete _x} forEach (_ui getOrDefault ["all", []]);
 
+// The stripper clip minigame's window (its Unload finds no operation any more, so it stops nothing twice).
+private _window = (_op getOrDefault ["cg", createHashMap]) getOrDefault ["display", displayNull];
+
+if (!isNull _window) then {
+    _window closeDisplay 2;
+};
+
 private _started = _op get "started";
 
 if (_started < 0 || {!alive (_op get "unit")}) exitWith {};

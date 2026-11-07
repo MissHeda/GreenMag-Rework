@@ -103,11 +103,20 @@
         <Key ID="STR_gmr_handling_Speedloader_Badge">
             <English>SPEEDLOADER</English>
         </Key>
-        <Key ID="STR_gmr_handling_Prompt_ClipInsert">
-            <English>Press %1 when the clip is over the magazine, Esc to stop</English>
+        <Key ID="STR_gmr_handling_Prompt_ClipGame">
+            <English>Load the clips with the mouse, Esc to stop</English>
         </Key>
-        <Key ID="STR_gmr_handling_Prompt_ClipPush">
-            <English>Hold %1 to press the rounds down, let go before the red</English>
+        <Key ID="STR_gmr_handling_Clip_Place">
+            <English>Drag the clip into the guide on top of the magazine</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Clip_Push">
+            <English>Grab the thumb mark and pull down steadily - too fast and the rounds jam</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Clip_Jammed">
+            <English>Jammed - set the thumb on again</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Clip_Count">
+            <English>Clip</English>
         </Key>
         <Key ID="STR_gmr_handling_Prompt_GameMust">
             <English>Press %1 when the round is on the magazine, Esc to stop</English>

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+
+- Changed: a new stripper clip minigame in a window of its own, played with the mouse: the magazine stands cut open with the speedloader's guide on top; drag the clip into the guide, then grab the thumb mark and pull the rounds down. Pull steadily: the spring lets them through slower the fuller the magazine, and pulled too far ahead they jam and spring back. Esc stops, what went in stays in
+
 ## 1.2.1
 
 - Added: universal ammunition on stripper clips, and in cartons of three clips
