@@ -115,7 +115,10 @@ if (_kind == "fill" && {!_belt}) then {
     {_clipRounds = _clipRounds + (_x select 1) * (_x select 2)} forEach _clips;
 };
 
-private _clipLoading = _clips isNotEqualTo [] && {_speedload} && {"gmr_speedloader" in _counts};
+// What the speedloader does (setting): 0 whole clips at once, 1 every loose round faster, 2 both.
+private _speedloader = _kind == "fill" && {_speedload} && {"gmr_speedloader" in _counts};
+private _clipLoading = _speedloader && {_clips isNotEqualTo []} && {EGVAR(main,speedloaderMode) != 1};
+private _looseBoost = [1, EGVAR(main,speedloaderLooseFactor)] select (_speedloader && {EGVAR(main,speedloaderMode) != 0});
 
 if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
     private _have = 0;
@@ -153,7 +156,8 @@ private _time = if (_belt) then {
         * EGVAR(main,beltTimeFactor)
         * (_unit getVariable [QEGVAR(main,beltTime), 1])
 } else {
-    // With the speedloader, the rounds that go in on whole clips take the clip factor of the time; the rest go one by one.
+    // With the speedloader, the rounds that go in on whole clips take the clip factor of the time; the rest go one by one,
+    // faster by the loose-round factor when the speedloader works on loose rounds too.
     private _fast = 0;
 
     if (_clipLoading) then {
@@ -175,7 +179,7 @@ private _time = if (_belt) then {
         } forEach _clips;
     };
 
-    ((_need - _fast) + _fast * EGVAR(main,speedloaderFactor)) * EGVAR(main,timePerRound)
+    ((_need - _fast) * _looseBoost + _fast * EGVAR(main,speedloaderFactor)) * EGVAR(main,timePerRound)
         * (_unit getVariable [QEGVAR(main,magazineTime), 1])
 };
 

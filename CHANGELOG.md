@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.3
+
+- Added: setting "Speedloader": stripper clips only, loose rounds only (the boost from before 1.1.0) or both (default)
+- Added: setting "Speedloader factor for loose rounds" (default 0.5, as before 1.1.0)
+- Changed: whole stripper clips take 0.4 of the single-round time instead of 0.25
+
 ## 1.1.2
 
 - Changed: the stripper clips' pictures show the clip lying as it does in front of its carton, so clip and carton match

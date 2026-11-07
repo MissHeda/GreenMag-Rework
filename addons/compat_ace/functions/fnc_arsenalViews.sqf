@@ -98,8 +98,11 @@ private _fitting = if (GVAR(arsenalView) == "fitting") then {call FUNC(arsenalFi
 
 // The mod's tools (the speedloader) show in every view; among the fitting ammunition only while a weapon takes a caliber
 // that comes on stripper clips.
+// When it also speeds up loose rounds (setting), any weapon that takes loose rounds will do.
 private _toolsFit = _fitting isEqualTo [] || {
-    (keys (_fitting select 0)) findIf {isClass (configFile >> "CfgWeapons" >> format ["gmr_clip_%1_basic", _x])} >= 0
+    (keys (_fitting select 0)) findIf {
+        EGVAR(main,speedloaderMode) != 0 || {isClass (configFile >> "CfgWeapons" >> format ["gmr_clip_%1_basic", _x])}
+    } >= 0
 };
 
 for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {

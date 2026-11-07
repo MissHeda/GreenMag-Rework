@@ -151,6 +151,27 @@
         <Key ID="STR_gmr_main_Setting_SpeedloaderFactor_Desc">
             <English>Multiplies the loading time of rounds\nthat go in on a whole stripper clip,\nwith a speedloader in the inventory.\n\nLoose rounds, belts and unloading\nare not affected.</English>
         </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderLooseFactor">
+            <English>Speedloader factor for loose rounds</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderLooseFactor_Desc">
+            <English>Multiplies the loading time of loose\nrounds with a speedloader in the\ninventory, when the speedloader mode\nincludes loose rounds.\n\nBelts and unloading are not affected.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderMode">
+            <English>Speedloader</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderMode_Desc">
+            <English>What the speedloader speeds up.\n\nStripper clips: whole clips go in at\nonce, loose rounds at normal speed.\n\nLoose rounds: every round goes in\nfaster, clips one round at a time.\n\nBoth: clips at once, loose rounds\nfaster.</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderMode_Clips">
+            <English>Stripper clips</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderMode_Loose">
+            <English>Loose rounds (boost)</English>
+        </Key>
+        <Key ID="STR_gmr_main_Setting_SpeedloaderMode_Both">
+            <English>Both</English>
+        </Key>
         <Key ID="STR_gmr_main_Setting_TimePerRound">
             <English>Seconds per round</English>
         </Key>

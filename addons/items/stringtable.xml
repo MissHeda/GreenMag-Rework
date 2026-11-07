@@ -5,7 +5,7 @@
             <English>Speedloader</English>
         </Key>
         <Key ID="STR_gmr_items_Speedloader_Desc">
-            <English>A guide for stripper clips: with it in the inventory, a whole clip goes into a magazine at once.</English>
+            <English>A guide for stripper clips: with it in the inventory, a whole clip goes into a magazine at once, and loose rounds go in faster (as the server has set it).</English>
         </Key>
         <Key ID="STR_gmr_items_Clip_Desc">
             <English>Rounds on a stripper clip. Strip them off, or load the whole clip with a speedloader.</English>
