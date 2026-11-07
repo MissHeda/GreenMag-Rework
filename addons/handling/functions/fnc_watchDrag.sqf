@@ -39,7 +39,7 @@ if (_down) exitWith {
     if (_row >= 0) then {
         private _class = _list lbData _row;
 
-        if (toLowerANSI _class find "gmr_" == 0 && {(([_class] call EFUNC(main,itemInfo)) select ITEM_KIND) in ["round", "pack", "belt"]}) then {
+        if (toLowerANSI _class find "gmr_" == 0 && {(([_class] call EFUNC(main,itemInfo)) select ITEM_KIND) in ["round", "clip", "pack", "belt"]}) then {
             GVAR(dragStart) = [_list, _row, _class];
         };
     };

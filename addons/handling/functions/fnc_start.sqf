@@ -106,6 +106,17 @@ if (_kind == "unloadBelt") then {
 
 private _counts = [_unit] call EFUNC(main,itemCounts);
 
+// Rounds on stripper clips count as rounds; with the speedloader whole clips go in at once (fnc_takeRounds).
+private _clips = [];
+private _clipRounds = 0;
+
+if (_kind == "fill" && {!_belt}) then {
+    _clips = [_unit, _source] call FUNC(clipsOf);
+    {_clipRounds = _clipRounds + (_x select 1) * (_x select 2)} forEach _clips;
+};
+
+private _clipLoading = _clips isNotEqualTo [] && {_speedload} && {"gmr_speedloader" in _counts};
+
 if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
     private _have = 0;
 
@@ -114,7 +125,7 @@ if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
             {_have = _have + (_x select 1)} forEach ([_unit, _source] call EFUNC(main,beltItems));
         };
     } else {
-        _have = _counts getOrDefault [_source, 0];
+        _have = (_counts getOrDefault [_source, 0]) + _clipRounds;
     };
 
     if (_have < _need && {_have > 0}) then {
@@ -142,9 +153,30 @@ private _time = if (_belt) then {
         * EGVAR(main,beltTimeFactor)
         * (_unit getVariable [QEGVAR(main,beltTime), 1])
 } else {
-    _need * EGVAR(main,timePerRound)
+    // With the speedloader, the rounds that go in on whole clips take the clip factor of the time; the rest go one by one.
+    private _fast = 0;
+
+    if (_clipLoading) then {
+        private _space = _amounts apply {_capacity - _x};
+        private _left = _need;
+
+        {
+            _x params ["", "_count", "_per"];
+
+            for "_i" from 1 to _count do {
+                private _slot = _space findIf {_x >= _per};
+
+                if (_slot < 0 || {_left < _per}) exitWith {};
+
+                _space set [_slot, (_space select _slot) - _per];
+                _left = _left - _per;
+                _fast = _fast + _per;
+            };
+        } forEach _clips;
+    };
+
+    ((_need - _fast) + _fast * EGVAR(main,speedloaderFactor)) * EGVAR(main,timePerRound)
         * (_unit getVariable [QEGVAR(main,magazineTime), 1])
-        * ([1, EGVAR(main,speedloaderFactor)] select (_kind == "fill" && {_speedload} && {"gmr_speedloader" in _counts}))
 };
 
 GVAR(opCounter) = GVAR(opCounter) + 1;
@@ -174,6 +206,7 @@ GVAR(op) = createHashMapFromArray [
     ["belt", _belt],
     ["source", _source],
     ["becomes", _becomes],
+    ["clipLoading", _clipLoading],
     ["title", format [[LLSTRING(Title_Unload), LLSTRING(Title_Fill)] select (_kind == "fill"), _name]],
     ["picture", _picture],
     ["created", CBA_missionTime],

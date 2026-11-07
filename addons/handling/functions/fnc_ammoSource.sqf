@@ -29,8 +29,18 @@ private _hasUniversal = false;
 
 {
     private _facts = [_x] call EFUNC(main,itemInfo);
+    private _kind = _facts select ITEM_KIND;
 
-    if ((_facts select ITEM_KIND) == (["round", "belt"] select _belt)) then {
+    // Rounds on stripper clips count as their kind of round.
+    if (!_belt && {_kind == "clip"}) then {
+        if ((_facts select ITEM_CALIBER) == _caliber) then {
+            private _key = _facts select ITEM_ROUND;
+
+            _found set [_key, (_found getOrDefault [_key, 0]) + _y * (_facts select ITEM_ROUNDS)];
+        };
+    };
+
+    if (_kind == (["round", "belt"] select _belt)) then {
         private _key = [_x, _facts select ITEM_BELT_TYPE] select _belt;
 
         if (_key == _universal && {EGVAR(main,universalAmmo)}) then {

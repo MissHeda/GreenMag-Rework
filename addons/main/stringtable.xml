@@ -146,10 +146,10 @@
             <English>A click per round while loading\nor unloading.</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_SpeedloaderFactor">
-            <English>Speedloader factor</English>
+            <English>Stripper clip loading factor</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_SpeedloaderFactor_Desc">
-            <English>Multiplies the loading time while a\nspeedloader is in the inventory.\n\nBelts and unloading are not affected.</English>
+            <English>Multiplies the loading time of rounds\nthat go in on a whole stripper clip,\nwith a speedloader in the inventory.\n\nLoose rounds, belts and unloading\nare not affected.</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_TimePerRound">
             <English>Seconds per round</English>

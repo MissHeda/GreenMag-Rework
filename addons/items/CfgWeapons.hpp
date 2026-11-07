@@ -28,6 +28,14 @@ class CfgWeapons {
         gmr_kind = "pack";
         scope = 2;
     };
+    // A stripper clip: stripped like a pack, or pressed into a magazine whole with the speedloader.
+    class gmr_clip_base: gmr_item_base {
+        gmr_kind = "clip";
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        descriptionShort = CSTRING(Clip_Desc);
+    };
     class gmr_belt_base: gmr_item_base {
         model = QPATHTOF(data\drop_belt.p3d);
         gmr_kind = "belt";
@@ -48,5 +56,6 @@ class CfgWeapons {
     };
 
     #include "cfg\rounds.hpp"
+    #include "cfg\clips.hpp"
     #include "cfg\belts.hpp"
 };

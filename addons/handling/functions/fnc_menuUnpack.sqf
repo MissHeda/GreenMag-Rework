@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * The children of "Unpack": one entry per kind of pack the player carries.
+ * The children of "Unpack": one entry per kind of pack and stripper clip the player carries.
  *
  * Arguments:
  * 0: Player <OBJECT>
@@ -18,7 +18,7 @@
 params [["_unit", objNull, [objNull]]];
 
 private _packs = (keys ([_unit] call EFUNC(main,itemCounts))) select {
-    (([_x] call EFUNC(main,itemInfo)) select ITEM_KIND) == "pack"
+    (([_x] call EFUNC(main,itemInfo)) select ITEM_KIND) in ["pack", "clip"]
 };
 
 _packs sort true;

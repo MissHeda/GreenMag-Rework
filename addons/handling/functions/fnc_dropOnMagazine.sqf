@@ -2,7 +2,7 @@
 /*
  * Author: Miss Heda
  * Ammunition was dropped on a row of a list: if that row is a magazine of its caliber that takes this kind of round
- * (fnc_loadRule), loading starts; loose rounds and packs go into magazines, belts into belt magazines. The list
+ * (fnc_loadRule), loading starts; loose rounds, stripper clips and packs go into magazines, belts into belt magazines. The list
  * only says the magazine's class, so its rounds come from the cargo, by its place among the rows of that class; when
  * that one is full, the fullest one with room takes its place. The inventory closes and the same action as from the
  * ACE menu takes over: the hold action, or the progress bar when "Hold to load" is off.
@@ -75,6 +75,13 @@ if (_amount >= _capacity) exitWith {
 
 private _closed = false;
 private _ammunition = [_facts select ITEM_ROUND, _facts select ITEM_BELT_TYPE] select _isBelt;
+
+// A carton of stripper clips holds clips: it loads their rounds. A clip itself loads as its rounds (fnc_takeRounds).
+private _inside = [_ammunition] call EFUNC(main,itemInfo);
+
+if (!_isBelt && {(_inside select ITEM_KIND) == "clip"}) then {
+    _ammunition = _inside select ITEM_ROUND;
+};
 private _why = ([_class, _amount, _ammunition] call FUNC(loadRule)) select 1;
 
 if (_why isNotEqualTo "") exitWith {

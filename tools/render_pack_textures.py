@@ -75,14 +75,14 @@ def setup(camera_data):
     return scene, camera
 
 
-def render_sides(name, caliber, variant, label, variant_label, folder):
+def render_sides(name, caliber, variant, label, variant_label, folder, second=None):
     for item in list(bpy.data.objects):
         bpy.data.objects.remove(item, do_unlink=True)
 
     for mat in list(bpy.data.materials):
         bpy.data.materials.remove(mat)
 
-    ITEMS.pack_carton(caliber, variant, label, variant_label)
+    ITEMS.pack_carton(caliber, variant, label, variant_label, second)
 
     # A real tuck flap is the same board as the carton; the picture's darker flap only reads as its shadow.
     for item in bpy.data.objects:
@@ -122,6 +122,17 @@ def main():
 
             if not name_filter or name_filter in name:
                 render_sides(name, caliber, variant, label, variant_label, folder)
+
+    # The cartons of stripper clips, with their own second line.
+    for caliber, rounds in ITEM_TABLE.CLIPS.items():
+        label = ITEM_TABLE.CALIBERS[caliber][0]
+
+        for variant, (variant_label, _) in ITEM_TABLE.variants_of(caliber).items():
+            name = f"clips_{caliber}_{variant}"
+
+            if not name_filter or name_filter in name:
+                second = ITEMS.clip_line(variant, variant_label, rounds)
+                render_sides(name, caliber, variant, label, variant_label, folder, second)
 
 
 main()

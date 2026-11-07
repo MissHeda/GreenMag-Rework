@@ -14,7 +14,9 @@ it, and does not load together with its compat patches. Requires CBA. ACE3 is op
 - Loose rounds, packs of 10 to 60, and belts of 1 to 200 rounds that can be combined or taken apart
 - Simple (caliber only) or advanced (tracer, AP, match ...) ammunition, a server setting
 - Magazines of other mods are recognised by their class, ammo and description, no compat patch needed
-- Time modifiers per unit in Eden, a speedloader item, and all timings as settings
+- Stripper clips for the rifle calibers issued on them: strip them into loose rounds, or press a whole clip into a
+  magazine at once with the speedloader
+- Time modifiers per unit in Eden and all timings as settings
 - A reload guard: a magazine the game loses while reloading is put back and logged in the RPT
 
 ## Magazines of other mods
@@ -46,7 +48,7 @@ Optional lines, only if you need them:
 | --- | --- |
 | `gmr_belt = 1;` | refills from belts instead of loose rounds |
 | `gmr_variant = "tracer";` | the kind of round inside (advanced ammunition) |
-| `gmr_speedload = 0;` | the speedloader does not work on it |
+| `gmr_speedload = 0;` | no stripper clips with the speedloader (single rounds only) |
 | `gmr_disabled = 1;` | GreenMag leaves this magazine alone |
 
 **2. Your own kind of ammunition** (a new caliber): name it once, then give it a round and, if you like, a box. This

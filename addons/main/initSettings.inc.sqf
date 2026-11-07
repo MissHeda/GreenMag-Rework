@@ -30,7 +30,7 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
 
 [
     QGVAR(speedloaderFactor), "SLIDER", [LLSTRING(Setting_SpeedloaderFactor), LLSTRING(Setting_SpeedloaderFactor_Desc)],
-    [CBA_SETTINGS_SERVER, _timing], [0.1, 1, 0.5, 2], 1
+    [CBA_SETTINGS_SERVER, _timing], [0.1, 1, 0.25, 2], 1
 ] call CBA_fnc_addSetting;
 
 // ----- Server: rules -----

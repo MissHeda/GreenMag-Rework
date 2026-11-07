@@ -42,7 +42,7 @@ CARTON = (0.097, 0.0586, 0.0366)
 CARTON_SCALES = {"s": 1.0, "m": 1.2, "l": 1.4}
 # What the geometry LODs weigh, in kg, for the game to rest them on the ground: the small carton full, the rest.
 CARTON_MASS = 0.35
-DROP_MASS = {"drop_round": 0.05, "drop_belt": 0.3, "drop_speedloader": 0.1}
+DROP_MASS = {"drop_round": 0.05, "drop_belt": 0.3, "drop_speedloader": 0.1, "drop_clip_10": 0.15, "drop_clip_5": 0.15}
 
 BRASS = texture(0.78, 0.60, 0.26)
 BRASS_DARK = texture(0.60, 0.44, 0.17)
@@ -279,6 +279,13 @@ def pack_names():
             yield f"{caliber}_{variant}", label, variant_label
 
 
+def clip_carton_names():
+    """(file name, label, variant label) of every carton of stripper clips."""
+    for caliber, variant, _, _, _ in ITEM_TABLE.clip_names():
+        label = ITEM_TABLE.CALIBERS[caliber][0]
+        yield f"clips_{caliber}_{variant}", label, ITEM_TABLE.variants_of(caliber)[variant][0]
+
+
 def paa(png, target):
     subprocess.run(["hemtt", "utils", "paa", "convert", str(png), str(target)], check=True, capture_output=True)
 
@@ -290,7 +297,7 @@ def write_textures(faces, preview):
     folder = preview or faces
     folder.mkdir(parents=True, exist_ok=True)
 
-    for name, label, variant_label in pack_names():
+    for name, label, variant_label in [*pack_names(), *clip_carton_names()]:
         png = folder / f"carton_{name}_co.png"
         carton_texture(faces, name, label, variant_label).save(png)
         paa(png, PACKS / f"carton_{name}_co.paa")
@@ -471,6 +478,25 @@ def belt_model(rounds=9):
     return model
 
 
+def clip_model(rounds):
+    """A stripper clip lying on the ground: its rounds side by side along X, held at their bases by the steel strip.
+    The ten-round clip carries 5.56 mm, the five-round one 7.62x51 mm."""
+    model = Model()
+    length, radius = (0.0574, 0.0048) if rounds == 10 else (0.0711, 0.006)
+    pitch = radius * 2.12
+
+    for index in range(rounds):
+        x = (index - (rounds - 1) / 2) * pitch
+        cartridge(model, (x, 0, 0), (0, 0, 1), length, radius)
+
+    strip = pitch * rounds + 0.003
+    base = -length / 2
+    model.box((0, 0, base + 0.0015), (strip, radius * 2.5, 0.003), STEEL)
+    model.box((0, radius * 1.15, base + 0.004), (strip, 0.0008, 0.005), STEEL)
+    model.box((0, -radius * 1.15, base + 0.004), (strip, 0.0008, 0.005), STEEL)
+    return model
+
+
 def speedloader():
     """A rifle magazine loader: a sleeve over the magazine's top, its thumb plunger and grip ribs."""
     model = Model()
@@ -543,6 +569,8 @@ def main():
         "drop_round": round_model(),
         "drop_belt": belt_model(),
         "drop_speedloader": speedloader(),
+        "drop_clip_10": clip_model(10),
+        "drop_clip_5": clip_model(5),
     }
 
     (OUT / "gmr_plain.rvmat").write_text(RVMAT, encoding="utf-8", newline="\n")
@@ -555,6 +583,17 @@ def main():
         write_p3d(OUT / f"{name}.p3d", model, MATERIAL, geometry=hull_box(model), mass=DROP_MASS[name])
 
     packs = []
+
+    # The cartons of stripper clips come in one size.
+    for name, _, _ in clip_carton_names():
+        model = carton(f"{PACKS_PATH}\\carton_{name}_co.paa", 1.0)
+
+        if preview and pngs:
+            write_preview(preview / f"pack_{name}.obj", model, pngs / f"carton_{name}_co.png")
+
+        lay_down(model)
+        write_p3d(PACKS / f"{name}.p3d", model, CARTON_RVMAT, welded(model, 0.98), welded(model), CARTON_MASS)
+        packs.append(name)
 
     for name, _, _ in pack_names():
         for size, scale in CARTON_SCALES.items():

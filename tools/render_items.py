@@ -461,7 +461,7 @@ def build_shell(variant):
 CARTON = (97, 58.6, 36.6)
 
 
-def pack_carton(caliber, variant, label, variant_label):
+def pack_carton(caliber, variant, label, variant_label, second=None):
     """The printed carton, lid up, its front (with the band) towards -Y and the tuck flap on +X."""
     universal = caliber == "universal"
     base = (0.045, 0.06, 0.03) if universal else (0.13, 0.07, 0.028)
@@ -509,17 +509,41 @@ def pack_carton(caliber, variant, label, variant_label):
         text.data.materials.append(ink)
 
     lid_text(label.upper(), depth * 0.14, width * (0.125 if len(label) <= 10 else 0.095))
-    lid_text("BALL" if variant == "basic" else variant_label.upper(), -depth * 0.10, width * 0.062)
+    lid_text(second or ("BALL" if variant == "basic" else variant_label.upper()), -depth * 0.10, width * 0.062)
 
 
-def build_pack(caliber, variant, label, variant_label):
+def clip_line(variant, variant_label, rounds):
+    """The second line on a carton of stripper clips: what is inside and how it is clipped."""
+    kind = "BALL" if variant == "basic" else variant_label.upper()
+    return f"{kind}  -  {ITEM_TABLE.CLIPS_PER_PACK} X {rounds} ON CLIPS"
+
+
+def build_pack(caliber, variant, label, variant_label, line=None):
     def build(camera):
         add_key_light()
-        pack_carton(caliber, variant, label, variant_label)
+        pack_carton(caliber, variant, label, variant_label, line)
         width, depth, height = CARTON
 
+        # A carton of stripper clips shows one of its clips lying in front of it.
+        if line:
+            before = set(bpy.context.collection.objects)
+            stripper_clip(caliber, variant, ITEM_TABLE.CLIPS[caliber])
+            holder = bpy.data.objects.new("clip_holder", None)
+            bpy.context.collection.objects.link(holder)
+
+            for item in set(bpy.context.collection.objects) - before - {holder}:
+                if item.parent is None:
+                    item.parent = holder
+
+            length = CARTRIDGES[caliber][6]
+            # Small enough that the whole clip stays in the picture, whatever its length.
+            scale = min(70.0 / (CARTRIDGES[caliber][0] * 1.06 * ITEM_TABLE.CLIPS[caliber]), 62.0 / length, 0.95)
+            holder.scale = (scale, scale, scale)
+            # Tips towards the viewer, the clip's back against the carton.
+            holder.rotation_euler = (math.radians(90), 0, math.radians(-8))
+            holder.location = (width * 0.02, -depth * 0.56, CARTRIDGES[caliber][0] * scale * 0.62)
         # Two of its own rounds in front of it, as big as they are next to the same carton: only very long ones shrink.
-        if caliber == "12g":
+        elif caliber == "12g":
             shell(variant, (-width * 0.30, -depth * 0.86, 0))
             shell(variant, (width * 0.26, -depth * 0.98, 0))
         else:
@@ -580,6 +604,36 @@ def build_belt(caliber, variant):
     return build
 
 
+def stripper_clip(caliber, variant, rounds):
+    """Rounds standing side by side in a stripper clip: a strip under their bases, its edges folded over their rims."""
+    strip = metal(((0.20, 0.205, 0.20), 1.0, 0.34))
+    base_d = CARTRIDGES[caliber][0] * (1.16 if CARTRIDGES[caliber][8] == "rim" else 1.0)
+    pitch = base_d * 1.06
+    length = pitch * rounds + 3
+
+    for index in range(rounds):
+        cartridge(caliber, variant, 1.0, (-pitch * (rounds - 1) / 2 + index * pitch, 0, 2.0))
+
+    block("clip", (length, base_d * 1.25, 0.9), (0, 0, 1.1), strip, 0.15)
+
+    for side in (-1, 1):
+        block("clip_edge", (length, 0.9, 3.4), (0, side * base_d * 0.62, 2.5), strip, 0.15)
+        block("clip_lip", (length, base_d * 0.16, 0.8), (0, side * base_d * 0.54, 4.0), strip, 0.12)
+
+    return length
+
+
+def build_clip(caliber, variant, rounds):
+    def build(camera):
+        add_key_light(0.8)
+        length = stripper_clip(caliber, variant, rounds)
+        overall = CARTRIDGES[caliber][6]
+        # Lying across the picture, seen a little from the side, as the speedloader's clip is.
+        frame(camera, (0, 0, overall * 0.5), max(length, overall) * 1.3, (0.34, -1.0, 0.20), math.radians(-90), 200)
+
+    return build
+
+
 def build_speedloader(camera):
     """As in the field: a thin steel guide on the magazine's lips, a stripper clip of rounds sliding down through it."""
     add_key_light(0.8)
@@ -631,6 +685,14 @@ def main():
     for caliber, (label, _, _, _, variants) in ITEM_TABLE.CALIBERS.items():
         for variant, (variant_label, _) in ({"basic": ("Basic", ())} | variants).items():
             render(f"pack_{caliber}_{variant}", build_pack(caliber, variant, label, variant_label), folder, name_filter)
+
+    for caliber, rounds in ITEM_TABLE.CLIPS.items():
+        label = ITEM_TABLE.CALIBERS[caliber][0]
+
+        for variant, (variant_label, _) in ITEM_TABLE.variants_of(caliber).items():
+            render(f"clip_{caliber}_{variant}", build_clip(caliber, variant, rounds), folder, name_filter)
+            line = clip_line(variant, variant_label, rounds)
+            render(f"packclips_{caliber}_{variant}", build_pack(caliber, variant, label, variant_label, line), folder, name_filter)
 
     for caliber, variant in ITEM_TABLE.BELTS:
         render(f"belt_{caliber}_{variant}", build_belt(caliber, variant), folder, name_filter)

@@ -71,6 +71,23 @@ private _fnc_magazineCan = {
     []
 ] call CBA_fnc_addItemContextMenuOption;
 
+// Stripper clips are stripped into loose rounds the same way.
+[
+    "gmr_clip_base",
+    "CONTAINER",
+    LLSTRING(StripClip),
+    nil,
+    QPATHTOF(data\action_unpack.paa),
+    {EGVAR(main,enabled)},
+    {
+        params ["_unit", "_container", "_item"];
+
+        [_unit, _item, false, _container] call FUNC(unpack);
+    },
+    true,
+    []
+] call CBA_fnc_addItemContextMenuOption;
+
 // Loose rounds go into packs.
 [
     "gmr_round_base",

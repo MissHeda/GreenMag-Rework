@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Added: stripper clips for the calibers issued on them (5.56x45, 5.45x39, 5.8x42 and 7.62x39 on 10-round clips, 7.62x51, 7.62x54R, 7.92x57 and .303 on 5-round clips), in every variant, and cartons of three clips
+- Added: strip a clip into loose rounds from its context menu or the ACE "Unpack" menu; a carton of clips unpacks into clips
+- Added: rounds on clips count as ammunition for loading; drag a clip or a carton of clips onto a magazine to load it
+- Changed: the speedloader now loads a whole stripper clip at once, at a quarter of the time of single rounds ("Stripper clip loading factor"); it no longer speeds up loose rounds
+
 ## 1.0.3
 
 - Fixed: items on the ground sank in and tilted, cut off at the ground; every ground model has a geometry LOD now, so it rests flat

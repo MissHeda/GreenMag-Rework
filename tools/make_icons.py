@@ -210,7 +210,7 @@ def main():
             source = png
 
             # Thin bright edges show as a light rim at inventory size. The cartons are matte and keep theirs.
-            if png.stem.startswith(("belt_", "round_", "speedloader")):
+            if png.stem.startswith(("belt_", "round_", "clip_", "speedloader")):
                 source = Path(temp) / png.name
                 clean_edges(png, source)
 

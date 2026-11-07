@@ -58,6 +58,9 @@
         <Key ID="STR_gmr_handling_Unpack">
             <English>Unpack ammunition</English>
         </Key>
+        <Key ID="STR_gmr_handling_StripClip">
+            <English>Strip rounds off the clip</English>
+        </Key>
         <Key ID="STR_gmr_handling_SplitBelt">
             <English>Split belt</English>
         </Key>

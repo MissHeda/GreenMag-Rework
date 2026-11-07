@@ -102,6 +102,11 @@ for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
         private _facts = [_item] call EFUNC(main,itemInfo);
         private _kind = _facts select ITEM_KIND;
 
+        // Stripper clips show with the packs.
+        if (_kind == "clip") then {
+            _kind = "pack";
+        };
+
         private _shown = if (_fitting isEqualTo []) then {
             _kind == GVAR(arsenalView)
         } else {

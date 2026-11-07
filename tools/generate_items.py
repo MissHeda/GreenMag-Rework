@@ -48,6 +48,20 @@ PACK_SIZES = {
     "127x108": (10,),
     "12g": (5, 25),
 }
+# The calibers issued on stripper clips, and the rounds on one clip: 10 for the intermediate rifle rounds, 5 for the
+# full-power ones. Every variant of them comes as a clip and as a carton of CLIPS_PER_PACK clips.
+CLIPS = {
+    "556x45": 10,
+    "545x39": 10,
+    "580x42": 10,
+    "762x39": 10,
+    "762x51": 5,
+    "762x54": 5,
+    "792x57": 5,
+    "303": 5,
+}
+CLIPS_PER_PACK = 3
+CLIP_MASS_FACTOR = 1.05
 ARSENAL_BELTS = (50, 100, 150, 200)
 BELT_LENGTH = 200
 
@@ -202,6 +216,42 @@ def rounds_and_packs():
     return len(lines) - 1
 
 
+def clip_names():
+    """(caliber, variant, clip class, carton class, rounds on a clip) of every clip."""
+    for caliber, rounds in CLIPS.items():
+        for variant in variants_of(caliber):
+            yield caliber, variant, f"gmr_clip_{caliber}_{variant}", f"gmr_clips_{caliber}_{variant}", rounds
+
+
+def clips():
+    """The stripper clips, and the cartons they come in: a carton's gmr_round is its clip, its gmr_rounds the clips."""
+    lines = [HEADER]
+
+    for caliber, variant, clip, carton, rounds in clip_names():
+        label, _, round_mass, _, _ = CALIBERS[caliber]
+        name = item_name(label, variants_of(caliber)[variant][0])
+        common = f'gmr_caliber = "{caliber}"; gmr_variant = "{variant}"; '
+
+        lines.append(
+            f'class {clip}: gmr_clip_base {{displayName = "{name} Stripper Clip ({rounds} rds)"; '
+            f'picture = "\\z\\gmr\\addons\\items\\data\\clip_{caliber}_{variant}.paa"; '
+            f'model = "\\z\\gmr\\addons\\items\\data\\drop_clip_{rounds}.p3d"; '
+            f'{common}gmr_rounds = {rounds}; gmr_round = "gmr_round_{caliber}_{variant}"; '
+            f"class ItemInfo: CBA_MiscItem_ItemInfo {{mass = {mass(round_mass * rounds * CLIP_MASS_FACTOR)};}};}};"
+        )
+        lines.append(
+            f'class {carton}: gmr_pack_base {{displayName = "{name} Clips ({CLIPS_PER_PACK}x{rounds} rds)"; '
+            f'picture = "\\z\\gmr\\addons\\items\\data\\packclips_{caliber}_{variant}.paa"; '
+            f'model = "\\z\\gmr\\addons\\items\\data\\packs\\clips_{caliber}_{variant}.p3d"; '
+            f"scopeArsenal = 2; scopeCurator = 2; {common}gmr_rounds = {CLIPS_PER_PACK}; gmr_round = \"{clip}\"; "
+            f"class ItemInfo: CBA_MiscItem_ItemInfo {{"
+            f"mass = {mass(round_mass * rounds * CLIPS_PER_PACK * CLIP_MASS_FACTOR * PACK_MASS_FACTOR)};}};}};"
+        )
+
+    (OUT / "clips.hpp").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    return len(lines) - 1
+
+
 def belts():
     lines = [HEADER]
 
@@ -262,6 +312,9 @@ def public_classes():
     for caliber, variant in BELTS:
         names += [f"gmr_belt_{caliber}_{variant}_{length}" for length in ARSENAL_BELTS]
 
+    for _, _, clip, carton, _ in clip_names():
+        names += [clip, carton]
+
     text = HEADER + ",\n".join(f'"{name}"' for name in names) + "\n"
     (OUT / "public_classes.hpp").write_text(text, encoding="utf-8", newline="\n")
 
@@ -270,4 +323,4 @@ if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     calibers()
     public_classes()
-    print(f"{rounds_and_packs()} round and pack classes, {belts()} belt classes")
+    print(f"{rounds_and_packs()} round and pack classes, {clips()} clip classes, {belts()} belt classes")
