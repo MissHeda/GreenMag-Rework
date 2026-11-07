@@ -68,7 +68,7 @@
 #define CG_ROUND_WIDTH 0.066
 #define CG_ROUND_HEIGHT 0.018
 #define CG_MAG_TOP 0.34
-#define CG_MAG_SHARE 0.66
+#define CG_MAG_SHARE 0.74
 #define CG_MAG_HEIGHT 0.22
 #define CG_STEEL [0.30, 0.31, 0.33, 1]
 #define CG_GUIDE [0.16, 0.17, 0.18, 1]

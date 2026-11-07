@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.9
+
+- Changed: the stripper clip minigame's magazine stands further right still, near the window's right edge
+
 ## 1.2.8
 
 - Changed: in the stripper clip minigame the magazine stands further right, the instructions read more plainly, and in the countdown only the number lights up in its last seconds
