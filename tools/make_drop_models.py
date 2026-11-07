@@ -287,7 +287,14 @@ def clip_carton_names():
 
 
 def paa(png, target):
-    subprocess.run(["hemtt", "utils", "paa", "convert", str(png), str(target)], check=True, capture_output=True)
+    """PNG to PAA. HEMTT will not write over a PAA that exists (it says so and still exits 0), so the old one goes first,
+    and a run that leaves no new file fails loudly."""
+    target = Path(target)
+    target.unlink(missing_ok=True)
+    result = subprocess.run(["hemtt", "utils", "paa", "convert", str(png), str(target)], capture_output=True, text=True)
+
+    if result.returncode != 0 or not target.exists():
+        raise RuntimeError(f"PAA conversion failed for {png}: {result.stdout} {result.stderr}")
 
 
 def write_textures(faces, preview):

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.10
+
+- Fixed: boxes of loose rounds on the ground still wore their first, darker texture from 1.0.1, which no longer fit the model; they now show the printed cardboard of their inventory picture like the boxes of clips
+
 ## 1.2.9
 
 - Changed: the stripper clip minigame's magazine stands further right still, near the window's right edge
