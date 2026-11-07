@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.8
+
+- Changed: in the stripper clip minigame the magazine stands further right, the instructions read more plainly, and in the countdown only the number lights up in its last seconds
+
 ## 1.2.7
 
 - Changed: the stripper clip minigame's line about going on by itself counts down the seconds left alone ("Doing it by itself in 3 s"), and is short enough not to be cut off

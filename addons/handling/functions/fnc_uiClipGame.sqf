@@ -208,10 +208,12 @@ if !(GVAR(op) get "mustHit") then {
 
     if (_key isNotEqualTo (_cg get "autoShown")) then {
         _cg set ["autoShown", _key];
+        // Only the number lights up, in its last seconds.
+        private _number = format ["<t color='%1' font='PuristaBold'>%2</t>", ["#6f8fae", "#8fc7ff"] select (_waiting && {_left <= 3}), _left];
+
         (_cg get "auto") ctrlSetStructuredText parseText format [
-            "<t align='center' size='0.74' color='%1' font='PuristaMedium'>%2</t>",
-            ["#6f8fae", "#8fc7ff"] select (_active || {_waiting && {_left <= 3}}),
-            [format [LLSTRING(Clip_AutoIn), _left], LLSTRING(Clip_AutoNow)] select _active
+            "<t align='center' size='0.74' color='#6f8fae' font='PuristaMedium'>%1</t>",
+            [format [LLSTRING(Clip_AutoIn), _number], LLSTRING(Clip_AutoNow)] select _active
         ];
     };
 };
