@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Added: a minigame for stripper clips: seat the clip in the guide as it passes over the magazine, then hold to press the rounds down, letting go before the pressure reaches the red or the clip jams
+- Changed: what you drag onto a magazine is what goes in: loose rounds or a pack load only loose rounds (with the round minigame), a clip or a carton of clips only rounds on clips; the menus press in whole clips when the speedloader takes them, else loose rounds first
+- Changed: packs come in 10, 30 and 60 rounds; the other sizes are hidden but still exist, so saved loadouts keep them
+- Changed: cartons of clips in the sizes they are issued in: 5.56x45 2x10 and 3x10, 5.45x39, 5.8x42 and 7.62x39 2x10, 7.62x51 and 7.62x54R 4x5, 7.92x57 3x5, .303 2x5
+
 ## 1.1.3
 
 - Added: setting "Speedloader": stripper clips only, loose rounds only (the boost from before 1.1.0) or both (default)

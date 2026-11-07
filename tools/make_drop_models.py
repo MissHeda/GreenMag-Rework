@@ -281,9 +281,9 @@ def pack_names():
 
 def clip_carton_names():
     """(file name, label, variant label) of every carton of stripper clips."""
-    for caliber, variant, _, _, _ in ITEM_TABLE.clip_names():
+    for caliber, variant, _, _, count, _ in ITEM_TABLE.clip_cartons():
         label = ITEM_TABLE.CALIBERS[caliber][0]
-        yield f"clips_{caliber}_{variant}", label, ITEM_TABLE.variants_of(caliber)[variant][0]
+        yield f"clips_{caliber}_{variant}_{count}", label, ITEM_TABLE.variants_of(caliber)[variant][0]
 
 
 def paa(png, target):

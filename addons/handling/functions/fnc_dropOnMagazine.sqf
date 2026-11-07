@@ -76,12 +76,20 @@ if (_amount >= _capacity) exitWith {
 private _closed = false;
 private _ammunition = [_facts select ITEM_ROUND, _facts select ITEM_BELT_TYPE] select _isBelt;
 
-// A carton of stripper clips holds clips: it loads their rounds. A clip itself loads as its rounds (fnc_takeRounds).
+// What was dragged is what loads: loose rounds (and packs of them) only loose rounds, a clip or a carton of clips only
+// rounds on clips. A carton of clips holds clips, so it loads their rounds.
+private _from = ["loose", "clips"] select ((_facts select ITEM_KIND) == "clip");
 private _inside = [_ammunition] call EFUNC(main,itemInfo);
 
 if (!_isBelt && {(_inside select ITEM_KIND) == "clip"}) then {
     _ammunition = _inside select ITEM_ROUND;
+    _from = "clips";
 };
+
+if (_isBelt) then {
+    _from = "auto";
+};
+
 private _why = ([_class, _amount, _ammunition] call FUNC(loadRule)) select 1;
 
 if (_why isNotEqualTo "") exitWith {
@@ -109,11 +117,11 @@ closeDialog 0;
 
 [
     {
-        params ["_unit", "_class", "_amount", "_ammunition"];
+        params ["_unit", "_class", "_amount", "_ammunition", "_from"];
 
-        [_unit, "fill", _class, [_amount], _ammunition] call FUNC(start);
+        [_unit, "fill", _class, [_amount], _ammunition, _from] call FUNC(start);
     },
-    [_unit, _class, _amount, _ammunition]
+    [_unit, _class, _amount, _ammunition, _from]
 ] call CBA_fnc_execNextFrame;
 
 true

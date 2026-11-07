@@ -59,30 +59,36 @@ private _need = GVAR(op) get "need";
 private _time = (GVAR(op) get "time") max 0.01;
 private _progress = 0;
 
-if (GVAR(op) get "game") then {
-    if (_pressed && {!_wasPressed}) then {
-        call FUNC(gamePress);
-    };
+if (GVAR(op) get "clipGame") then {
+    [_step, _pressed, _wasPressed] call FUNC(clipGameTick);
 
-    if (_now >= (GVAR(op) get "stall")) then {
-        private _phase = (GVAR(op) get "phase") + _step / (GVAR(op) get "beat");
-
-        // Past the end without a hit: the server's setting says whether the round seats anyway.
-        if (_phase >= 1) then {
-            _phase = 0;
-            GVAR(op) set ["attempt", (GVAR(op) get "attempt") + 1];
-
-            if !(GVAR(op) get "mustHit") then {
-                GVAR(op) set ["rounds", (GVAR(op) get "rounds") + 1];
-            };
+    _progress = (_time * (GVAR(op) get "pushed") / (_need max 1)) min _time;
+} else {
+    if (GVAR(op) get "game") then {
+        if (_pressed && {!_wasPressed}) then {
+            call FUNC(gamePress);
         };
 
-        GVAR(op) set ["phase", _phase];
-    };
+        if (_now >= (GVAR(op) get "stall")) then {
+            private _phase = (GVAR(op) get "phase") + _step / (GVAR(op) get "beat");
 
-    _progress = (((GVAR(op) get "rounds") + (GVAR(op) get "phase")) * (GVAR(op) get "beat")) min _time;
-} else {
-    _progress = ((GVAR(op) get "progress") + _step) min _time;
+            // Past the end without a hit: the server's setting says whether the round seats anyway.
+            if (_phase >= 1) then {
+                _phase = 0;
+                GVAR(op) set ["attempt", (GVAR(op) get "attempt") + 1];
+
+                if !(GVAR(op) get "mustHit") then {
+                    GVAR(op) set ["rounds", (GVAR(op) get "rounds") + 1];
+                };
+            };
+
+            GVAR(op) set ["phase", _phase];
+        };
+
+        _progress = (((GVAR(op) get "rounds") + (GVAR(op) get "phase")) * (GVAR(op) get "beat")) min _time;
+    } else {
+        _progress = ((GVAR(op) get "progress") + _step) min _time;
+    };
 };
 
 GVAR(op) set ["progress", _progress];
@@ -130,7 +136,11 @@ if (_done > (GVAR(op) get "played")) then {
 };
 
 if (GVAR(op) get "game") then {
-    call FUNC(uiGame);
+    if (GVAR(op) get "clipGame") then {
+        call FUNC(uiClipGame);
+    } else {
+        call FUNC(uiGame);
+    };
 };
 
 if (_progress >= _time) then {

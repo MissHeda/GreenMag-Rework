@@ -128,11 +128,12 @@ def main():
         label = ITEM_TABLE.CALIBERS[caliber][0]
 
         for variant, (variant_label, _) in ITEM_TABLE.variants_of(caliber).items():
-            name = f"clips_{caliber}_{variant}"
+            for count in ITEM_TABLE.CLIP_BOXES[caliber]:
+                name = f"clips_{caliber}_{variant}_{count}"
 
-            if not name_filter or name_filter in name:
-                second = ITEMS.clip_line(variant, variant_label, rounds)
-                render_sides(name, caliber, variant, label, variant_label, folder, second)
+                if not name_filter or name_filter in name:
+                    second = ITEMS.clip_line(variant, variant_label, count, rounds)
+                    render_sides(name, caliber, variant, label, variant_label, folder, second)
 
 
 main()

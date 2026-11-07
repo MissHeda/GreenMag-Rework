@@ -52,6 +52,24 @@
 #define GAME_ZONE_MIN 0.12
 #define GAME_MIN_BEAT 0.25
 
+// The stripper clip minigame: seat the clip in the guide over the magazine as it sweeps past, then hold to press the
+// rounds down. The thumb's pressure climbs while held, faster the fuller the magazine (the spring), and falls when let
+// go; the rounds move while it is in the green, and past the red the clip jams for a moment. Without the server's
+// "must hit" a clip seats itself after a few passes and the rounds go down slowly without pressing.
+#define UI_CLIP_GAME_HEIGHT 0.1
+#define UI_CLIP_WIDTH 0.075
+#define UI_GAUGE_HEIGHT 0.012
+#define UI_GAUGE_COLOR [0.96, 0.72, 0.30, 1]
+#define CLIP_SWEEP_TIME 1.3
+#define CLIP_AUTO_PASSES 2
+#define CLIP_PRESSURE_RISE 0.85
+#define CLIP_PRESSURE_SPRING 0.75
+#define CLIP_PRESSURE_FALL 2.4
+#define CLIP_PRESSURE_GREEN 0.2
+#define CLIP_PRESSURE_RED 0.82
+#define CLIP_JAM_STALL 0.7
+#define CLIP_AUTO_RATE 0.5
+
 // How long a streak reward stays beside the count, in seconds.
 #define GAME_REWARD_SHOW 1.5
 

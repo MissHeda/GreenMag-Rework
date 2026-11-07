@@ -100,6 +100,12 @@
         <Key ID="STR_gmr_handling_Reward_Full">
             <English>Jackpot! +%1</English>
         </Key>
+        <Key ID="STR_gmr_handling_Prompt_ClipInsert">
+            <English>Press %1 when the clip is over the magazine, Esc to stop</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Prompt_ClipPush">
+            <English>Hold %1 to press the rounds down, let go before the red</English>
+        </Key>
         <Key ID="STR_gmr_handling_Prompt_GameMust">
             <English>Press %1 when the round is on the magazine, Esc to stop</English>
         </Key>

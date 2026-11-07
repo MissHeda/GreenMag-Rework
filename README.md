@@ -9,13 +9,14 @@ it, and does not load together with its compat patches. Requires CBA. ACE3 is op
 
 ## Features
 
-- Drag rounds, a pack or a belt onto a magazine in the inventory to load it
+- Drag rounds, a pack, a stripper clip or a belt onto a magazine in the inventory to load it: what you drag is what
+  goes in
 - Refill, unload, unpack, repack and combine through the inventory's context menu (double click), and with ACE also through its self interaction
-- Loose rounds, packs of 10 to 60, and belts of 1 to 200 rounds that can be combined or taken apart
+- Loose rounds, packs of 10, 30 and 60, and belts of 1 to 200 rounds that can be combined or taken apart
 - Simple (caliber only) or advanced (tracer, AP, match ...) ammunition, a server setting
 - Magazines of other mods are recognised by their class, ammo and description, no compat patch needed
-- Stripper clips for the rifle calibers issued on them: strip them into loose rounds, or press a whole clip into a
-  magazine at once with the speedloader
+- Stripper clips for the rifle calibers issued on them, in cartons as they are issued: strip them into loose rounds,
+  or seat a clip in the speedloader's guide and press the rounds down, with its own minigame
 - Time modifiers per unit in Eden and all timings as settings
 - A reload guard: a magazine the game loses while reloading is put back and logged in the RPT
 

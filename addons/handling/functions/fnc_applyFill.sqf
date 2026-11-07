@@ -31,7 +31,7 @@ private _capacity = ([_class] call EFUNC(main,magazineInfo)) select MAG_CAPACITY
 private _left = switch (true) do {
     case (_free): {_rounds};
     case (_belt): {[_unit, _source, _rounds] call EFUNC(main,takeBelts)};
-    default {[_unit, _source, _rounds, _op getOrDefault ["clipLoading", false]] call FUNC(takeRounds)};
+    default {[_unit, _source, _rounds, _op getOrDefault ["from", "mixed"]] call FUNC(takeRounds)};
 };
 
 private _changed = false;

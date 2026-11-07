@@ -512,10 +512,10 @@ def pack_carton(caliber, variant, label, variant_label, second=None):
     lid_text(second or ("BALL" if variant == "basic" else variant_label.upper()), -depth * 0.10, width * 0.062)
 
 
-def clip_line(variant, variant_label, rounds):
+def clip_line(variant, variant_label, count, rounds):
     """The second line on a carton of stripper clips: what is inside and how it is clipped."""
     kind = "BALL" if variant == "basic" else variant_label.upper()
-    return f"{kind}  -  {ITEM_TABLE.CLIPS_PER_PACK} X {rounds} ON CLIPS"
+    return f"{kind}  -  {count} X {rounds} ON CLIPS"
 
 
 def build_pack(caliber, variant, label, variant_label, line=None):
@@ -697,8 +697,10 @@ def main():
 
         for variant, (variant_label, _) in ITEM_TABLE.variants_of(caliber).items():
             render(f"clip_{caliber}_{variant}", build_clip(caliber, variant, rounds), folder, name_filter)
-            line = clip_line(variant, variant_label, rounds)
-            render(f"packclips_{caliber}_{variant}", build_pack(caliber, variant, label, variant_label, line), folder, name_filter)
+
+            for count in ITEM_TABLE.CLIP_BOXES[caliber]:
+                line = clip_line(variant, variant_label, count, rounds)
+                render(f"packclips_{caliber}_{variant}_{count}", build_pack(caliber, variant, label, variant_label, line), folder, name_filter)
 
     for caliber, variant in ITEM_TABLE.BELTS:
         render(f"belt_{caliber}_{variant}", build_belt(caliber, variant), folder, name_filter)

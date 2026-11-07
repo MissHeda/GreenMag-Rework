@@ -68,6 +68,9 @@ private _key = (actionKeysNames ["Action", 1, "Keyboard"]) splitString """" join
 private _keyName = if (_key isEqualTo "") then {"Action"} else {_key};
 private _line = switch (true) do {
     case (_waiting): {format [LLSTRING(Prompt_Hold), _keyName]};
+    case (GVAR(op) getOrDefault ["clipGame", false]): {
+        format [[LLSTRING(Prompt_ClipInsert), LLSTRING(Prompt_ClipPush)] select ((GVAR(op) get "stage") == "push"), _keyName]
+    };
     case (GVAR(op) get "game"): {format [[LLSTRING(Prompt_Game), LLSTRING(Prompt_GameMust)] select (GVAR(op) get "mustHit"), _keyName]};
     case (GVAR(op) get "hold"): {LLSTRING(Prompt_LetGo)};
     default {LLSTRING(Prompt_Esc)};

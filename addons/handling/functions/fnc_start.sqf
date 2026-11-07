@@ -11,6 +11,9 @@
  * 2: Magazine class, or the belt item for "unloadBelt" <STRING>
  * 3: The rounds of each magazine, in the order to work through them <ARRAY>
  * 4: Ammunition to refill from, a round class or belt type; "" chooses by the caliber (optional, default: "") <STRING>
+ * 5: Where the rounds come from: "loose" (rounds dragged onto the magazine), "clips" (a clip or carton of clips dragged
+ *    onto it) or "auto" (the menus: whole clips when the speedloader takes them, else loose rounds and then clips)
+ *    (optional, default: "auto") <STRING>
  *
  * Return Value:
  * Whether it started <BOOL>
@@ -21,7 +24,10 @@
  * Public: No
  */
 
-params [["_unit", objNull, [objNull]], ["_kind", "fill", [""]], ["_class", "", [""]], ["_amounts", [], [[]]], ["_ammunition", "", [""]]];
+params [
+    ["_unit", objNull, [objNull]], ["_kind", "fill", [""]], ["_class", "", [""]], ["_amounts", [], [[]]], ["_ammunition", "", [""]],
+    ["_from", "auto", [""]]
+];
 
 if (!EGVAR(main,enabled) || {!alive _unit}) exitWith {false};
 
@@ -106,18 +112,27 @@ if (_kind == "unloadBelt") then {
 
 private _counts = [_unit] call EFUNC(main,itemCounts);
 
-// Rounds on stripper clips count as rounds; with the speedloader whole clips go in at once (fnc_takeRounds).
+// Rounds on stripper clips count as rounds. Where they come from is the player's choice: what was dragged onto the
+// magazine, or from the menus whole clips when the speedloader presses them in, else loose rounds first (fnc_takeRounds).
 private _clips = [];
 private _clipRounds = 0;
+private _loose = _counts getOrDefault [_source, 0];
 
-if (_kind == "fill" && {!_belt}) then {
+if (_kind == "fill" && {!_belt} && {_from != "loose"}) then {
     _clips = [_unit, _source] call FUNC(clipsOf);
     {_clipRounds = _clipRounds + (_x select 1) * (_x select 2)} forEach _clips;
 };
 
 // What the speedloader does (setting): 0 whole clips at once, 1 every loose round faster, 2 both.
 private _speedloader = _kind == "fill" && {_speedload} && {"gmr_speedloader" in _counts};
-private _clipLoading = _speedloader && {_clips isNotEqualTo []} && {EGVAR(main,speedloaderMode) != 1};
+private _clipsWhole = _speedloader && {_clips isNotEqualTo []} && {EGVAR(main,speedloaderMode) != 1};
+
+// From the menus whole clips only when they fill what there is room for, or there are no loose rounds to do it.
+if (_from == "auto") then {
+    _from = ["mixed", "clips"] select (_clipsWhole && {_clipRounds >= _need || {_loose == 0}});
+};
+
+private _clipLoading = _clipsWhole && {_from == "clips"};
 private _looseBoost = [1, EGVAR(main,speedloaderLooseFactor)] select (_speedloader && {EGVAR(main,speedloaderMode) != 0});
 
 if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
@@ -128,7 +143,11 @@ if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
             {_have = _have + (_x select 1)} forEach ([_unit, _source] call EFUNC(main,beltItems));
         };
     } else {
-        _have = (_counts getOrDefault [_source, 0]) + _clipRounds;
+        _have = switch (_from) do {
+            case "loose": {_loose};
+            case "clips": {_clipRounds};
+            default {_loose + _clipRounds};
+        };
     };
 
     if (_have < _need && {_have > 0}) then {
@@ -136,6 +155,39 @@ if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
     };
 
     _need = _need min _have;
+};
+
+// Pressed in whole: one step per clip, magazine by magazine; the last clip into a magazine may have more on it than
+// there is room for, the rest comes back loose.
+private _steps = [];
+
+if (_clipLoading) then {
+    private _supply = [];
+
+    {
+        _x params ["", "_count", "_per"];
+
+        for "_i" from 1 to _count do {
+            _supply pushBack _per;
+        };
+    } forEach _clips;
+
+    private _left = _need;
+
+    {
+        private _space = (_capacity - _x) min _left;
+
+        while {_space > 0 && {_supply isNotEqualTo []}} do {
+            private _take = (_supply deleteAt 0) min _space;
+
+            _steps pushBack _take;
+            _space = _space - _take;
+            _left = _left - _take;
+        };
+    } forEach _amounts;
+
+    _need = 0;
+    {_need = _need + _x} forEach _steps;
 };
 
 if (_refused isNotEqualTo "") exitWith {
@@ -150,36 +202,14 @@ if (_need <= 0) exitWith {
     false
 };
 
-// The time: per round for a magazine, a steady rate with a minimum for a belt.
+// The time: per round for a magazine, a steady rate with a minimum for a belt. Whole clips take the clip factor of it,
+// loose rounds the loose-round factor while the speedloader works on them.
 private _time = if (_belt) then {
     (ceil (_need / BELT_ROUNDS_PER_SECOND) max ([BELT_MIN_TIME_UNLOAD, BELT_MIN_TIME_LOAD] select (_kind == "fill")))
         * EGVAR(main,beltTimeFactor)
         * (_unit getVariable [QEGVAR(main,beltTime), 1])
 } else {
-    // With the speedloader, the rounds that go in on whole clips take the clip factor of the time; the rest go one by one,
-    // faster by the loose-round factor when the speedloader works on loose rounds too.
-    private _fast = 0;
-
-    if (_clipLoading) then {
-        private _space = _amounts apply {_capacity - _x};
-        private _left = _need;
-
-        {
-            _x params ["", "_count", "_per"];
-
-            for "_i" from 1 to _count do {
-                private _slot = _space findIf {_x >= _per};
-
-                if (_slot < 0 || {_left < _per}) exitWith {};
-
-                _space set [_slot, (_space select _slot) - _per];
-                _left = _left - _per;
-                _fast = _fast + _per;
-            };
-        } forEach _clips;
-    };
-
-    ((_need - _fast) * _looseBoost + _fast * EGVAR(main,speedloaderFactor)) * EGVAR(main,timePerRound)
+    _need * ([_looseBoost, EGVAR(main,speedloaderFactor)] select _clipLoading) * EGVAR(main,timePerRound)
         * (_unit getVariable [QEGVAR(main,magazineTime), 1])
 };
 
@@ -188,11 +218,15 @@ GVAR(opCounter) = GVAR(opCounter) + 1;
 // What the display starts from: the first magazine's rounds, or the whole belt item.
 private _startShown = if (_kind == "unloadBelt") then {_capacity} else {_amounts param [0, 0]};
 private _game = EGVAR(main,loadGame) && {!_belt} && {EGVAR(main,loadDisplay) == 0};
-private _beat = (_time / _need) max GAME_MIN_BEAT;
+// Whole clips have their own minigame (fnc_clipGameTick), pressed at the clip's pace rather than a round's.
+private _clipGame = _game && {_clipLoading};
+private _beat = [(_time / _need) max GAME_MIN_BEAT, _time / _need] select _clipGame;
 
 if (_game) then {
     _time = _beat * _need;
 };
+
+private _clipPicture = if (_clips isEqualTo []) then {""} else {([_clips select 0 select 0] call EFUNC(main,itemInfo)) select ITEM_PICTURE};
 
 GVAR(op) = createHashMapFromArray [
     ["id", GVAR(opCounter)],
@@ -210,7 +244,17 @@ GVAR(op) = createHashMapFromArray [
     ["belt", _belt],
     ["source", _source],
     ["becomes", _becomes],
+    ["from", _from],
     ["clipLoading", _clipLoading],
+    ["steps", _steps],
+    ["clipGame", _clipGame],
+    ["clipPicture", _clipPicture],
+    ["stage", "insert"],
+    ["stepIndex", 0],
+    ["stepDone", 0],
+    ["pushed", 0],
+    ["pressure", 0],
+    ["passes", 0],
     ["title", format [[LLSTRING(Title_Unload), LLSTRING(Title_Fill)] select (_kind == "fill"), _name]],
     ["picture", _picture],
     ["created", CBA_missionTime],
