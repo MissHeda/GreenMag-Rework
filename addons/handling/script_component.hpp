@@ -70,6 +70,11 @@
 #define CLIP_JAM_STALL 0.7
 #define CLIP_AUTO_RATE 0.5
 
+// The speedloader's badge while it speeds up loose rounds, and the trail behind the flying round.
+#define UI_BADGE_WIDTH 0.13
+#define UI_BADGE_COLOR [1, 0.84, 0.35, 0.16]
+#define UI_TRAIL [[0.012, 0.45], [0.024, 0.25], [0.036, 0.12]]
+
 // How long a streak reward stays beside the count, in seconds.
 #define GAME_REWARD_SHOW 1.5
 

@@ -55,6 +55,7 @@ PACK_SIZES = {
 # The calibers issued on stripper clips, and the rounds on one clip: 10 for the intermediate rifle rounds, 5 for the
 # full-power ones. Every variant of them comes as a clip and in cartons of clips.
 CLIPS = {
+    "universal": 10,
     "556x45": 10,
     "545x39": 10,
     "580x42": 10,
@@ -65,19 +66,8 @@ CLIPS = {
     "303": 5,
 }
 
-# The cartons of clips as they are issued, in clips per carton: NATO 5.56 two clips to a bandoleer pocket's box and
-# three to the 30-round box, Soviet 5.45 and 7.62x39 and Chinese 5.8 two to a packet, NATO 7.62 four (20 rounds),
-# Russian 7.62x54R four, German 7.92 three ("3 x 5"), British .303 two chargers to a packet of ten.
-CLIP_BOXES = {
-    "556x45": (2, 3),
-    "545x39": (2,),
-    "580x42": (2,),
-    "762x39": (2,),
-    "762x51": (4,),
-    "762x54": (4,),
-    "792x57": (3,),
-    "303": (2,),
-}
+# The cartons of clips, in clips per carton: three everywhere, and NATO 5.56 also two to a box as in a bandoleer's pocket.
+CLIP_BOXES = {caliber: (3,) for caliber in CLIPS} | {"556x45": (2, 3)}
 CLIP_MASS_FACTOR = 1.05
 ARSENAL_BELTS = (50, 100, 150, 200)
 BELT_LENGTH = 200
@@ -268,7 +258,7 @@ def clips():
         label, _, round_mass, _, _ = CALIBERS[caliber]
         name = item_name(label, variants_of(caliber)[variant][0])
         lines.append(
-            f'class {carton}: gmr_pack_base {{displayName = "{name} Clips ({count}x{rounds} rds)"; '
+            f'class {carton}: gmr_pack_base {{displayName = "{name} Pack on Clips ({count}x{rounds} rds)"; '
             f'picture = "\\z\\gmr\\addons\\items\\data\\packclips_{caliber}_{variant}_{count}.paa"; '
             f'model = "\\z\\gmr\\addons\\items\\data\\packs\\clips_{caliber}_{variant}_{count}.p3d"; '
             f'scopeArsenal = 2; scopeCurator = 2; gmr_caliber = "{caliber}"; gmr_variant = "{variant}"; '

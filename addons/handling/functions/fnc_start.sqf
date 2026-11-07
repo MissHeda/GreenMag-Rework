@@ -248,6 +248,8 @@ GVAR(op) = createHashMapFromArray [
     ["clipLoading", _clipLoading],
     ["steps", _steps],
     ["clipGame", _clipGame],
+    // How much faster the speedloader makes loose rounds, shown in the display (fnc_uiCreate); 1 when it does not.
+    ["boost", [1, 1 / (_looseBoost max 0.01)] select (_kind == "fill" && {!_belt} && {!_clipLoading} && {_looseBoost < 1})],
     ["clipPicture", _clipPicture],
     ["stage", "insert"],
     ["stepIndex", 0],

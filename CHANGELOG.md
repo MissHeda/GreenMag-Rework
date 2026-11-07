@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1
+
+- Added: universal ammunition on stripper clips, and in cartons of three clips
+- Added: while the speedloader speeds up loose rounds, the loading display shows its badge with how much faster, lighting up with each round, and in the minigame the round flies with a trail
+- Changed: cartons of clips hold three clips (5.56x45 also two) and are named "Pack on Clips", so they sort right after the packs of loose rounds
+- Changed: stripper clips are shown and hidden in ACE Arsenal together with the single rounds
+
 ## 1.2.0
 
 - Added: a minigame for stripper clips: seat the clip in the guide as it passes over the magazine, then hold to press the rounds down, letting go before the pressure reaches the red or the clip jams

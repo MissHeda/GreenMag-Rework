@@ -52,6 +52,16 @@ if (_ui getOrDefault ["classic", false]) then {
     };
 };
 
+// The speedloader's badge lights up with each round it sped up.
+private _badge = _ui getOrDefault ["badge", controlNull];
+
+if (!isNull _badge && {(GVAR(op) get "played") > 0}) then {
+    _badge ctrlSetFade 0;
+    _badge ctrlCommit 0;
+    _badge ctrlSetFade 0.45;
+    _badge ctrlCommit UI_SPARK_TIME * 1.5;
+};
+
 if ((GVAR(op) get "played") > 0) then {
     private _spark = _ui get "spark";
     private _at = (_lit - 1) max 0;

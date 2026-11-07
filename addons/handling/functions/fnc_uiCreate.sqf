@@ -103,8 +103,25 @@ _all append ([_display, [_x0 + _pad, _y0 + _pad, _tileWidth, _tileHeight], UI_TI
 private _textX = _x0 + _pad * 2 + _tileWidth;
 private _textW = _width - _tileWidth - _pad * 3;
 
-private _title = ["RscStructuredText", _textX, _y0 + _pad - 0.004, _textW, 0.034] call _fnc_make;
+// The speedloader at work on loose rounds: its badge in the title row, with how much faster, pulsing with each round.
+private _boost = GVAR(op) getOrDefault ["boost", 1];
+private _badgeW = [0, UI_BADGE_WIDTH] select (_boost > 1);
+private _title = ["RscStructuredText", _textX, _y0 + _pad - 0.004, _textW - _badgeW, 0.034] call _fnc_make;
 _title ctrlSetStructuredText parseText format ["<t size='0.85' color='#c9ced6' font='PuristaMedium'>%1</t>", GVAR(op) get "title"];
+
+private _badge = controlNull;
+
+if (_boost > 1) then {
+    private _badgeX = _textX + _textW - _badgeW;
+
+    _all append ([_display, [_badgeX, _y0 + _pad - 0.001, _badgeW, 0.028], UI_BADGE_COLOR, 0.012] call FUNC(uiPanel));
+    ["RscPictureKeepAspect", _badgeX + 0.003, _y0 + _pad, 0.026, 0.026, QPATHTOEF(items,data\speedloader.paa)] call _fnc_make;
+
+    _badge = ["RscStructuredText", _badgeX + 0.026, _y0 + _pad - 0.002, _badgeW - 0.028, 0.03] call _fnc_make;
+    _badge ctrlSetStructuredText parseText format [
+        "<t size='0.78' color='#ffd75a' font='PuristaBold' align='center'>%1 x%2</t>", LLSTRING(Speedloader_Badge), (round (_boost * 10)) / 10
+    ];
+};
 
 private _count = ["RscStructuredText", _textX, _y0 + _pad + _tileHeight - 0.046, _textW, 0.05] call _fnc_make;
 
@@ -146,6 +163,7 @@ GVAR(op) set ["ui", createHashMapFromArray [
     ["segmentW", _segmentW],
     ["gap", _gap],
     ["segments", _segments],
+    ["badge", _badge],
     ["classic", false]
 ]];
 
@@ -224,8 +242,21 @@ if (_game && {!_clipGame}) then {
     _ui set ["catcher", _catcher];
     _ui set ["catcherW", _catcherW];
     _ui set ["comboShown", []];
+    // With the speedloader's boost, fading copies trail the round: it flies faster.
+    private _trail = [];
+
+    if ((GVAR(op) getOrDefault ["boost", 1]) > 1) then {
+        {
+            _x params ["", "_alpha"];
+
+            private _ghost = ["RscPictureKeepAspect", _stripX, _middle - _roundH / 2, _roundW, _roundH, QPATHTOF(data\round_side_ca.paa), [0.96, 0.72, 0.30, _alpha]] call _fnc_make;
+            _trail pushBack _ghost;
+        } forEach UI_TRAIL;
+    };
+
     _ui set ["round", _round];
     _ui set ["roundW", _roundW];
+    _ui set ["trail", _trail];
 
     call FUNC(uiGame);
 };

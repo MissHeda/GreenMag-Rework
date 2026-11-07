@@ -53,8 +53,19 @@ call FUNC(uiStreak);
 private _round = _ui get "round";
 private _stalled = CBA_missionTime < (GVAR(op) get "stall");
 
-_round ctrlSetPositionX (_stripX + ((GVAR(op) get "phase") min 1) * _stripW - (_ui get "roundW") / 2);
+private _roundX = _stripX + ((GVAR(op) get "phase") min 1) * _stripW - (_ui get "roundW") / 2;
+
+_round ctrlSetPositionX _roundX;
 _round ctrlCommit 0;
+
+// The speedloader's trail behind it, hidden while the hand fumbles.
+{
+    private _behind = (UI_TRAIL select _forEachIndex) select 0;
+
+    _x ctrlSetPositionX ((_roundX - _behind) max _stripX);
+    _x ctrlSetFade ([0, 1] select _stalled);
+    _x ctrlCommit 0;
+} forEach (_ui getOrDefault ["trail", []]);
 _round ctrlSetTextColor ([UI_ROUND_COLOR, UI_MISS_COLOR] select _stalled);
 
 nil

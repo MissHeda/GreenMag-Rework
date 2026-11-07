@@ -112,9 +112,9 @@ for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
         private _facts = [_item] call EFUNC(main,itemInfo);
         private _kind = _facts select ITEM_KIND;
 
-        // Stripper clips show with the packs.
+        // Stripper clips show with the single rounds.
         if (_kind == "clip") then {
-            _kind = "pack";
+            _kind = "round";
         };
 
         private _shown = switch (true) do {

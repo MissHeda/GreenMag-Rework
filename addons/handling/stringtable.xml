@@ -100,6 +100,9 @@
         <Key ID="STR_gmr_handling_Reward_Full">
             <English>Jackpot! +%1</English>
         </Key>
+        <Key ID="STR_gmr_handling_Speedloader_Badge">
+            <English>SPEEDLOADER</English>
+        </Key>
         <Key ID="STR_gmr_handling_Prompt_ClipInsert">
             <English>Press %1 when the clip is over the magazine, Esc to stop</English>
         </Key>

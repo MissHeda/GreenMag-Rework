@@ -221,7 +221,7 @@
             <English>Show single rounds</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_ArsenalRounds_Desc">
-            <English>Single rounds are listed in the\nammunition tab of ACE Arsenal.</English>
+            <English>Single rounds and stripper clips are\nlisted in the ammunition tab of\nACE Arsenal.</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_UniversalAmmo">
             <English>Universal ammunition</English>

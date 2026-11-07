@@ -45,8 +45,8 @@ for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
         private _caliber = _facts select ITEM_CALIBER;
         private _key = format ["%1:%2:%3", ["round", "belt"] select ((_facts select ITEM_KIND) == "belt"), _caliber, _facts select ITEM_VARIANT];
 
-        // Stripper clips go with the packs.
-        if (([_facts select ITEM_KIND, "pack"] select ((_facts select ITEM_KIND) == "clip")) in _hidden
+        // Stripper clips go with the single rounds.
+        if (([_facts select ITEM_KIND, "round"] select ((_facts select ITEM_KIND) == "clip")) in _hidden
             || {_caliber == "universal" && {!EGVAR(main,universalAmmo)}}
             || {_usedOnly && {_caliber isNotEqualTo ""} && {!(_key in GVAR(usedCalibers))}}) then {
             _list lnbDeleteRow _row;
