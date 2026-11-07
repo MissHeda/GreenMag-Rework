@@ -526,22 +526,10 @@ def build_pack(caliber, variant, label, variant_label, line=None):
 
         # A carton of stripper clips shows one of its clips lying in front of it.
         if line:
-            before = set(bpy.context.collection.objects)
-            stripper_clip(caliber, variant, ITEM_TABLE.CLIPS[caliber])
-            holder = bpy.data.objects.new("clip_holder", None)
-            bpy.context.collection.objects.link(holder)
-
-            for item in set(bpy.context.collection.objects) - before - {holder}:
-                if item.parent is None:
-                    item.parent = holder
-
             length = CARTRIDGES[caliber][6]
             # Small enough that the whole clip stays in the picture, whatever its length.
             scale = min(70.0 / (CARTRIDGES[caliber][0] * 1.06 * ITEM_TABLE.CLIPS[caliber]), 62.0 / length, 0.95)
-            holder.scale = (scale, scale, scale)
-            # Tips towards the viewer, the clip's back against the carton.
-            holder.rotation_euler = (math.radians(90), 0, math.radians(-8))
-            holder.location = (width * 0.02, -depth * 0.56, CARTRIDGES[caliber][0] * scale * 0.62)
+            lying_clip(caliber, variant, scale, (width * 0.02, -depth * 0.56, CARTRIDGES[caliber][0] * scale * 0.62))
         # Two of its own rounds in front of it, as big as they are next to the same carton: only very long ones shrink.
         elif caliber == "12g":
             shell(variant, (-width * 0.30, -depth * 0.86, 0))
@@ -623,13 +611,31 @@ def stripper_clip(caliber, variant, rounds):
     return length
 
 
+def lying_clip(caliber, variant, scale, location):
+    """A stripper clip lying flat, its tips towards the viewer, turned a little: as it lies in front of its carton."""
+    before = set(bpy.context.collection.objects)
+    length = stripper_clip(caliber, variant, ITEM_TABLE.CLIPS[caliber])
+    holder = bpy.data.objects.new("clip_holder", None)
+    bpy.context.collection.objects.link(holder)
+
+    for item in set(bpy.context.collection.objects) - before - {holder}:
+        if item.parent is None:
+            item.parent = holder
+
+    holder.scale = (scale, scale, scale)
+    holder.rotation_euler = (math.radians(90), 0, math.radians(-8))
+    holder.location = location
+    return length
+
+
 def build_clip(caliber, variant, rounds):
     def build(camera):
-        add_key_light(0.8)
-        length = stripper_clip(caliber, variant, rounds)
+        # Lit and seen as the carton of clips is, so clip and carton look alike in the inventory.
+        add_key_light()
         overall = CARTRIDGES[caliber][6]
-        # Lying across the picture, seen a little from the side, as the speedloader's clip is.
-        frame(camera, (0, 0, overall * 0.5), max(length, overall) * 1.3, (0.34, -1.0, 0.20), math.radians(-90), 200)
+        base = CARTRIDGES[caliber][0]
+        length = lying_clip(caliber, variant, 1.0, (0, overall * 0.5, base * 0.62))
+        frame(camera, (0, 0, base * 0.5), max(length, overall) * 1.3, (0.42, -0.85, 0.72))
 
     return build
 

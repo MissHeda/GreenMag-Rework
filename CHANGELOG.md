@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+
+- Changed: the stripper clips' pictures show the clip lying as it does in front of its carton, so clip and carton match
+
 ## 1.1.1
 
 - Changed: the speedloader shows in the arsenal's own views (rounds, packs, belts), and among the fitting ammunition while a weapon takes a caliber that comes on stripper clips
