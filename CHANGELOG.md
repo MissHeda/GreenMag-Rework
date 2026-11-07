@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.4
+
+- Changed: the stripper clip minigame sits just above the loading panel instead of high up the screen
+- Changed: it shows what to do where to do it: the two steps at the top, a moving path of dots from the clip to the guide, and an arrow under the thumb mark that points the way to pull, with clearer instructions below
+- Changed: without "must hit" it plays itself only after six seconds of doing nothing, and then slower than pressing
+
 ## 1.2.3
 
 - Fixed: refilling from the menus with loose rounds in the inventory took the loose rounds and the round minigame even with clips and a speedloader; whole clips go first now whenever the speedloader takes them

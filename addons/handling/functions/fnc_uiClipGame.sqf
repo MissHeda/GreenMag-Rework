@@ -121,6 +121,62 @@ if (_pushing) then {
     };
 };
 
+// What to do, where to do it.
+private _time = CBA_missionTime;
+private _placing = _stage == "place" && {!(_cg get "dragging")};
+private _clipW = _cg get "roundW";
+private _clipH = _cg get "clipH";
+
+// A path of dots running from the clip to the guide, while it still lies there.
+(_cg get "seat") params ["_sx", "_sy"];
+
+{
+    private _share = (_forEachIndex + 1) / (CG_DOTS + 1);
+    private _fromX = _px + _clipW / 2;
+    private _fromY = _py + _clipH / 2;
+    private _toX = _sx + _clipW / 2;
+    private _toY = _sy + _clipH / 2;
+    private _wave = (sin ((_time * 300) - _forEachIndex * 50) + 1) / 2;
+
+    _x ctrlShow _placing;
+    _x ctrlSetPosition [_fromX + (_toX - _fromX) * _share - 0.005, _fromY + (_toY - _fromY) * _share - 0.0066, 0.01, 0.0133];
+    _x ctrlSetTextColor [0.42, 0.92, 0.42, 0.15 + 0.75 * _wave];
+    _x ctrlCommit 0;
+} forEach (_cg get "dots");
+
+private _dragLabel = _cg get "dragLabel";
+
+_dragLabel ctrlShow _placing;
+_dragLabel ctrlSetPosition [_px - 0.01, _py - 0.03, 0.12, 0.026];
+_dragLabel ctrlCommit 0;
+
+// An arrow under the thumb mark, bobbing downwards, while nobody presses.
+private _showArrow = _stage == "push" && {!(_cg get "held")} && {!_stalled};
+private _arrow = _cg get "arrow";
+private _pullLabel = _cg get "pullLabel";
+private _bob = 0.008 * ((sin (_time * 400) + 1) / 2);
+private _arrowY = _py + 0.002 + _travel * _roundH + 0.004 + _bob;
+
+_arrow ctrlShow _showArrow;
+_arrow ctrlSetPosition [_px + _clipW + 0.006, _arrowY, 0.03, 0.03];
+_arrow ctrlCommit 0;
+_pullLabel ctrlShow _showArrow;
+_pullLabel ctrlSetPosition [_px + _clipW + 0.036, _arrowY + 0.002, 0.12, 0.026];
+_pullLabel ctrlCommit 0;
+
+// The two steps, the one at hand lit.
+private _stepNow = if (_stage == "place") then {"place"} else {"push"};
+
+if (_stepNow isNotEqualTo (_cg get "stepsShown")) then {
+    _cg set ["stepsShown", _stepNow];
+    (_cg get "stepsBar") ctrlSetStructuredText parseText format [
+        "<t size='0.8' font='PuristaBold' color='%1'>%3</t><t size='0.8' color='#5a5f66'>   -   </t><t size='0.8' font='PuristaBold' color='%2'>%4</t>",
+        ["#5a5f66", "#6beb6b"] select (_stepNow == "place"),
+        ["#5a5f66", "#ffd75a"] select (_stepNow == "push"),
+        LLSTRING(Clip_Step1), LLSTRING(Clip_Step2)
+    ];
+};
+
 // The count, the clips left, and what to do now.
 (_cg get "count") ctrlSetStructuredText parseText format [
     "<t size='1.3' font='PuristaSemibold'>%1</t><t size='0.9' color='#9a9a9a' font='PuristaLight'> / %2</t><t size='0.8' color='#9aa0a8'>    %3 %4/%5</t>",

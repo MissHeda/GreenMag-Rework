@@ -8,8 +8,8 @@
  * at most as fast as the spring lets them, slower the fuller the magazine; pulled further ahead than that, the rounds
  * jam: they spring back to the last one that went in and the thumb has to set on again. "strip": the empty clip flies
  * off, and the next one lies ready.
- * Without the server's "must hit" a clip left alone slides into the guide by itself, and its rounds sink in unpressed
- * at the normal pace, so nobody has to play.
+ * Without the server's "must hit" a clip left alone for a few seconds slides into the guide by itself, and its rounds
+ * sink in unpressed, slower than pressed, so nobody has to play but playing is faster.
  *
  * Arguments:
  * 0: Seconds since the last frame <NUMBER>
@@ -116,13 +116,15 @@ if (_stage == "push") exitWith {
 
         if (abs ((_cursor select 1) - _markY) < CG_GRAB_RANGE && {(_cursor select 0) >= _sx - 0.03 && {(_cursor select 0) <= _sx + (_cg get "roundW") + 0.03}}) then {
             _cg set ["held", true];
+            _cg set ["stageStart", _now];
             _cg set ["grabY", _cursor select 1];
             _cg set ["grabTravel", _travel];
         };
     };
 
-    if (!_mouse) then {
+    if (!_mouse && {_cg get "held"}) then {
         _cg set ["held", false];
+        _cg set ["stageStart", _now];
     };
 
     private _move = 0;
@@ -150,8 +152,9 @@ if (_stage == "push") exitWith {
     } else {
         _cg set ["slack", 0];
 
-        if (!_mustHit) then {
-            _move = _step / ((_op get "beat") max 0.01);
+        // Left alone a while without "must hit", the rounds sink in by themselves, slower than pressed.
+        if (!_mustHit && {_now > (_cg get "stageStart") + CG_AUTO_WAIT}) then {
+            _move = CG_AUTO_RATE * _step / ((_op get "beat") max 0.01);
         };
     };
 

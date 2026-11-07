@@ -53,13 +53,14 @@
 #define GAME_MIN_BEAT 0.25
 
 // The stripper clip minigame, in a window of its own played with the mouse (fnc_clipGameOpen, fnc_clipGameTick): the
-// window's size and place, a round's size in it, the magazine's top and height, the colours of steel and the guide.
-// Dropped this close to the guide, the clip slides in; left alone this long without "must hit", it does by itself.
+// window's size and its gap above the loading panel, a round's size in it, the magazine's top and height, the colours of steel and the guide.
+// Dropped this close to the guide, the clip slides in; without "must hit", left alone this long it does so by itself,
+// and its rounds sink in at this share of the pace. The dots of the path that shows where to drag it.
 // Pressing, the rounds go at most this many times the normal pace, less by the spring share as the magazine fills;
 // pulled this many rounds ahead of them, they jam for this long. The thumb's mark, and how far from it a press takes.
 #define CG_WIDTH 0.4
 #define CG_HEIGHT 0.54
-#define CG_TOP 0.12
+#define CG_ABOVE_PANEL 0.02
 #define CG_ROUND_WIDTH 0.066
 #define CG_ROUND_HEIGHT 0.018
 #define CG_MAG_TOP 0.27
@@ -68,7 +69,9 @@
 #define CG_GUIDE [0.16, 0.17, 0.18, 1]
 #define CG_SNAP_X 0.035
 #define CG_SNAP_Y 0.045
-#define CG_AUTO_WAIT 2
+#define CG_AUTO_WAIT 6
+#define CG_AUTO_RATE 0.6
+#define CG_DOTS 6
 #define CG_PUSH_RATE 1.6
 #define CG_SPRING 0.45
 #define CG_JAM_SLACK 1.6

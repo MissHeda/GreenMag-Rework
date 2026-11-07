@@ -60,7 +60,8 @@ private _roundW = CG_ROUND_WIDTH;
 private _width = CG_WIDTH;
 private _height = CG_HEIGHT;
 private _x0 = safeZoneX + (safeZoneW - _width) / 2;
-private _y0 = safeZoneY + safeZoneH * CG_TOP;
+// Just above the loading panel (fnc_uiCreate), so the magazine is near where the eyes already are.
+private _y0 = safeZoneY + safeZoneH * UI_TOP - _height - CG_ABOVE_PANEL;
 
 [_display, [_x0, _y0, _width, _height], UI_PANEL_COLOR, UI_RADIUS] call FUNC(uiPanel);
 
@@ -121,13 +122,37 @@ private _handle = ["RscPicture", 0, 0, CG_HANDLE, CG_HANDLE * 4 / 3, QPATHTOF(da
 _handle ctrlShow false;
 _band ctrlShow false;
 
-private _hint = ["RscStructuredText", _x0 + UI_PAD, _y0 + _height - UI_PROMPT_HEIGHT - 0.006, _width - UI_PAD * 2, UI_PROMPT_HEIGHT] call _fnc_make;
+private _hint = ["RscStructuredText", _x0 + UI_PAD, _y0 + _height - UI_PROMPT_HEIGHT * 1.6 - 0.006, _width - UI_PAD * 2, UI_PROMPT_HEIGHT * 1.6] call _fnc_make;
+
+// What to do, shown where to do it: the two steps, a path of dots from the clip to the guide, a word on the clip,
+// and an arrow under the thumb mark that bobs the way to pull.
+private _stepsBar = ["RscStructuredText", _x0 + UI_PAD, _y0 + UI_PAD + 0.07, _width * 0.45, 0.03] call _fnc_make;
+private _dots = [];
+
+for "_i" from 1 to CG_DOTS do {
+    _dots pushBack (["RscPicture", 0, 0, 0.01, 0.0133, QPATHTOF(data\pill_ca.paa), UI_ON_COLOR] call _fnc_make);
+};
+
+private _dragLabel = ["RscStructuredText", 0, 0, 0.12, 0.026] call _fnc_make;
+_dragLabel ctrlSetStructuredText parseText format ["<t size='0.75' color='#6beb6b' font='PuristaBold'>%1</t>", LLSTRING(Clip_Drag)];
+
+private _arrow = ["RscPictureKeepAspect", 0, 0, 0.03, 0.03, QPATHTOF(data\round_side_ca.paa), UI_GAUGE_COLOR] call _fnc_make;
+_arrow ctrlSetAngle [90, 0.5, 0.5];
+
+private _pullLabel = ["RscStructuredText", 0, 0, 0.12, 0.026] call _fnc_make;
+_pullLabel ctrlSetStructuredText parseText format ["<t size='0.75' color='#ffd75a' font='PuristaBold'>%1</t>", LLSTRING(Clip_Pull)];
 
 GVAR(op) set ["cg", createHashMapFromArray [
     ["display", _display],
     ["count", _count],
     ["combo", _combo],
     ["hint", _hint],
+    ["stepsBar", _stepsBar],
+    ["stepsShown", ""],
+    ["dots", _dots],
+    ["dragLabel", _dragLabel],
+    ["arrow", _arrow],
+    ["pullLabel", _pullLabel],
     ["hintShown", ""],
     ["magRounds", _magRounds],
     ["ghost", _ghost],

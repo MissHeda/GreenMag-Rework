@@ -113,10 +113,22 @@
             <English>Load the clips with the mouse, Esc to stop</English>
         </Key>
         <Key ID="STR_gmr_handling_Clip_Place">
-            <English>Drag the clip into the guide on top of the magazine</English>
+            <English>Hold the left mouse button on the clip and drag it into the green guide on the magazine</English>
         </Key>
         <Key ID="STR_gmr_handling_Clip_Push">
-            <English>Grab the thumb mark and pull down steadily - too fast and the rounds jam</English>
+            <English>Hold the left mouse button on the yellow thumb mark and pull down slowly. Red line: too fast, the rounds jam</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Clip_Step1">
+            <English>1  INSERT THE CLIP</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Clip_Step2">
+            <English>2  PRESS THE ROUNDS DOWN</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Clip_Drag">
+            <English>DRAG</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Clip_Pull">
+            <English>PULL DOWN</English>
         </Key>
         <Key ID="STR_gmr_handling_Clip_Jammed">
             <English>Jammed - set the thumb on again</English>
