@@ -22,6 +22,9 @@ import render_items as ITEMS  # noqa: E402
 # Pixels per mm of the finished texture; rendered at twice that and scaled down by make_drop_models.
 DENSITY = 8
 
+# How much light the picture's lid gets: with it, the unlit board under the picture's grading matches the lit lid.
+LIGHT = float(__import__("os").environ.get("GMR_CARTON_LIGHT", "2.7"))
+
 WIDTH, DEPTH, HEIGHT = ITEMS.CARTON
 
 # side: (centre, outward normal, up, width, height); right is up x normal, as seen from outside.
@@ -34,7 +37,7 @@ SIDES = {
 
 
 def unlit():
-    """Every material its base colour as emission, nothing else."""
+    """Every material its base colour as emission, as bright as the picture's light makes the lid."""
     for mat in bpy.data.materials:
         nodes = mat.node_tree.nodes
         shader = nodes.get("Principled BSDF")
@@ -45,6 +48,7 @@ def unlit():
 
         emission = nodes.new("ShaderNodeEmission")
         emission.inputs["Color"].default_value = shader.inputs["Base Color"].default_value
+        emission.inputs["Strength"].default_value = LIGHT
         mat.node_tree.links.new(emission.outputs[0], output.inputs["Surface"])
 
 
@@ -57,9 +61,10 @@ def setup(camera_data):
     scene.render.film_transparent = True
     scene.render.image_settings.file_format = "PNG"
     scene.render.image_settings.color_mode = "RGBA"
-    scene.view_settings.view_transform = "Standard"
-    scene.view_settings.look = "None"
-    scene.view_settings.exposure = 0
+    # The picture's grading (render_items.setup_scene), so print, band and board come out in its colours.
+    scene.view_settings.view_transform = "Filmic"
+    scene.view_settings.look = "Medium High Contrast"
+    scene.view_settings.exposure = 0.35
     world = bpy.data.worlds.get("black") or bpy.data.worlds.new("black")
     world.color = (0, 0, 0)
     scene.world = world
@@ -78,6 +83,12 @@ def render_sides(name, caliber, variant, label, variant_label, folder):
         bpy.data.materials.remove(mat)
 
     ITEMS.pack_carton(caliber, variant, label, variant_label)
+
+    # A real tuck flap is the same board as the carton; the picture's darker flap only reads as its shadow.
+    for item in bpy.data.objects:
+        if item.name.startswith("flap"):
+            item.data.materials[0] = bpy.data.materials[f"kraft_{caliber}"]
+
     unlit()
     camera_data = bpy.data.cameras.new("camera")
     camera_data.type = "ORTHO"

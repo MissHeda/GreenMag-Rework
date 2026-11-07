@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Fixed: items on the ground sank in and tilted, cut off at the ground; every ground model has a geometry LOD now, so it rests flat
+- Changed: the cartons on the ground have the colours of their inventory picture, no longer darker, and their tuck flaps are the carton's own colour
+
 ## 1.0.2
 
 - Changed: the packs' cartons on the ground are printed paperboard now: board grain, rounded and rubbed edges, knocked corners, the tuck flaps in relief, a barcode and lot print on the back, a matte material with a normal map

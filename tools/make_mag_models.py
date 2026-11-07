@@ -290,20 +290,37 @@ def ammo_box():
     return model
 
 
-def write_p3d(path, model, material="", shadow=None):
+GEOMETRY = 1e13
+SHADOW_VOLUME = 10000.0
+
+
+def write_p3d(path, model, material="", shadow=None, geometry=None, mass=0.0):
     """One visual LOD: points, flat normals and faces, the winding as the game's models have it. Every face gets the
     material, without which the game lights a face flat and dark. shadow, a closed model of shared points, is written
-    as the shadow volume LOD (resolution 10000) without texture or material."""
-    lods = [(model, material, 1.0)] + ([(shadow, "", 10000.0)] if shadow else [])
+    as the shadow volume LOD without texture or material. geometry, closed and convex, is the geometry LOD the game
+    rests the item on the ground with (as its own lying items have one), one component weighing mass kg."""
+    lods = [(model, material, 1.0, {})]
+
+    if shadow:
+        lods.append((shadow, "", SHADOW_VOLUME, {}))
+
+    if geometry:
+        count = len(geometry.points)
+        tags = {
+            "Component01": bytes([1]) * count + bytes([1]) * len(geometry.faces),
+            "#Mass#": struct.pack(f"<{count}f", *([mass / count] * count)),
+        }
+        lods.append((geometry, "", GEOMETRY, tags))
+
     data = bytearray(b"MLOD" + struct.pack("<ii", 257, len(lods)))
 
-    for lod_model, lod_material, resolution in lods:
-        data += lod_bytes(lod_model, lod_material, resolution)
+    for lod_model, lod_material, resolution, tags in lods:
+        data += lod_bytes(lod_model, lod_material, resolution, tags)
 
     path.write_bytes(bytes(data))
 
 
-def lod_bytes(model, material, resolution):
+def lod_bytes(model, material, resolution, tags=None):
     normals = []
 
     for corners, _surface in model.faces:
@@ -338,6 +355,10 @@ def lod_bytes(model, material, resolution):
         data += surface.encode("ascii") + b"\0" + material.encode("ascii") + b"\0"
 
     data += b"TAGG"
+
+    for name, payload in (tags or {}).items():
+        data += b"\x01" + name.encode("ascii") + b"\0" + struct.pack("<i", len(payload)) + payload
+
     data += b"\x01" + b"#EndOfFile#\0" + struct.pack("<i", 0)
     data += struct.pack("<f", resolution)
     return data
@@ -369,6 +390,15 @@ def welded(model, shrink=1.0):
     shadow.points = points
     shadow.faces = faces
     return shadow
+
+
+def hull_box(model, shrink=1.0):
+    """A closed box round the model's points, for the geometry or shadow LOD of something about the shape of a box."""
+    low = [min(p[k] for p in model.points) for k in range(3)]
+    high = [max(p[k] for p in model.points) for k in range(3)]
+    box = Model()
+    box.box(tuple((low[k] + high[k]) / 2 for k in range(3)), tuple(high[k] - low[k] for k in range(3)), "")
+    return welded(box, shrink)
 
 
 def write_obj(path, model):

@@ -26,7 +26,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from make_mag_models import RVMAT, Model, normalise, texture, welded, write_p3d  # noqa: E402
+from make_mag_models import RVMAT, Model, hull_box, normalise, texture, welded, write_p3d  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "addons" / "items" / "data"
@@ -40,6 +40,9 @@ import generate_items as ITEM_TABLE  # noqa: E402
 # The carton of the inventory picture (render_items.CARTON), in metres: along, across, high. Bigger packs, same carton.
 CARTON = (0.097, 0.0586, 0.0366)
 CARTON_SCALES = {"s": 1.0, "m": 1.2, "l": 1.4}
+# What the geometry LODs weigh, in kg, for the game to rest them on the ground: the small carton full, the rest.
+CARTON_MASS = 0.35
+DROP_MASS = {"drop_round": 0.05, "drop_belt": 0.3, "drop_speedloader": 0.1}
 
 BRASS = texture(0.78, 0.60, 0.26)
 BRASS_DARK = texture(0.60, 0.44, 0.17)
@@ -251,8 +254,11 @@ def carton_texture(faces, name, label, variant_label):
     atlas = atlas.convert("RGB")
     small_print(atlas, label, variant_label, ink, sum(map(ord, name)))
 
+    # The picture's white studio light takes a little colour out of everything; so does this.
     rgb = np.asarray(atlas, dtype=np.float32) / 255
+    rgb = rgb * 0.82 + rgb.mean(axis=2, keepdims=True) * 0.18
     paper = np.array(board[:3], dtype=np.float32) / 255
+    paper = paper * 0.82 + paper.mean() * 0.18
     wear, shade, _ = layers()
     rng = np.random.default_rng(sum(map(ord, name)))
 
@@ -546,7 +552,7 @@ def main():
             write_preview(preview / f"{name}.obj", model, None)
 
         lay_down(model)
-        write_p3d(OUT / f"{name}.p3d", model, MATERIAL)
+        write_p3d(OUT / f"{name}.p3d", model, MATERIAL, geometry=hull_box(model), mass=DROP_MASS[name])
 
     packs = []
 
@@ -558,7 +564,8 @@ def main():
                 write_preview(preview / f"pack_{name}.obj", model, pngs / f"carton_{name}_co.png")
 
             lay_down(model)
-            write_p3d(PACKS / f"pack_{name}_{size}.p3d", model, CARTON_RVMAT, welded(model, 0.98))
+            write_p3d(PACKS / f"pack_{name}_{size}.p3d", model, CARTON_RVMAT, welded(model, 0.98), welded(model),
+                      CARTON_MASS * scale ** 3)
             packs.append(f"pack_{name}_{size}")
 
     # The round in the right hand while loading (fnc_holdMagazine): along Z, the game's forward of a model, point first.
