@@ -59,10 +59,10 @@ private _roundH = CG_ROUND_HEIGHT;
 private _roundW = CG_ROUND_WIDTH;
 private _width = CG_WIDTH;
 private _height = CG_HEIGHT;
-// In place of the loading panel (fnc_uiCreate), which it stands in for: at the player's spot, but as tall as it is, never
+// In place of the loading panel (fnc_uiCreate), which it stands in for: at the player's spot from Arma's layout editor, but as tall as it is, never
 // further down than its gap to the bottom of the screen.
-private _x0 = safeZoneX + ((safeZoneW * EGVAR(main,panelX) - _width / 2) max 0 min (safeZoneW - _width));
-private _y0 = safeZoneY + ((safeZoneH * EGVAR(main,panelY)) max 0 min (safeZoneH - _height - CG_BOTTOM_GAP));
+private _x0 = UI_LAYOUT_X max safeZoneX min (safeZoneX + safeZoneW - _width);
+private _y0 = UI_LAYOUT_Y max safeZoneY min (safeZoneY + safeZoneH - _height - CG_BOTTOM_GAP);
 
 [_display, [_x0, _y0, _width, _height], UI_PANEL_COLOR, UI_RADIUS] call FUNC(uiPanel);
 

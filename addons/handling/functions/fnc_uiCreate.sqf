@@ -92,9 +92,9 @@ private _clipGame = GVAR(op) getOrDefault ["clipGame", false];
 private _lineTop = [_stripTop + UI_STRIP_HEIGHT, _trackTop + UI_GAME_HEIGHT] select (_game && {!_clipGame});
 _lineTop = _lineTop + UI_GAP;
 private _height = _lineTop + UI_PROMPT_HEIGHT + _pad * 0.5;
-// Where the player set it (client settings), its middle at that share across and its top at that share down, always whole on the screen.
-private _x0 = safeZoneX + ((safeZoneW * EGVAR(main,panelX) - _width / 2) max 0 min (safeZoneW - _width));
-private _y0 = safeZoneY + ((safeZoneH * EGVAR(main,panelY)) max 0 min (safeZoneH - _height));
+// Where the player put it in Arma's layout editor (CfgUIGrids.hpp), always whole on the screen.
+private _x0 = UI_LAYOUT_X max safeZoneX min (safeZoneX + safeZoneW - _width);
+private _y0 = UI_LAYOUT_Y max safeZoneY min (safeZoneY + safeZoneH - _height);
 
 _all append ([_display, [_x0, _y0, _width, _height], UI_PANEL_COLOR, UI_RADIUS] call FUNC(uiPanel));
 _all append ([_display, [_x0 + _pad, _y0 + _pad, _tileWidth, _tileHeight], UI_TILE_COLOR, UI_RADIUS * 0.6] call FUNC(uiPanel));

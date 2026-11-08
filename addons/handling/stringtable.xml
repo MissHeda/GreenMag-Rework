@@ -67,6 +67,12 @@
         <Key ID="STR_gmr_handling_Hint_OpenPack">
             <English>Open the pack first.</English>
         </Key>
+        <Key ID="STR_gmr_handling_IGUI_Name">
+            <English>GreenMag Rework: loading panel</English>
+        </Key>
+        <Key ID="STR_gmr_handling_IGUI_Description">
+            <English>Where the loading panel and the minigame show up.</English>
+        </Key>
         <Key ID="STR_gmr_handling_Key_Load">
             <English>Load / hit (minigame)</English>
         </Key>

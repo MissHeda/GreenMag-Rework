@@ -19,3 +19,4 @@ class CfgPatches {
 #include "CfgEventHandlers.hpp"
 #include "CfgGestures.hpp"
 #include "CfgSounds.hpp"
+#include "CfgUIGrids.hpp"

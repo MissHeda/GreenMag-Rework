@@ -232,18 +232,6 @@
         <Key ID="STR_gmr_main_Setting_LoadDisplay">
             <English>Loading display</English>
         </Key>
-        <Key ID="STR_gmr_main_Setting_PanelX">
-            <English>Panel position: across</English>
-        </Key>
-        <Key ID="STR_gmr_main_Setting_PanelX_Desc">
-            <English>Where the loading panel and the\nminigame show up, from the left edge\n(0%) to the right edge (100%).\n\n50% is the middle.</English>
-        </Key>
-        <Key ID="STR_gmr_main_Setting_PanelY">
-            <English>Panel position: height</English>
-        </Key>
-        <Key ID="STR_gmr_main_Setting_PanelY_Desc">
-            <English>Where the loading panel and the\nminigame show up, from the top edge\n(0%) to the bottom edge (100%).\n\nIt always stays on the screen.\nThe classic ring keeps its place.</English>
-        </Key>
         <Key ID="STR_gmr_main_Setting_LoadDisplay_Desc">
             <English>What you see while loading.\n\nPanel: magazine, round count\nand the minigame, if it is on.\n\nClassic ring: the hold ring of the\noriginal GreenMag, without minigame.</English>
         </Key>

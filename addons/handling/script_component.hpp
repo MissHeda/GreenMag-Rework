@@ -25,6 +25,17 @@
 #define UI_GAP 0.012
 #define UI_TILE_HEIGHT 0.07
 #define UI_RADIUS 0.014
+
+// Its place, set in Arma's layout editor (CfgUIGrids.hpp): the box there is as tall as the panel with the minigame, by
+// default in the middle at 78% down the screen. The grid the editor snaps to is Arma's interface grid
+// (\a3\ui_f\hpp\defineCommonGrids.inc).
+#define GUI_GRID_W (((safeZoneW / safeZoneH) min 1.2) / 40)
+#define GUI_GRID_H ((((safeZoneW / safeZoneH) min 1.2) / 1.2) / 25)
+#define UI_LAYOUT_HEIGHT 0.231
+#define UI_DEFAULT_X (safeZoneX + (safeZoneW - UI_WIDTH) / 2)
+#define UI_DEFAULT_Y (safeZoneY + safeZoneH * 0.78)
+#define UI_LAYOUT_X (profileNamespace getVariable [ARR_2('IGUI_gmr_handling_grid_X',UI_DEFAULT_X)])
+#define UI_LAYOUT_Y (profileNamespace getVariable [ARR_2('IGUI_gmr_handling_grid_Y',UI_DEFAULT_Y)])
 #define UI_STRIP_HEIGHT 0.014
 #define UI_MAX_SEGMENTS 50
 #define UI_SPARK_TIME 0.22
