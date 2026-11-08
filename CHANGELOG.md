@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.15
+
+- Added: the minigame keys are CBA keybinds (Options > Controls > Configure Addons > GreenMag Rework): "Load / hit" (default Space) and "Stop loading" (default Backspace, Esc always works too); the hints in the panel show the keys you set
+- Added: the loading panel and the stripper clip window can be moved in Arma's layout editor (Options > Game > Layout > "GreenMag Rework: loading panel")
+- Fixed: the speedloader badge only showed an "x" without the speed factor, and its icon sat off-centre
+
 ## 1.2.12
 
 - Fixed: the speedloader badge in the loading panel was cut off and shortened the title; it is now its icon and the speed factor (x2)
