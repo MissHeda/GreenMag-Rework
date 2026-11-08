@@ -114,13 +114,20 @@ private _badge = controlNull;
 if (_boost > 1) then {
     private _badgeX = _textX + _textW - _badgeW;
 
-    _all append ([_display, [_badgeX, _y0 + _pad - 0.001, _badgeW, 0.028], UI_BADGE_COLOR, 0.012] call FUNC(uiPanel));
-    ["RscPictureKeepAspect", _badgeX + 0.003, _y0 + _pad, 0.026, 0.026, QPATHTOEF(items,data\speedloader.paa)] call _fnc_make;
+    private _badgeY = _y0 + _pad - 0.001;
+    private _badgeH = 0.028;
+    // The icon square on screen (a width unit is 3/4 of a height unit), the factor right of it on one line, both in the middle.
+    private _iconH = _badgeH - 0.006;
+    private _iconW = _iconH * 3 / 4;
 
-    _badge = ["RscStructuredText", _badgeX + 0.026, _y0 + _pad - 0.002, _badgeW - 0.028, 0.03] call _fnc_make;
-    _badge ctrlSetStructuredText parseText format [
-        "<t size='0.85' color='#ffd75a' font='PuristaBold' align='center'>x%1</t>", (round (_boost * 10)) / 10
-    ];
+    _all append ([_display, [_badgeX, _badgeY, _badgeW, _badgeH], UI_BADGE_COLOR, 0.012] call FUNC(uiPanel));
+    ["RscPictureKeepAspect", _badgeX + 0.006, _badgeY + 0.003, _iconW, _iconH, QPATHTOEF(items,data\speedloader.paa)] call _fnc_make;
+
+    _badge = ["RscText", _badgeX + 0.008 + _iconW, _badgeY, _badgeW - 0.01 - _iconW, _badgeH] call _fnc_make;
+    _badge ctrlSetFont "PuristaBold";
+    _badge ctrlSetFontHeight (_badgeH * 0.8);
+    _badge ctrlSetTextColor [1, 0.843, 0.353, 1];
+    _badge ctrlSetText format ["x%1", (round (_boost * 10)) / 10];
 };
 
 private _count = ["RscStructuredText", _textX, _y0 + _pad + _tileHeight - 0.046, _textW, 0.05] call _fnc_make;
