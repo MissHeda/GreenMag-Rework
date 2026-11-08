@@ -20,4 +20,25 @@ GVAR(dragWatch) = -1;
 GVAR(dragStart) = [];
 GVAR(dragDown) = false;
 
+// Whether the load key (CBA keybind gmr_handling_keyLoad) is down right now, read by fnc_tick.
+GVAR(keyHeld) = false;
+
+if (hasInterface) then {
+    // The keys of the loading and its minigame, set in the CBA controls. They only take the key while something loads.
+    [KEYBIND_CATEGORY, QGVAR(keyLoad), [LLSTRING(Key_Load), LLSTRING(Key_Load_Desc)], {
+        GVAR(keyHeld) = true;
+        !isNil QGVAR(op)
+    }, {
+        GVAR(keyHeld) = false;
+        !isNil QGVAR(op)
+    }, [57, [false, false, false]]] call CBA_fnc_addKeybind; // Space
+
+    [KEYBIND_CATEGORY, QGVAR(keyCancel), [LLSTRING(Key_Cancel), LLSTRING(Key_Cancel_Desc)], {
+        if (isNil QGVAR(op)) exitWith {false};
+
+        [false] call FUNC(finish);
+        true
+    }, {}, [14, [false, false, false]]] call CBA_fnc_addKeybind; // Backspace
+};
+
 ADDON = true;

@@ -187,6 +187,17 @@ private _fnc_resetFacts = {GVAR(magazineCache) = createHashMap};
     [CBA_SETTINGS_CLIENT, _menu], [0, 10, 0, 0], 0
 ] call CBA_fnc_addSetting;
 
+// Where the loading panel and the minigame show up, as a share of the screen (fnc_uiCreate, fnc_clipGameOpen).
+[
+    QGVAR(panelX), "SLIDER", [LLSTRING(Setting_PanelX), LLSTRING(Setting_PanelX_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu], [0, 1, 0.5, 2, true], 0
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(panelY), "SLIDER", [LLSTRING(Setting_PanelY), LLSTRING(Setting_PanelY_Desc)],
+    [CBA_SETTINGS_CLIENT, _menu], [0, 1, 0.78, 2, true], 0
+] call CBA_fnc_addSetting;
+
 // Switches
 [
     QGVAR(arsenalHighlight), "CHECKBOX", [LLSTRING(Setting_ArsenalHighlight), LLSTRING(Setting_ArsenalHighlight_Desc)],

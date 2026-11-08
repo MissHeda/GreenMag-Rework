@@ -3,6 +3,9 @@
 #include "\z\gmr\addons\main\script_mod.hpp"
 #include "\z\gmr\addons\main\script_macros.hpp"
 
+// The section of the mod's keybinds in the CBA controls.
+#define KEYBIND_CATEGORY "GreenMag Rework"
+
 // A loading nobody starts by holding the key goes away after this many seconds, so it cannot wait around for a fight.
 #define HOLD_TIMEOUT 30
 
@@ -21,7 +24,6 @@
 #define UI_PAD 0.014
 #define UI_GAP 0.012
 #define UI_TILE_HEIGHT 0.07
-#define UI_TOP 0.78
 #define UI_RADIUS 0.014
 #define UI_STRIP_HEIGHT 0.014
 #define UI_MAX_SEGMENTS 50

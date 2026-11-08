@@ -67,6 +67,18 @@
         <Key ID="STR_gmr_handling_Hint_OpenPack">
             <English>Open the pack first.</English>
         </Key>
+        <Key ID="STR_gmr_handling_Key_Load">
+            <English>Load / hit (minigame)</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Key_Load_Desc">
+            <English>Hold it to load with "Hold to load", and press it when the round is on the magazine in the minigame.</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Key_Cancel">
+            <English>Stop loading</English>
+        </Key>
+        <Key ID="STR_gmr_handling_Key_Cancel_Desc">
+            <English>Stops loading or unloading. The rounds moved stay moved. Esc always works as well.</English>
+        </Key>
         <Key ID="STR_gmr_handling_Prompt_Hold">
             <English>Hold %1 to start, let go to stop</English>
         </Key>
@@ -74,10 +86,10 @@
             <English>Let go to stop</English>
         </Key>
         <Key ID="STR_gmr_handling_Prompt_Esc">
-            <English>Esc to stop</English>
+            <English>%1 to stop</English>
         </Key>
         <Key ID="STR_gmr_handling_Prompt_Game">
-            <English>Press %1 on the magazine to go faster, Esc to stop</English>
+            <English>Press %1 on the magazine to go faster, %2 to stop</English>
         </Key>
         <Key ID="STR_gmr_handling_Streak_1">
             <English>x%1</English>
@@ -140,7 +152,7 @@
             <English>Clip</English>
         </Key>
         <Key ID="STR_gmr_handling_Prompt_GameMust">
-            <English>Press %1 when the round is on the magazine, Esc to stop</English>
+            <English>Press %1 when the round is on the magazine, %2 to stop</English>
         </Key>
     </Package>
 </Project>

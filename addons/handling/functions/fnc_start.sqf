@@ -293,6 +293,9 @@ GVAR(op) = createHashMapFromArray [
     ["keys", -1]
 ];
 
+// A key let go while a dialog had the keyboard never reports it, so each loading starts with it up.
+GVAR(keyHeld) = false;
+
 call FUNC(uiCreate);
 
 GVAR(op) set ["keys", (findDisplay 46) displayAddEventHandler ["KeyDown", {

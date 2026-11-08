@@ -30,7 +30,7 @@ if !(alive (GVAR(op) get "unit")) exitWith {
 };
 
 private _now = CBA_missionTime;
-private _pressed = inputAction "Action" > 0;
+private _pressed = GVAR(keyHeld);
 private _wasPressed = GVAR(op) get "pressed";
 
 GVAR(op) set ["pressed", _pressed];

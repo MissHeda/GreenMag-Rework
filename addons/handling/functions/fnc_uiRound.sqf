@@ -74,14 +74,14 @@ if ((GVAR(op) get "played") > 0) then {
 };
 
 private _waiting = (GVAR(op) get "started") < 0;
-private _key = (actionKeysNames ["Action", 1, "Keyboard"]) splitString """" joinString "";
-private _keyName = if (_key isEqualTo "") then {"Action"} else {_key};
+private _keyName = ["keyLoad", "Space"] call FUNC(keyText);
+private _stopName = ["keyCancel", "Esc"] call FUNC(keyText);
 private _line = switch (true) do {
     case (_waiting): {format [LLSTRING(Prompt_Hold), _keyName]};
     case (GVAR(op) getOrDefault ["clipGame", false]): {LLSTRING(Prompt_ClipGame)};
-    case (GVAR(op) get "game"): {format [[LLSTRING(Prompt_Game), LLSTRING(Prompt_GameMust)] select (GVAR(op) get "mustHit"), _keyName]};
+    case (GVAR(op) get "game"): {format [[LLSTRING(Prompt_Game), LLSTRING(Prompt_GameMust)] select (GVAR(op) get "mustHit"), _keyName, _stopName]};
     case (GVAR(op) get "hold"): {LLSTRING(Prompt_LetGo)};
-    default {LLSTRING(Prompt_Esc)};
+    default {format [LLSTRING(Prompt_Esc), _stopName]};
 };
 
 (_ui get "prompt") ctrlSetStructuredText parseText format ["<t align='center' size='0.72' color='#9aa0a8' shadow='%2'>%1</t>", _line, [0, 2] select (_ui getOrDefault ["classic", false])];
