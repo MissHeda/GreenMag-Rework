@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.17
+
+- Added: RHS compat for AFRF, USAF, GREF and SAF; every RHS magazine of a known caliber has its caliber and belt set, each part loads only with its RHS mod
+- Added: ammo rules take an optional third part, "belt" or "mag", to say whether a magazine is a belt (rhsusf_100Rnd_762x51: 762x51: belt)
+- Fixed: 100-round belts of full-power calibers (RHS M240/M60 7.62x51, PKM 7.62x54R) counted as plain magazines, so belts could not be loaded into them
+- Fixed: 50-round RHS belts (M60/M240 7.62x51, MG42 drums 7.92x57) were not seen as belts
+
 ## 1.2.15
 
 - Added: the minigame keys are CBA keybinds (Options > Controls > Configure Addons > GreenMag Rework): "Load / hit" (default Space) and "Stop loading" (default Backspace, Esc always works too); the hints in the panel show the keys you set
