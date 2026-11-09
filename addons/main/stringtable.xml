@@ -23,7 +23,11 @@
             <English>Ammo rules</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_AmmoRules_Desc">
-            <English>Which caliber a magazine counts as,\nfor magazines of other mods.\n\nmagazine: caliber, magazine: caliber\n\nPart of the class name is enough:\nvn_m16: 556x45, CUP_30Rnd_9x39: 9x39</English>
+            <English>Which caliber a magazine counts as,\nfor magazines of other mods.\n\nmagazine: caliber, magazine: caliber\n\nPart of the class name is enough:\nvn_m16: 556x45, CUP_30Rnd_9x39: 9x39
+
+Add ": belt" for belts the mod
+does not see as belts:
+rhsusf_100Rnd_762x51: 762x51: belt</English>
         </Key>
         <Key ID="STR_gmr_main_Setting_AmmoSystem">
             <English>Ammunition system</English>

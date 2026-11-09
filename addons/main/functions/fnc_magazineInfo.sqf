@@ -52,9 +52,12 @@ if (_ok && {_caliber isEqualTo ""}) then {
     } forEach _sources;
 };
 
+private _ruleBelt = -1;
+
 {
     if ((_x select 0) in _key) exitWith {
         _caliber = _x select 1;
+        _ruleBelt = _x select 2;
     };
 } forEach GVAR(ammoRuleList);
 
@@ -91,13 +94,17 @@ if (_caliber isNotEqualTo "") then {
 
 private _variant = ["basic", _type] select GVAR(advancedAmmo);
 
-// A belt: stated in its config, declared at runtime, or by its name and size.
-private _belt = if (isNumber (_config >> "gmr_belt")) then {
-    getNumber (_config >> "gmr_belt") == 1
-} else {
-    _key in GVAR(registeredBelts)
-    || {_capacity >= 130}
-    || {((["belt", "_box", "pouch", "_saw"]) findIf {_x in _key}) >= 0}
+// A belt: stated by the server's rules or its config, declared at runtime, or by its name and size.
+private _belt = switch (true) do {
+    case (_ruleBelt >= 0): {_ruleBelt == 1};
+    case (isNumber (_config >> "gmr_belt")): {getNumber (_config >> "gmr_belt") == 1};
+    default {
+        _key in GVAR(registeredBelts)
+        || {_capacity >= 130}
+        // No rifle of a full-power caliber holds 100 rounds: those are machine gun belts (RHS M240, PKM).
+        || {_capacity >= 100 && {_caliber in ["762x51", "762x54", "792x57"]}}
+        || {((["belt", "_box", "pouch", "_saw"]) findIf {_x in _key}) >= 0}
+    };
 };
 
 // Only a caliber with belts can be refilled from them; a magazine of another one takes loose rounds.
