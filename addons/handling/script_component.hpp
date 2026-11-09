@@ -9,10 +9,10 @@
 // A loading nobody starts by holding the key goes away after this many seconds, so it cannot wait around for a fight.
 #define HOLD_TIMEOUT 30
 
-// A belt moves this many rounds per second, and takes at least these many seconds.
+// A belt moves this many rounds per second - the same pace whatever is left in it, so topping up a nearly full belt is
+// quick - and takes at least a second, so a few rounds do not flash by.
 #define BELT_ROUNDS_PER_SECOND 6.67
-#define BELT_MIN_TIME_LOAD 10
-#define BELT_MIN_TIME_UNLOAD 8
+#define BELT_MIN_TIME 1
 
 // The lists of the unit's own containers in the game's inventory.
 #define IDC_LIST_UNIFORM 633

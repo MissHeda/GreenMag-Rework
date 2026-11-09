@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.18
+
+- Fixed: refilling a belt took at least 10 seconds however few rounds were missing, so topping up a nearly full belt crawled; belts now fill at the same steady pace whatever is left in them
+
 ## 1.2.17
 
 - Added: RHS compat for AFRF, USAF, GREF and SAF; every RHS magazine of a known caliber has its caliber and belt set, each part loads only with its RHS mod
