@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.20
+
+- Added: CUP Weapons compat; every CUP magazine of a known caliber has its caliber and belt set, loads only with CUP Weapons
+- Added: NIArms compat in the same way
+- Fixed: C-Mags and 50-round drums that a machine gun also takes counted as belts; only magazines no rifle takes count as belts now
+- Still universal: .357 SIG, .40 S&W, 10mm, 6.8 SPC, 7.63x25, 7.65 Browning, .300 Win Mag and the calibers listed under 1.2.19
+
 ## 1.2.19
 
 - Added: 3CB compat for 3CB Factions and 3CB BAF Weapons; every 3CB magazine of a known caliber has its caliber and belt set, each part loads only with its mod

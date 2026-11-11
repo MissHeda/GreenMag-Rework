@@ -27,6 +27,9 @@ MODS = [
     ("compat_3cbbaf", "3CB BAF Weapons", ["893339590/addons/uk3cb_baf_weapons_*.pbo"]),
     ("compat_3cbf", "3CB Factions", ["1673456286/addons/uk3cb_factions_weapons*.pbo"]),
     ("compat_bwmod", "BWMod", ["1200127537/addons/bwa3_*.pbo"]),
+    ("compat_cupw", "CUP Weapons", ["497660133/addons/cup_weapons_*.pbo"]),
+    ("compat_niarms", "NIArms", ["2595680138/addons/hlc_*.pbo", "2595680138/addons/nia_*.pbo",
+                                 "2595680138/addons/sp_fwa_*.pbo"]),
 ]
 
 TOK = re.compile(r'"(?:[^"]|"")*"|[A-Za-z0-9_.\-+]+|[{};:=\[\],]')
@@ -169,12 +172,13 @@ def main(workshop, cache):
         # Ammo whose config is in another mod: judge by the name. Only magazines of a known caliber get through anyway.
         return not top.lower().startswith(NOT_BULLET)
 
-    mg_mags = set()
+    mg_mags, rifle_mags = set(), set()
     for w in weapons:
-        if any(t in w.lower() for t in MG_TOKENS):
-            ms = get(weapons, w, "magazines")
-            if isinstance(ms, list):
-                mg_mags.update(m.lower() for m in ms)
+        ms = get(weapons, w, "magazines")
+        if isinstance(ms, list):
+            (mg_mags if any(t in w.lower() for t in MG_TOKENS) else rifle_mags).update(m.lower() for m in ms)
+    # C-Mags fit MGs too (M249), but they are magazines, as is anything a rifle takes as well.
+    mg_mags = {m for m in mg_mags if m not in rifle_mags and "cmag" not in m}
 
     clean = lambda t: "".join(re.split(r"[. ]", (t or "").lower()))
     per_mod = {addon: [] for addon in present}
