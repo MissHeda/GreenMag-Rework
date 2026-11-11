@@ -1,33 +1,58 @@
-"""Builds the RHS compat addons (addons/compat_rhs*) from RHS's own magazine configs.
+"""Builds the compat addons (addons/compat_*) from other mods' own magazine configs.
 
-Every RHS magazine of a caliber this mod knows gets gmr_caliber and gmr_belt set, so nothing depends on guessing from
-its name. Each RHS mod gets its own addon, skipped when that mod is not loaded.
+Every magazine of a caliber this mod knows gets gmr_caliber and gmr_belt set, so nothing depends on guessing from
+its name. Each mod gets its own addon, skipped when that mod is not loaded.
 
-Usage: unpack and derapify the RHS weapon configs first, then point this at the folder holding them:
-    hemtt utils pbo unpack <workshop>/843577117/addons/rhsusf_c_weapons.pbo rhsusf_c_weapons
-    hemtt utils config derapify rhsusf_c_weapons/config.bin rhsusf_c_weapons.cpp
-    (same for rhs_c_weapons, rhsgref_c_weapons, rhssaf_c_weapons)
-    python tools/generate_rhs_compat.py <folder with the four .cpp files>
+The configs are read straight from the mods' PBOs in the Steam workshop folder (only config.bin is pulled out, nothing
+else is unpacked). Needs hemtt on PATH.
+    python tools/generate_compat.py [workshop folder] [cache folder]
+Defaults: C:/SteamLibrary/steamapps/workshop/content/107410 and %TEMP%/gmr_compat.
 """
+import glob
 import os
 import re
+import subprocess
 import sys
+import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CALIBERS = os.path.join(ROOT, "addons", "items", "cfg", "calibers.hpp")
 
-# RHS weapon config -> addon name, mod name
-MODS = {
-    "rhs_c_weapons": ("compat_rhsafrf", "RHS: AFRF"),
-    "rhsusf_c_weapons": ("compat_rhsusaf", "RHS: USAF"),
-    "rhsgref_c_weapons": ("compat_rhsgref", "RHS: GREF"),
-    "rhssaf_c_weapons": ("compat_rhssaf", "RHS: SAF"),
-}
+# addon name, mod name, PBOs (relative to the workshop folder)
+MODS = [
+    ("compat_rhsafrf", "RHS: AFRF", ["843425103/addons/rhs_c_weapons.pbo"]),
+    ("compat_rhsusaf", "RHS: USAF", ["843577117/addons/rhsusf_c_weapons.pbo"]),
+    ("compat_rhsgref", "RHS: GREF", ["843593391/addons/rhsgref_c_weapons.pbo"]),
+    ("compat_rhssaf", "RHS: SAF", ["843632231/addons/rhssaf_c_weapons.pbo"]),
+    ("compat_3cbbaf", "3CB BAF Weapons", ["893339590/addons/uk3cb_baf_weapons_*.pbo"]),
+    ("compat_3cbf", "3CB Factions", ["1673456286/addons/uk3cb_factions_weapons*.pbo"]),
+    ("compat_bwmod", "BWMod", ["1200127537/addons/bwa3_*.pbo"]),
+]
 
 TOK = re.compile(r'"(?:[^"]|"")*"|[A-Za-z0-9_.\-+]+|[{};:=\[\],]')
 
 # Weapons whose magazines of 50 rounds and more are belts.
-MG_TOKENS = ("m240", "m249", "pkm", "pkp", "mg42", "mg3", "m60", "m84", "fnmag", "mk48", "saw")
+MG_TOKENS = ("m240", "m249", "pkm", "pkp", "mg42", "mg3", "mg4", "mg5", "m60", "m84", "fnmag", "mk48", "saw",
+             "l7a2", "l110", "rpd", "ukm", "m1919")
+
+# Vanilla ammo base names that are not bullets (grenades, missiles, rockets, shells, flares, smoke).
+NOT_BULLET = ("g_", "m_", "r_", "sh_", "f_", "smoke", "rocket", "missile", "grenade")
+
+
+def configs(pbo, cache):
+    """Pulls every config.bin out of a PBO and returns the derapified .cpp paths."""
+    out = []
+    listing = subprocess.run(["hemtt", "utils", "pbo", "inspect", pbo], capture_output=True, text=True,
+                             encoding="utf-8", errors="replace").stdout
+    for path in re.findall(r"│ (\S*config\.bin) ", listing):
+        dst = os.path.join(cache, os.path.basename(pbo)[:-4], path.replace("\\", os.sep))
+        cpp = dst[:-4] + ".cpp"
+        if not os.path.exists(cpp) or os.path.getmtime(cpp) < os.path.getmtime(pbo):
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            subprocess.run(["hemtt", "utils", "pbo", "extract", pbo, path, dst], check=True, capture_output=True)
+            subprocess.run(["hemtt", "utils", "config", "derapify", dst, cpp], check=True, capture_output=True)
+        out.append(cpp)
+    return out
 
 
 def parse(text):
@@ -96,23 +121,34 @@ def parse(text):
     return block()
 
 
-def main(folder):
+def main(workshop, cache):
     calibers = []
     text = open(CALIBERS, encoding="utf-8").read()
     for m in re.finditer(r'^    class (\w+) \{displayName = "[^"]*"; tokens\[\] = \{([^}]*)\}', text, re.M):
         calibers.append((m.group(1), [t.strip().strip('"') for t in m.group(2).split(",") if t.strip()]))
 
-    mags, ammo, weapons, origin = {}, {}, {}, {}
-    for stem in MODS:
-        root = parse(open(os.path.join(folder, stem + ".cpp"), encoding="utf-8", errors="replace").read())
-        cl = root.get("__classes", {})
-        for src, dst in (("CfgMagazines", mags), ("CfgAmmo", ammo), ("CfgWeapons", weapons)):
-            for k, v in cl.get(src, {}).get("__classes", {}).items():
-                if v.get("__extern") and k in dst:
-                    continue
-                dst[k] = v
-                if src == "CfgMagazines" and not v.get("__extern"):
-                    origin[k] = stem
+    # Tables of all mods together, so one mod's magazines can lean on another's ammo and base classes.
+    mags, ammo, weapons = {}, {}, {}
+    origin = {}  # magazine -> (addon, CfgPatches classes of the config that defines it)
+    present = []
+    for addon, modname, pbos in MODS:
+        files = sorted(f for p in pbos for f in glob.glob(os.path.join(workshop, p)))
+        if not files:
+            print(f"{addon}: {modname} not found in {workshop}, left as it is")
+            continue
+        present.append(addon)
+        for pbo in files:
+            for cpp in configs(pbo, cache):
+                root = parse(open(cpp, encoding="utf-8", errors="replace").read())
+                cl = root.get("__classes", {})
+                patches = [k for k, v in cl.get("CfgPatches", {}).get("__classes", {}).items() if not v.get("__extern")]
+                for src, dst in (("CfgMagazines", mags), ("CfgAmmo", ammo), ("CfgWeapons", weapons)):
+                    for k, v in cl.get(src, {}).get("__classes", {}).items():
+                        if v.get("__extern") and k in dst:
+                            continue
+                        dst[k] = v
+                        if src == "CfgMagazines" and not v.get("__extern"):
+                            origin[k] = (addon, patches)
 
     def get(table, cls, key, depth=0):
         c = table.get(cls)
@@ -130,7 +166,8 @@ def main(folder):
         while top in ammo and ammo[top].get("__parent") and n < 30:
             top = ammo[top]["__parent"]
             n += 1
-        return top.startswith("B_") or top == "BulletBase"
+        # Ammo whose config is in another mod: judge by the name. Only magazines of a known caliber get through anyway.
+        return not top.lower().startswith(NOT_BULLET)
 
     mg_mags = set()
     for w in weapons:
@@ -140,11 +177,13 @@ def main(folder):
                 mg_mags.update(m.lower() for m in ms)
 
     clean = lambda t: "".join(re.split(r"[. ]", (t or "").lower()))
-    per_mod = {stem: [] for stem in MODS}
-    skipped = []
+    per_mod = {addon: [] for addon in present}
+    needs = {addon: set() for addon in present}
+    skipped = {addon: [] for addon in present}
 
     for m in sorted(origin, key=str.lower):
         c = mags[m]
+        addon, patches = origin[m]
         if str(get(mags, m, "scope") or "2") != "2":
             continue
         a = get(mags, m, "ammo") or ""
@@ -157,7 +196,7 @@ def main(folder):
                 caliber = hit[0]
                 break
         if not caliber:
-            skipped.append(m)
+            skipped[addon].append(m)
             continue
         key = m.lower()
         count = int(float(get(mags, m, "count") or 0))
@@ -167,15 +206,22 @@ def main(folder):
             or (count >= 100 and caliber in ("762x51", "762x54", "792x57"))
             or (key in mg_mags and count >= 50)
         )
-        per_mod[origin[m]].append((m, c["__parent"], caliber, belt))
+        per_mod[addon].append((m, c["__parent"], caliber, belt))
+        needs[addon].update(patches)
 
-    for stem, (addon, modname) in MODS.items():
-        rows = per_mod[stem]
+    for addon, modname, _ in MODS:
+        if addon not in present:
+            continue
+        # Mods spell the same base class in different cases; the config wants one spelling throughout.
+        spelling = {}
+        for m in sorted(mags, key=lambda k: bool(mags[k].get("__extern"))):
+            spelling.setdefault(m.lower(), m)
+        rows = [(m, spelling.get((p or "").lower(), p), cal, belt) for m, p, cal, belt in per_mod[addon]]
         out = os.path.join(ROOT, "addons", addon)
         os.makedirs(out, exist_ok=True)
-        parents = sorted({p for _, p, _, _ in rows if p and p not in {r[0] for r in rows}}, key=str.lower)
         names = {r[0] for r in rows}
-        lines = ["// Generated by tools/generate_rhs_compat.py - do not edit by hand.", "", "class CfgMagazines {"]
+        parents = sorted({p for _, p, _, _ in rows if p and p not in names}, key=str.lower)
+        lines = ["// Generated by tools/generate_compat.py - do not edit by hand.", "", "class CfgMagazines {"]
         lines += [f"    class {p};" for p in parents]
         done = set()
 
@@ -192,6 +238,7 @@ def main(folder):
         for r in rows:
             emit(r)
         lines += ["};", ""]
+        required = ", ".join(f'"{p}"' for p in ["gmr_main"] + sorted(needs[addon], key=str.lower))
         open(os.path.join(out, "CfgMagazines.hpp"), "w", encoding="utf-8", newline="\n").write("\n".join(lines))
         open(os.path.join(out, "$PBOPREFIX$"), "w", newline="\n").write(f"z\\gmr\\addons\\{addon}\n")
         open(os.path.join(out, "script_component.hpp"), "w", newline="\n").write(
@@ -206,7 +253,7 @@ class CfgPatches {{
         units[] = {{}};
         weapons[] = {{}};
         requiredVersion = REQUIRED_VERSION;
-        requiredAddons[] = {{"gmr_main", "{stem}"}};
+        requiredAddons[] = {{{required}}};
         skipWhenMissingDependencies = 1;
         author = "Miss Heda";
         VERSION_CONFIG;
@@ -216,9 +263,10 @@ class CfgPatches {{
 #include "CfgMagazines.hpp"
 ''')
         print(f"{addon}: {len(rows)} magazines, {sum(r[3] for r in rows)} belts")
-
-    print("No caliber of this mod (stay universal):", ", ".join(skipped))
+        if skipped[addon]:
+            print(f"  no caliber of this mod (stay universal): {', '.join(skipped[addon])}")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1] if len(sys.argv) > 1 else "C:/SteamLibrary/steamapps/workshop/content/107410",
+         sys.argv[2] if len(sys.argv) > 2 else os.path.join(tempfile.gettempdir(), "gmr_compat"))

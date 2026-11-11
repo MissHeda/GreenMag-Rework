@@ -128,7 +128,7 @@ class gmr_calibers {
             class basic {displayName = "Basic"; tokens[] = {};};
         };
     };
-    class 338 {displayName = ".338"; tokens[] = {"338"}; packs[] = {60,30,10};
+    class 338 {displayName = ".338"; tokens[] = {"338","86x70"}; packs[] = {60,30,10};
         class variants {
             class basic {displayName = "Basic"; tokens[] = {};};
             class 300gr {displayName = "300 gr"; tokens[] = {"300gr"};};

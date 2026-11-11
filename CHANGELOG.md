@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.19
+
+- Added: 3CB compat for 3CB Factions and 3CB BAF Weapons; every 3CB magazine of a known caliber has its caliber and belt set, each part loads only with its mod
+- Added: BWMod compat in the same way (G36, G28, G82, MG3, MG4, MG5, MP7, P8, P12 and more)
+- Added: 8.6x70 magazines (BWMod G29) count as .338
+- Still universal: .30-06, .30 Carbine, 7.5x55 Swiss and the CZ550's round, which GreenMag has no caliber for yet
+
 ## 1.2.18
 
 - Fixed: refilling a belt took at least 10 seconds however few rounds were missing, so topping up a nearly full belt crawled; belts now fill at the same steady pace whatever is left in them
