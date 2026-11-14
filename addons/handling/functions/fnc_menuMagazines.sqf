@@ -105,7 +105,32 @@ private _actions = _classes apply {
     [_top, _children, _unit]
 };
 
-if (_fill) exitWith {_actions};
+// Refill: belt items with room, when there are rounds for them.
+if (_fill) exitWith {
+    {
+        private _facts = [_x] call EFUNC(main,itemInfo);
+
+        if ((_facts select ITEM_KIND) == "belt" && {(([_unit, _x, ""] call FUNC(beltRefillSource)) select 0) isNotEqualTo ""}) then {
+            private _action = [
+                format ["gmr_refill_%1", _x],
+                format ["%1 [%2/%3]", _facts select ITEM_NAME, _facts select ITEM_ROUNDS, BELT_MAX],
+                _facts select ITEM_PICTURE,
+                {
+                    params ["", "_player", "_params"];
+
+                    [_player, "refillBelt", _params select 0, []] call FUNC(start);
+                },
+                {true},
+                {},
+                [_x]
+            ] call ace_interact_menu_fnc_createAction;
+
+            _actions pushBack [_action, [], _unit];
+        };
+    } forEach (keys ([_unit] call EFUNC(main,itemCounts)));
+
+    _actions
+};
 
 // Unload: the belt items, each type with its belts.
 private _beltTypes = createHashMap;

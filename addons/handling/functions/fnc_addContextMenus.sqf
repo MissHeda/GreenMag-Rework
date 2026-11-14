@@ -43,6 +43,7 @@ private _fnc_magazineCan = {
         {
             params ["_unit", "_container", "_item", "", "_params"];
 
+            EGVAR(main,preferContainer) = _container;
             [_unit, _container, _item, _params select 0] call FUNC(contextMagazine);
             false
         },
@@ -65,6 +66,7 @@ private _fnc_magazineCan = {
     {
         params ["_unit", "_container", "_item"];
 
+        EGVAR(main,preferContainer) = _container;
         [_unit, _item, false, _container] call FUNC(unpack);
     },
     true,
@@ -82,6 +84,7 @@ private _fnc_magazineCan = {
     {
         params ["_unit", "_container", "_item"];
 
+        EGVAR(main,preferContainer) = _container;
         [_unit, _item, false, _container] call FUNC(unpack);
     },
     true,
@@ -104,7 +107,9 @@ private _fnc_magazineCan = {
         }
     ],
     {
-        params ["_unit", "", "_item"];
+        params ["_unit", "_container", "_item"];
+
+        EGVAR(main,preferContainer) = _container; // what comes out lands where the action was made
 
         [_unit, _item] call FUNC(packRounds);
         false
@@ -129,7 +134,9 @@ private _fnc_magazineCan = {
         }
     ],
     {
-        params ["_unit", "", "_item"];
+        params ["_unit", "_container", "_item"];
+
+        EGVAR(main,preferContainer) = _container; // what comes out lands where the action was made
 
         [_unit, _item] call FUNC(splitBelt);
         false
@@ -146,7 +153,9 @@ private _fnc_magazineCan = {
     QPATHTOF(data\action_unload.paa),
     {EGVAR(main,enabled)},
     {
-        params ["_unit", "", "_item"];
+        params ["_unit", "_container", "_item"];
+
+        EGVAR(main,preferContainer) = _container; // what comes out lands where the action was made
 
         closeDialog 0;
         [{_this call FUNC(start)}, [_unit, "unloadBelt", _item, []]] call CBA_fnc_execNextFrame;
@@ -168,20 +177,13 @@ private _fnc_magazineCan = {
         {
             params ["_unit", "", "_item"];
 
-            private _facts = [_item] call EFUNC(main,itemInfo);
-
-            EGVAR(main,enabled)
-                && {(_facts select ITEM_ROUNDS) < BELT_MAX}
-                && {
-                    private _round = _facts select ITEM_ROUND;
-
-                    (([_unit] call EFUNC(main,itemCounts)) getOrDefault [_round, 0]) > 0
-                        || {[_unit, _round] call FUNC(clipsOf) isNotEqualTo []}
-                }
+            EGVAR(main,enabled) && {(([_unit, _item, ""] call FUNC(beltRefillSource)) select 0) isNotEqualTo ""}
         }
     ],
     {
-        params ["_unit", "", "_item"];
+        params ["_unit", "_container", "_item"];
+
+        EGVAR(main,preferContainer) = _container; // what comes out lands where the action was made
 
         closeDialog 0;
         [{_this call FUNC(start)}, [_unit, "refillBelt", _item, []]] call CBA_fnc_execNextFrame;
@@ -206,7 +208,9 @@ private _fnc_magazineCan = {
         }
     ],
     {
-        params ["_unit", "", "_item"];
+        params ["_unit", "_container", "_item"];
+
+        EGVAR(main,preferContainer) = _container; // what comes out lands where the action was made
 
         [_unit, ([_item] call EFUNC(main,itemInfo)) select ITEM_BELT_TYPE] call FUNC(combineBelts);
         false

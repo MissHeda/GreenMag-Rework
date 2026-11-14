@@ -12,3 +12,6 @@ if (!hasInterface) exitWith {};
 }] call CBA_fnc_addEventHandler;
 
 call FUNC(addContextMenus);
+
+// The ACE menu has no container of its own: what it makes goes the usual way (uniform, vest, backpack).
+["ace_interactMenuOpened", {EGVAR(main,preferContainer) = objNull}] call CBA_fnc_addEventHandler;

@@ -24,6 +24,11 @@ params [["_unit", objNull, [objNull]], ["_class", "", [""]], ["_amount", 0, [0]]
 
 if (_amount <= 0) exitWith {0};
 
+// Unless told otherwise, the container the player's last action was made in comes first (inventory context menu or drag).
+if (isNull _first) then {
+    _first = missionNamespace getVariable [QGVAR(preferContainer), objNull];
+};
+
 private _mass = (([_class] call FUNC(itemInfo)) select ITEM_MASS) max 0.001;
 private _left = _amount;
 private _containers = [

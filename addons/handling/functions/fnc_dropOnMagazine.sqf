@@ -25,10 +25,21 @@ params [["_list", controlNull, [controlNull]], ["_row", -1, [0]], ["_item", "", 
 
 private _class = _list lbData _row;
 private _config = configFile >> "CfgMagazines" >> _class;
-
-if (!isClass _config) exitWith {false};
-
 private _unit = PLAYER_UNIT;
+private _container = switch (ctrlIDC _list) do {
+    case IDC_LIST_UNIFORM: {uniformContainer _unit};
+    case IDC_LIST_VEST: {vestContainer _unit};
+    default {backpackContainer _unit};
+};
+
+// Rounds or clips dropped on a belt item go onto that belt.
+if (!isClass _config) exitWith {
+    if ((([_class] call EFUNC(main,itemInfo)) select ITEM_KIND) != "belt") exitWith {false};
+
+    [_unit, _class, _item, _container] call FUNC(dropOnBelt)
+};
+
+EGVAR(main,preferContainer) = _container;
 private _magazine = [_class] call EFUNC(main,magazineInfo);
 private _facts = [_item] call EFUNC(main,itemInfo);
 private _capacity = _magazine select MAG_CAPACITY;
@@ -42,12 +53,6 @@ if (!_fits) exitWith {
     hintSilent LLSTRING(Hint_WrongAmmo);
     PLAY_SOUND(denied);
     false
-};
-
-private _container = switch (ctrlIDC _list) do {
-    case IDC_LIST_UNIFORM: {uniformContainer _unit};
-    case IDC_LIST_VEST: {vestContainer _unit};
-    default {backpackContainer _unit};
 };
 
 private _rounds = ((magazinesAmmoCargo _container) select {(_x select 0) == _class}) apply {_x select 1};

@@ -70,7 +70,16 @@ if (_kind == "unloadBelt") then {
         private _facts = [_class] call EFUNC(main,itemInfo);
 
         _belt = true;
-        _source = _facts select ITEM_ROUND;
+
+        // Its own rounds, or universal ones (setting); a dragged item brings its own choice in _ammunition.
+        _source = if (_ammunition isEqualTo "") then {
+            ([_unit, _class, ""] call FUNC(beltRefillSource)) params ["_round", "", "_why"];
+
+            _refused = _why;
+            _round
+        } else {
+            _ammunition
+        };
         _capacity = BELT_MAX;
         _need = BELT_MAX - (_facts select ITEM_ROUNDS);
         _amounts = [_facts select ITEM_ROUNDS];
