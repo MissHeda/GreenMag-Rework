@@ -226,14 +226,20 @@ if (_need <= 0) exitWith {
 // The time: per round for a magazine, a steady rate for a belt (a long fixed minimum made topping up a nearly full belt
 // crawl). Whole clips take the clip factor of it, loose rounds the loose-round factor while the speedloader
 // works on them.
-private _time = if (_belt) then {
+private _time = if (_kind in ["refillBelt", "unloadBelt"]) then {
+    // Round by round into or out of the links of a loose belt: tied to the time per round of a magazine, linking at
+    // half of it, taking out at a third.
+    (_need * EGVAR(main,timePerRound) * ([BELT_UNLINK_FACTOR, BELT_LINK_FACTOR] select (_kind == "refillBelt")) max BELT_MIN_TIME)
+        * EGVAR(main,beltTimeFactor)
+        * (_unit getVariable [QEGVAR(main,beltTime), 1])
+} else { if (_belt) then {
     ((_need / BELT_ROUNDS_PER_SECOND) max BELT_MIN_TIME)
         * EGVAR(main,beltTimeFactor)
         * (_unit getVariable [QEGVAR(main,beltTime), 1])
 } else {
     _need * ([_looseBoost, EGVAR(main,speedloaderFactor)] select _clipLoading) * EGVAR(main,timePerRound)
         * (_unit getVariable [QEGVAR(main,magazineTime), 1])
-};
+}};
 
 GVAR(opCounter) = GVAR(opCounter) + 1;
 

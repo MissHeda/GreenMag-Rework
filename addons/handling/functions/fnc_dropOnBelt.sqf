@@ -1,7 +1,7 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * Loose rounds, a pack, a stripper clip or a carton of clips was dropped on a belt item: what fits (its own rounds, or
+ * A belt of the same type dropped on a belt item joins it. Loose rounds, a pack, a stripper clip or a carton of clips: what fits (its own rounds, or
  * universal ones while universal ammunition is on) goes onto the belt, the same as "Refill belt" from the context menu.
  * The longer belt comes back into the container the belt lay in. Also called by other inventories (AIO).
  *
@@ -22,7 +22,14 @@
 
 params [["_unit", objNull, [objNull]], ["_belt", "", [""]], ["_item", "", [""]], ["_container", objNull, [objNull]]];
 
-([_unit, _belt, _item] call FUNC(beltRefillSource)) params ["_round", "_from", "_why"];
+([_unit, _belt, _item] call FUNC(canDropOnBelt)) params ["_mode", "_round", "_from", "_why"];
+
+// A belt of the same type joins it, at once, as "Combine" in the menus does.
+if (_mode == "combine") exitWith {
+    EGVAR(main,preferContainer) = _container;
+    [_unit, ([_belt] call EFUNC(main,itemInfo)) select ITEM_BELT_TYPE, _belt, _item] call FUNC(combineBelts);
+    true
+};
 
 if (_round isEqualTo "") exitWith {
     hintSilent _why;

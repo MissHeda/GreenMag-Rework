@@ -3,6 +3,8 @@
 ## 1.3.0
 
 - Added: refill a belt with loose rounds, up to 200, at the same steady pace as a belt magazine, without joining it with another belt (thanks Sammy Mellow): drag rounds, a box or stripper clips onto the belt (engine inventory and AIO), "Refill belt" in its context menu, or ACE self-interaction > Refill; its own rounds or, with universal ammunition on, universal ones
+- Added: drag a belt onto another belt of the same type to join them (engine inventory and AIO)
+- Changed: loose belts are linked and unlinked round by round at the magazine pace: refilling takes half the time per round of a magazine (2 rounds a second by default), unloading a third (3 a second); before, 200 rounds went in or out in half a minute
 - Changed: what an inventory action makes (split belts, unloaded rounds, a refilled belt, opened boxes) lands in the container the action was made in, not in the uniform first
 - Added: Enhanced Utility Pouches / EFAK compat; rounds, boxes, clips and belts inside a carried pouch or kit count as carried and are used straight from it, without moving them to the inventory first; loads only with the EFAK framework (thanks Butch)
 

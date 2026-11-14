@@ -4,6 +4,7 @@ PREP(animTick);
 PREP(applyBeltItem);
 PREP(applyBeltRefill);
 PREP(beltRefillSource);
+PREP(canDropOnBelt);
 PREP(applyFill);
 PREP(applyUnload);
 PREP(begin);

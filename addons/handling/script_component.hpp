@@ -14,6 +14,10 @@
 #define BELT_ROUNDS_PER_SECOND 6.67
 #define BELT_MIN_TIME 1
 
+// A loose belt is linked and unlinked round by round: this share of a magazine round's time per round.
+#define BELT_LINK_FACTOR 0.5
+#define BELT_UNLINK_FACTOR 0.34
+
 // The lists of the unit's own containers in the game's inventory.
 #define IDC_LIST_UNIFORM 633
 #define IDC_LIST_VEST 638
