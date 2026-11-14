@@ -156,6 +156,41 @@ private _fnc_magazineCan = {
     []
 ] call CBA_fnc_addItemContextMenuOption;
 
+// Loose rounds of its own kind, and those on its stripper clips, go back onto a belt that is not full.
+[
+    "gmr_belt_base",
+    "CONTAINER",
+    LLSTRING(RefillBelt),
+    nil,
+    QPATHTOF(data\action_fill.paa),
+    [
+        {true},
+        {
+            params ["_unit", "", "_item"];
+
+            private _facts = [_item] call EFUNC(main,itemInfo);
+
+            EGVAR(main,enabled)
+                && {(_facts select ITEM_ROUNDS) < BELT_MAX}
+                && {
+                    private _round = _facts select ITEM_ROUND;
+
+                    (([_unit] call EFUNC(main,itemCounts)) getOrDefault [_round, 0]) > 0
+                        || {[_unit, _round] call FUNC(clipsOf) isNotEqualTo []}
+                }
+        }
+    ],
+    {
+        params ["_unit", "", "_item"];
+
+        closeDialog 0;
+        [{_this call FUNC(start)}, [_unit, "refillBelt", _item, []]] call CBA_fnc_execNextFrame;
+        false
+    },
+    false,
+    []
+] call CBA_fnc_addItemContextMenuOption;
+
 [
     "gmr_belt_base",
     "CONTAINER",

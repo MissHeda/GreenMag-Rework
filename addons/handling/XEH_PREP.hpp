@@ -2,6 +2,7 @@ PREP(addContextMenus);
 PREP(ammoSource);
 PREP(animTick);
 PREP(applyBeltItem);
+PREP(applyBeltRefill);
 PREP(applyFill);
 PREP(applyUnload);
 PREP(begin);

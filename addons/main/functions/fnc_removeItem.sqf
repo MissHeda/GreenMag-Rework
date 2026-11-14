@@ -2,7 +2,8 @@
 /*
  * Author: Miss Heda
  * Takes items out of a unit's uniform, vest and backpack in one command per container, and reports what the cargo
- * shows as gone rather than what was asked for.
+ * shows as gone rather than what was asked for. What they do not hold comes out of the other places a compat addon adds
+ * (GVAR(itemSources)), so a unit's bags are used up before its pouches.
  *
  * Arguments:
  * 0: Unit <OBJECT>
@@ -44,5 +45,11 @@ private _left = _amount;
         };
     };
 } forEach [uniformContainer _unit, vestContainer _unit, backpackContainer _unit];
+
+{
+    if (_left <= 0) exitWith {};
+
+    _left = _left - ([_unit, _class, _left] call (_x select 1));
+} forEach GVAR(itemSources);
 
 _amount - _left

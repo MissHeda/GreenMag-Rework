@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0
+
+- Added: "Refill belt" in a belt's context menu puts loose rounds of its own kind (and those on its stripper clips) back onto it, up to 200, at the same steady pace as refilling a belt magazine; nothing is joined with another belt (thanks Sammy Mellow)
+- Added: Enhanced Utility Pouches / EFAK compat; rounds, boxes, clips and belts inside a carried pouch or kit count as carried and are used straight from it, without moving them to the inventory first; loads only with the EFAK framework (thanks Butch)
+
 ## 1.2.20
 
 - Added: CUP Weapons compat; every CUP magazine of a known caliber has its caliber and belt set, loads only with CUP Weapons

@@ -26,7 +26,7 @@ if (isNull objectParent _unit) then {
 };
 
 if (EGVAR(main,loadAnimation)) then {
-    private _model = if ((GVAR(op) get "kind") == "unloadBelt") then {QPATHTOF(data\mag_box.p3d)} else {[GVAR(op) get "class"] call FUNC(handModel)};
+    private _model = if ((GVAR(op) get "kind") in ["unloadBelt", "refillBelt"]) then {QPATHTOF(data\mag_box.p3d)} else {[GVAR(op) get "class"] call FUNC(handModel)};
 
     [FUNC(animTick), ANIM_CHECK_INTERVAL, [_unit, GVAR(op) get "id", _model]] call CBA_fnc_addPerFrameHandler;
 };

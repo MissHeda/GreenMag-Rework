@@ -55,6 +55,7 @@ switch (_op get "kind") do {
     case "fill": {[_op, _done] call FUNC(applyFill)};
     case "unload": {[_op, _done] call FUNC(applyUnload)};
     case "unloadBelt": {[_op, _done] call FUNC(applyBeltItem)};
+    case "refillBelt": {[_op, _done] call FUNC(applyBeltRefill)};
 };
 
 if (_completed) then {

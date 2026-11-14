@@ -99,6 +99,11 @@ if (_done > (GVAR(op) get "played")) then {
     GVAR(op) set ["played", _done];
 
     private _kind = GVAR(op) get "kind";
+
+    // A belt item being refilled shows as one magazine filling up to the longest belt.
+    if (_kind == "refillBelt") then {
+        _kind = "fill";
+    };
     private _capacity = GVAR(op) get "capacity";
     private _shown = 0;
     private _left = _done;

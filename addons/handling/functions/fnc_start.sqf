@@ -7,8 +7,8 @@
  *
  * Arguments:
  * 0: Unit <OBJECT>
- * 1: "fill", "unload" or "unloadBelt" <STRING>
- * 2: Magazine class, or the belt item for "unloadBelt" <STRING>
+ * 1: "fill", "unload", "unloadBelt" or "refillBelt" (loose rounds and clips of its kind onto a belt item) <STRING>
+ * 2: Magazine class, or the belt item for "unloadBelt" and "refillBelt" <STRING>
  * 3: The rounds of each magazine, in the order to work through them <ARRAY>
  * 4: Ammunition to refill from, a round class or belt type; "" chooses by the caliber (optional, default: "") <STRING>
  * 5: Where the rounds come from: "loose" (rounds dragged onto the magazine), "clips" (a clip or carton of clips dragged
@@ -66,6 +66,18 @@ if (_kind == "unloadBelt") then {
     _name = _facts select ITEM_NAME;
     _picture = _facts select ITEM_PICTURE;
 } else {
+    if (_kind == "refillBelt") exitWith {
+        private _facts = [_class] call EFUNC(main,itemInfo);
+
+        _belt = true;
+        _source = _facts select ITEM_ROUND;
+        _capacity = BELT_MAX;
+        _need = BELT_MAX - (_facts select ITEM_ROUNDS);
+        _amounts = [_facts select ITEM_ROUNDS];
+        _name = _facts select ITEM_NAME;
+        _picture = _facts select ITEM_PICTURE;
+    };
+
     private _facts = [_class] call EFUNC(main,magazineInfo);
 
     _capacity = _facts select MAG_CAPACITY;
@@ -118,7 +130,7 @@ private _clips = [];
 private _clipRounds = 0;
 private _loose = _counts getOrDefault [_source, 0];
 
-if (_kind == "fill" && {!_belt} && {_from != "loose"}) then {
+if ((_kind == "fill" && {!_belt} || {_kind == "refillBelt"}) && {_from != "loose"}) then {
     _clips = [_unit, _source] call FUNC(clipsOf);
     {_clipRounds = _clipRounds + (_x select 1) * (_x select 2)} forEach _clips;
 };
@@ -135,10 +147,10 @@ if (_from == "auto") then {
 private _clipLoading = _clipsWhole && {_from == "clips"};
 private _looseBoost = [1, EGVAR(main,speedloaderLooseFactor)] select (_speedloader && {EGVAR(main,speedloaderMode) != 0});
 
-if (_kind == "fill" && {!EGVAR(main,freeRefill)}) then {
+if (_kind in ["fill", "refillBelt"] && {!EGVAR(main,freeRefill) || {_kind == "refillBelt"}}) then {
     private _have = 0;
 
-    if (_belt) then {
+    if (_belt && {_kind == "fill"}) then {
         if (_source isNotEqualTo "") then {
             {_have = _have + (_x select 1)} forEach ([_unit, _source] call EFUNC(main,beltItems));
         };
@@ -267,7 +279,7 @@ GVAR(op) = createHashMapFromArray [
     ["stepIndex", 0],
     ["stepsDone", 0],
     ["pushed", 0],
-    ["title", format [[LLSTRING(Title_Unload), LLSTRING(Title_Fill)] select (_kind == "fill"), _name]],
+    ["title", format [[LLSTRING(Title_Unload), LLSTRING(Title_Fill)] select (_kind in ["fill", "refillBelt"]), _name]],
     ["picture", _picture],
     ["created", CBA_missionTime],
     ["seen", CBA_missionTime],
