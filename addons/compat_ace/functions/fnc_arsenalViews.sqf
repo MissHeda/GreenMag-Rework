@@ -1,27 +1,28 @@
 #include "..\script_component.hpp"
 /*
  * Author: Miss Heda
- * Puts this mod's views at the top of ACE Arsenal's sort list while the ammunition tab is open: only the ammunition the
- * unit's weapons take (the default), only rounds, only packs, only belts; the speedloader shows in each. ACE's own sorts
- * below them show everything.
- * Then takes out of the list what the chosen view does not show.
+ * Puts this mod's views at the top of ACE Arsenal's sort list while one of the ammunition tabs is open: only rounds,
+ * only packs, only belts; the speedloader shows in each. ACE's own sorts below them show everything.
+ * Then takes out of the list what the chosen view does not show, and in the tab of the fitting ammunition what the
+ * weapons the unit carries do not take.
  *
  * ACE fills the sort list anew with every fill of the panel, so this runs after each one. Picking a view fills the
  * panel again (fnc_arsenalViewPicked), as rows taken out cannot come back otherwise.
  *
  * Arguments:
  * 0: The arsenal display <DISPLAY>
+ * 1: The tab of the fitting ammunition, not the one of all of it <BOOL> (default: false)
  *
  * Return Value:
  * None
  *
  * Example:
- * [_display] call gmr_compat_ace_fnc_arsenalViews;
+ * [_display, true] call gmr_compat_ace_fnc_arsenalViews;
  *
  * Public: No
  */
 
-params [["_display", displayNull, [displayNull]]];
+params [["_display", displayNull, [displayNull]], ["_fittingTab", false, [false]]];
 
 private _list = _display displayCtrl ARSENAL_ITEM_LIST;
 
@@ -34,7 +35,7 @@ if (isNull _list) exitWith {};
 
     private _sort = _display displayCtrl ARSENAL_SORT;
 
-    if (isNull _sort || {missionNamespace getVariable ["ace_arsenal_currentRightPanel", -1] != 61 + GVAR(arsenalSlot) * 2}) exitWith {};
+    if (isNull _sort || {!((missionNamespace getVariable ["ace_arsenal_currentRightPanel", -1]) in [TAB_FITTING, TAB_ALL])}) exitWith {};
 
     GVAR(viewsBusy) = true;
 
@@ -58,7 +59,6 @@ if (isNull _list) exitWith {};
         _sort lbSetData [_index, "gmr_view_" + _id];
         _sort lbSetColor [_index, ARSENAL_FITS_COLOR];
     } forEach [
-        ["fitting", LLSTRING(View_Fitting)],
         ["round", LLSTRING(View_Rounds)],
         ["pack", LLSTRING(View_Packs)],
         ["belt", LLSTRING(View_Belts)]
@@ -90,11 +90,12 @@ if (isNull _list) exitWith {};
         _display setVariable [QGVAR(viewsHandler), true];
         _sort ctrlAddEventHandler ["LBSelChanged", {call FUNC(arsenalViewPicked)}];
     };
-}, [_display]] call CBA_fnc_execNextFrame;
+}, [_display]] call FUNC(nextFrame);
 
-if (GVAR(arsenalView) == "all") exitWith {};
+if (!_fittingTab && {GVAR(arsenalView) == "all"}) exitWith {};
 
-private _fitting = if (GVAR(arsenalView) == "fitting") then {call FUNC(arsenalFits)} else {[]};
+// What the unit's weapons take, in the tab for it: [calibers of loose rounds, calibers of belts]. Empty in the other tab.
+private _fitting = if (_fittingTab) then {call FUNC(arsenalFits)} else {[]};
 
 // The mod's tools (the speedloader) show in every view; among the fitting ammunition only while a weapon takes a caliber
 // that comes on stripper clips.
@@ -117,10 +118,12 @@ for "_row" from ((lnbSize _list) select 0) - 1 to 0 step -1 do {
             _kind = "round";
         };
 
-        private _shown = switch (true) do {
-            case (_kind == ""): {_toolsFit};
-            case (_fitting isEqualTo []): {_kind == GVAR(arsenalView)};
-            default {((_fitting select ([0, 1] select (_kind == "belt"))) getOrDefault [_facts select ITEM_CALIBER, false])};
+        // Of the view picked, and in the tab of the fitting ammunition also of a caliber a weapon takes.
+        private _shown = if (_kind == "") then {
+            _toolsFit
+        } else {
+            GVAR(arsenalView) in ["all", _kind]
+            && {_fitting isEqualTo [] || {(_fitting select (parseNumber (_kind == "belt"))) getOrDefault [_facts select ITEM_CALIBER, false]}}
         };
 
         if (!_shown) then {

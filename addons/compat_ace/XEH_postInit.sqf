@@ -44,42 +44,6 @@
 
 if (!hasInterface) exitWith {};
 
-// Which ammunition the loaded mods' magazines take, for the arsenal: loose rounds or belts, of which caliber and kind.
-// Thousands of classes, so in the background: it would be a noticeable hang on the arsenal's first opening. Universal
-// ammunition is there for the magazines nothing else fits.
-[] spawn {
-    private _used = createHashMapFromArray [["round:universal:basic", true], ["belt:universal:basic", true]];
-
-    {
-        private _facts = [configName _x] call EFUNC(main,magazineInfo);
-
-        if (_facts select MAG_OK) then {
-            private _kind = ["round", "belt"] select (_facts select MAG_BELT);
-
-            // Basic ammunition fills any magazine of its caliber, so it is there as soon as one of its kinds is.
-            {
-                _used set [format ["%1:%2:%3", _kind, _facts select MAG_CALIBER, _x], true];
-            } forEach ["basic", _facts select MAG_TYPE];
-        };
-    } forEach ("getNumber (_x >> 'scope') > 0" configClasses (configFile >> "CfgMagazines"));
-
-    GVAR(usedCalibers) = _used;
-};
-
-// ACE builds its side buttons as this event goes out, so they are moved a frame later.
-["ace_arsenal_rightPanelContainer", {
-    [FUNC(arrangeArsenal), _this] call CBA_fnc_execNextFrame;
-}] call CBA_fnc_addEventHandler;
-
-["ace_arsenal_rightPanelFilled", {
-    params ["_display", "", "_button"];
-
-    if (_button != 61 + GVAR(arsenalSlot) * 2) exitWith {};
-
-    [_display] call FUNC(arsenalFilter);
-    [_display] call FUNC(arsenalViews);
-
-    if (EGVAR(main,arsenalHighlight)) then {
-        [_display] call FUNC(arsenalHighlight);
-    };
-}] call CBA_fnc_addEventHandler;
+// Counted ahead of the arsenal's first opening. In the editor, where no mission starts, that opening sets it off
+// (fnc_arsenalFilter).
+call FUNC(countCalibers);

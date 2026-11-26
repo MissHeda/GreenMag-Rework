@@ -4,5 +4,7 @@ PREP(arsenalFits);
 PREP(arsenalHighlight);
 PREP(arsenalViewPicked);
 PREP(arsenalViews);
+PREP(countCalibers);
 PREP(linkBeltSource);
+PREP(nextFrame);
 PREP(startLinkBelt);

@@ -122,6 +122,8 @@ def action(kind):
     elif kind == "ammo":
         for x in (72, 128, 184):
             cartridge(draw, x, 34, 222, 42)
+    elif kind == "round":
+        cartridge(draw, 128, 16, 240, 54)
     elif kind == "belt":
         belt(draw, 40, 216, 128, 5)
     elif kind == "split":
@@ -202,9 +204,11 @@ def main():
     renders = [png for png in renders if not png.name.startswith("_")]
 
     with tempfile.TemporaryDirectory() as temp:
-        ammo = Path(temp) / "action_ammo.png"
-        action("ammo").save(ammo)
-        to_paa(ammo, ROOT / "addons" / "compat_ace" / "data" / "action_ammo.paa")
+        # The two tabs of ACE Arsenal: all ammunition, and the ammunition of the weapons carried.
+        for kind in ("ammo", "round"):
+            png = Path(temp) / f"action_{kind}.png"
+            action(kind).save(png)
+            to_paa(png, ROOT / "addons" / "compat_ace" / "data" / f"action_{kind}.paa")
 
         for png in renders:
             source = png

@@ -20,9 +20,9 @@
 params ["_control", "_row"];
 
 private _display = ctrlParent _control;
-private _button = 61 + GVAR(arsenalSlot) * 2;
+private _button = missionNamespace getVariable ["ace_arsenal_currentRightPanel", -1];
 
-if (GVAR(viewsBusy) || {focusedCtrl _display != _control} || {missionNamespace getVariable ["ace_arsenal_currentRightPanel", -1] != _button}) exitWith {};
+if (GVAR(viewsBusy) || {focusedCtrl _display != _control} || {!(_button in [TAB_FITTING, TAB_ALL])}) exitWith {};
 
 private _data = _control lbData _row;
 private _view = if (_data find "gmr_view_" == 0) then {_data select [9]} else {"all"};
@@ -39,6 +39,6 @@ GVAR(arsenalView) = _view;
     GVAR(viewsBusy) = true;
     [_display, _display displayCtrl _button, false] call ace_arsenal_fnc_fillRightPanel;
     GVAR(viewsBusy) = false;
-}, [_display, _button]] call CBA_fnc_execNextFrame;
+}, [_display, _button]] call FUNC(nextFrame);
 
 nil

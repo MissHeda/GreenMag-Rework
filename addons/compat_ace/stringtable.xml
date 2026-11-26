@@ -2,7 +2,10 @@
 <Project name="gmr">
     <Package name="compat_ace">
         <Key ID="STR_gmr_compat_ace_ArsenalTab">
-            <English>Ammunition</English>
+            <English>All ammunition</English>
+        </Key>
+        <Key ID="STR_gmr_compat_ace_ArsenalTabFitting">
+            <English>Ammunition for your weapons</English>
         </Key>
         <Key ID="STR_gmr_compat_ace_LinkBelt">
             <English>Link loose belt</English>
@@ -15,9 +18,6 @@
         </Key>
         <Key ID="STR_gmr_compat_ace_BeltNotLinked">
             <English>Belt not linked</English>
-        </Key>
-        <Key ID="STR_gmr_compat_ace_View_Fitting">
-            <English>Fitting ammunition</English>
         </Key>
         <Key ID="STR_gmr_compat_ace_View_Rounds">
             <English>Rounds only</English>

@@ -24,11 +24,14 @@ if (isNull _display || {GVAR(arsenalSlot) < 0}) exitWith {};
 private _start = (ctrlPosition (_display displayCtrl ARSENAL_BUTTON_MAG_ALL)) select 1;
 private _step = _start - ((ctrlPosition (_display displayCtrl ARSENAL_BUTTON_MAG)) select 1);
 
+// This mod's tabs: the fitting ammunition above all of it, as ACE orders its two tabs of magazines.
+private _mine = [GVAR(arsenalSlotFitting), GVAR(arsenalSlot)] select {_x >= 0};
+
 // Pairs of a button and its background, in the order they come below the magazines.
-private _order = [[61 + GVAR(arsenalSlot) * 2, 60 + GVAR(arsenalSlot) * 2], [ARSENAL_BUTTON_THROW, ARSENAL_BUTTON_THROW - 1], [ARSENAL_BUTTON_PUT, ARSENAL_BUTTON_PUT - 1]];
+private _order = (_mine apply {[61 + _x * 2, 60 + _x * 2]}) + [[ARSENAL_BUTTON_THROW, ARSENAL_BUTTON_THROW - 1], [ARSENAL_BUTTON_PUT, ARSENAL_BUTTON_PUT - 1]];
 
 for "_slot" from 0 to 9 do {
-    if (_slot != GVAR(arsenalSlot) && {!isNull (_display displayCtrl (61 + _slot * 2))}) then {
+    if (!(_slot in _mine) && {!isNull (_display displayCtrl (61 + _slot * 2))}) then {
         _order pushBack [61 + _slot * 2, 60 + _slot * 2];
     };
 };

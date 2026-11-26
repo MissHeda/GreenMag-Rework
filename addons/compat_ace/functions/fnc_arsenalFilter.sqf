@@ -22,6 +22,9 @@ private _list = _display displayCtrl ARSENAL_ITEM_LIST;
 
 if (isNull _list) exitWith {};
 
+// In the editor no mission's start has set the count off.
+call FUNC(countCalibers);
+
 private _hidden = [];
 
 {
@@ -32,7 +35,7 @@ private _hidden = [];
     };
 } forEach [[EGVAR(main,arsenalBelts), "belt"], [EGVAR(main,arsenalPacks), "pack"], [EGVAR(main,arsenalRounds), "round"]];
 
-// Until the background count (XEH_postInit) is through, nothing is hidden for it.
+// Until the background count (fnc_countCalibers) is through, nothing is hidden for it.
 private _usedOnly = EGVAR(main,arsenalUsedCalibers) && {!isNil QGVAR(usedCalibers)};
 
 if (_hidden isEqualTo [] && {!_usedOnly} && {EGVAR(main,universalAmmo)}) exitWith {};

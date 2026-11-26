@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Added: ACE Arsenal has two ammunition tabs, as it has two for magazines: one for the ammunition the weapons the unit carries take (a single round as its icon), and below it the one for all ammunition; the "Fitting ammunition" view of the sort list is that first tab now
+- Fixed: the ammunition tabs of ACE Arsenal were only put in place, filtered and given their views once a mission had started, so not in the editor's arsenal; they are now set up before
+
 ## 1.3.3
 
 - Added: server setting "Excluded magazines" (Rules): magazines whose class name contains one of the listed parts are left alone, no unloading, loading or refilling; for flamethrower tanks and other magazines without rounds to take out (Spearhead M2 flamethrower). It is `flame` by default, so flamethrower tanks are left alone without any setup. Mods can still set `gmr_disabled = 1;` in a magazine's config for the same
