@@ -51,6 +51,36 @@ PACK_SIZES = {
     "127x99": (10,),
     "127x108": (10,),
     "12g": (5, 25),
+    "762x63": (20,),
+    "762x33": (50,),
+    "792x33": (15,),
+    "77x58": (15,),
+    "65x50": (15,),
+    "65x55": (20,),
+    "65x52": (18,),
+    "735x51": (18,),
+    "75x54": (15,),
+    "8x50r": (8,),
+    "8x56r": (10,),
+    "8x59": (20,),
+    "577450": (10,),
+    "765x17": (25,),
+    "765x20": (25,),
+    "765x21": (25,),
+    "635x16": (25,),
+    "9x17": (25,),
+    "8x22": (15,),
+    "8x27": (12,),
+    "762x38": (14,),
+    "75x23": (12,),
+    "38sw": (12,),
+    "455": (12,),
+    "792x94": (10,),
+    "792x107": (12,),
+    "139x99": (10,),
+    "145x114": (10,),
+    "127x81": (10,),
+    "20x138": (10,),
 }
 # The calibers issued on stripper clips, and the rounds on one clip: 10 for the intermediate rifle rounds, 5 for the
 # full-power ones. Every variant of them comes as a clip and in cartons of clips.
@@ -64,6 +94,13 @@ CLIPS = {
     "762x54": 5,
     "792x57": 5,
     "303": 5,
+    "762x63": 5,
+    "762x33": 10,
+    "792x33": 5,
+    "77x58": 5,
+    "65x50": 5,
+    "65x55": 5,
+    "75x54": 5,
 }
 
 # The cartons of clips, in clips per carton: three everywhere, and NATO 5.56 also two to a box as in a bandoleer's pocket.
@@ -78,6 +115,8 @@ BELT_MASS_FACTOR = 1.15
 
 TRACER = ("Tracer", ("tracer",))
 IR = ("IR Tracer", ("irtracer", "_ir_", "tracer_ir"))
+# Armour-piercing without a name of its own (S.m.K., B-30, balle P): the rounds of the Second World War.
+AP = ("AP", ("_ap_", "armorpiercing"))
 
 
 def v(label, *tokens):
@@ -93,7 +132,7 @@ CALIBERS = {
     "9x21": ("9x21 mm", "pistol", 0.10, ("9x21",), {"tracer": TRACER}),
     "9x18": ("9x18 mm", "pistol", 0.09, ("9x18",), {}),
     "9x39": ("9x39 mm", "rifle", 0.20, ("9x39",), {}),
-    "762x25": ("7.62x25 mm", "pistol", 0.10, ("762x25",), {}),
+    "762x25": ("7.62x25 mm", "pistol", 0.10, ("762x25",), {"tracer": TRACER, "ap": AP}),
     "45acp": (".45 ACP", "pistol", 0.15, ("45acp", "45_acp", "11x23"), {"tracer": TRACER}),
     "46x30": ("4.6x30 mm", "pistol", 0.06, ("46x30",), {}),
     "570x28": ("5.7x28 mm", "pistol", 0.07, ("570x28", "57x28"), {}),
@@ -119,9 +158,9 @@ CALIBERS = {
         "mk319": v("Mk 319", "mk319"),
         "sd": v("Subsonic", "subsonic", "_sd"),
     }),
-    "762x54": ("7.62x54 mmR", "rifle", 0.25, ("762x54",), {"tracer": TRACER}),
-    "792x57": ("7.92x57 mm", "rifle", 0.27, ("792x57", "792mm", "792mauser"), {}),
-    "303": (".303 British", "rifle", 0.25, ("303br", "303_", "_303"), {}),
+    "762x54": ("7.62x54 mmR", "rifle", 0.25, ("762x54",), {"tracer": TRACER, "ap": AP}),
+    "792x57": ("7.92x57 mm", "rifle", 0.27, ("792x57", "792mm", "792mauser"), {"tracer": TRACER, "ap": AP}),
+    "303": (".303 British", "rifle", 0.25, ("303br", "303_", "_303", "770x56", "77x56"), {"tracer": TRACER, "ap": AP}),
     "50bw": (".50 Beowulf", "rifle", 0.35, ("50bw", "50beowulf"), {}),
     "93x64": ("9.3x64 mm", "heavy", 0.40, ("93x64",), {}),
     "338": (".338", "heavy", 0.45, ("338", "86x70"), {
@@ -136,6 +175,38 @@ CALIBERS = {
     }),
     "127x108": ("12.7x108 mm", "heavy", 1.30, ("127x108",), {"apds": v("APDS", "apds")}),
     "12g": ("12 Gauge", "shell", 0.40, ("12gauge", "12ga", "12g_", "_12g"), {"slug": v("Slug", "slug")}),
+    # The Second World War: the rifle, pistol and anti-tank rifle rounds of IFA3, Faces of War, Northern Fronts,
+    # CSA38 and the like. Ball, and tracer for the rounds those mods have tracer magazines of.
+    "762x63": (".30-06 Springfield", "rifle", 0.27, ("762x63", "3006", "30_06"), {"tracer": TRACER}),
+    "762x33": (".30 Carbine", "rifle", 0.13, ("762x33", "30carbine", "30_carbine"), {"tracer": TRACER}),
+    "792x33": ("7.92x33 mm Kurz", "rifle", 0.17, ("792x33",), {"tracer": TRACER}),
+    "77x58": ("7.7x58 mm Arisaka", "rifle", 0.27, ("77x58", "770x58"), {}),
+    "65x50": ("6.5x50 mm Arisaka", "rifle", 0.21, ("65x50", "650x50"), {}),
+    "65x55": ("6.5x55 mm", "rifle", 0.24, ("65x55", "650x55"), {"tracer": TRACER}),
+    "65x52": ("6.5x52 mm Carcano", "rifle", 0.22, ("65x52", "650x52"), {}),
+    "735x51": ("7.35x51 mm Carcano", "rifle", 0.22, ("735x51",), {}),
+    "75x54": ("7.5x54 mm MAS", "rifle", 0.24, ("75x54", "750x54"), {"tracer": TRACER}),
+    "8x50r": ("8x50 mmR Lebel", "rifle", 0.28, ("8x50r", "8x50"), {"tracer": TRACER, "ap": AP}),
+    "8x56r": ("8x56 mmR Mannlicher", "rifle", 0.28, ("8x56r", "8x56", "8x52r"), {}),
+    "8x59": ("8x59 mm Breda", "rifle", 0.30, ("8x59",), {"tracer": TRACER, "ap": AP}),
+    "577450": (".577/450 Martini-Henry", "rifle", 0.50, ("577_450", "577450"), {}),
+    "765x17": ("7.65x17 mm Browning", "pistol", 0.08, ("765x17", "32acp", "32_acp"), {}),
+    "765x20": ("7.65x20 mm Longue", "pistol", 0.09, ("765x20",), {}),
+    "765x21": ("7.65x21 mm Parabellum", "pistol", 0.10, ("765x21", "765x22"), {}),
+    "635x16": ("6.35x16 mm Browning", "pistol", 0.05, ("635x16", "25acp", "25_acp"), {}),
+    "9x17": ("9x17 mm Browning", "pistol", 0.09, ("9x17", "380acp", "380_acp"), {}),
+    "8x22": ("8x22 mm Nambu", "pistol", 0.09, ("8x22",), {}),
+    "8x27": ("8x27 mmR Mle 1892", "pistol", 0.12, ("8x27",), {}),
+    "762x38": ("7.62x38 mmR Nagant", "pistol", 0.12, ("762x38",), {}),
+    "75x23": ("7.5 mm Nagant", "pistol", 0.11, ("75x23", "75mmnagant"), {}),
+    "38sw": (".38 S&W", "pistol", 0.14, ("38sw", "38_sw", "38_200"), {}),
+    "455": (".455 Webley", "pistol", 0.20, ("455webley", "455_webley"), {}),
+    "792x94": ("7.92x94 mm", "heavy", 0.90, ("792x94", "79x94"), {}),
+    "792x107": ("7.92x107 mm DS", "heavy", 0.85, ("792x107",), {}),
+    "139x99": (".55 Boys", "heavy", 1.50, ("139x99", "55boys", "55_boys"), {}),
+    "145x114": ("14.5x114 mm", "heavy", 1.90, ("145x114", "145x144"), {}),
+    "127x81": ("12.7x81 mm Vickers", "heavy", 0.80, ("127x81",), {}),
+    "20x138": ("20x138 mm B", "heavy", 2.80, ("20x138",), {"tracer": TRACER}),
 }
 
 BELTS = (
@@ -153,6 +224,14 @@ BELTS = (
     ("762x54", "basic"),
     ("762x54", "tracer"),
     ("792x57", "basic"),
+    ("792x57", "tracer"),
+    ("792x57", "ap"),
+    ("762x63", "basic"),
+    ("762x63", "tracer"),
+    ("303", "basic"),
+    ("303", "tracer"),
+    ("303", "ap"),
+    ("127x81", "basic"),
     ("93x64", "basic"),
 )
 

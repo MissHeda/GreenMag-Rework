@@ -110,6 +110,11 @@ def render_sides(name, caliber, variant, label, variant_label, folder, second=No
     print("rendered", name, flush=True)
 
 
+def wanted(name, name_filter):
+    """The name filter is one or more parts of carton names, separated by commas."""
+    return not name_filter or any(part in name for part in name_filter.split(","))
+
+
 def main():
     args = sys.argv[sys.argv.index("--") + 1:]
     folder = Path(args[0]).resolve()
@@ -120,7 +125,7 @@ def main():
         for variant, (variant_label, _) in ({"basic": ("Basic", ())} | variants).items():
             name = f"{caliber}_{variant}"
 
-            if not name_filter or name_filter in name:
+            if wanted(name, name_filter):
                 render_sides(name, caliber, variant, label, variant_label, folder)
 
     # The cartons of stripper clips, with their own second line.
@@ -131,7 +136,7 @@ def main():
             for count in ITEM_TABLE.CLIP_BOXES[caliber]:
                 name = f"clips_{caliber}_{variant}_{count}"
 
-                if not name_filter or name_filter in name:
+                if wanted(name, name_filter):
                     second = ITEMS.clip_line(variant, variant_label, count, rounds)
                     render_sides(name, caliber, variant, label, variant_label, folder, second)
 

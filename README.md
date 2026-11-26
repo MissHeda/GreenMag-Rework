@@ -57,6 +57,7 @@ Optional lines, only if you need them:
 | --- | --- |
 | `gmr_belt = 1;` | refills from belts instead of loose rounds |
 | `gmr_variant = "tracer";` | the kind of round inside (advanced ammunition) |
+| `gmr_family = "my_30Rnd_Mag";` | the magazine it is a version of, where the class names do not tell |
 | `gmr_speedload = 0;` | no stripper clips with the speedloader (single rounds only) |
 | `gmr_disabled = 1;` | GreenMag leaves this magazine alone |
 
@@ -124,15 +125,33 @@ All lines at a glance:
 | `gmr_caliber = "556x45";` | magazine | which rounds fit (names in `addons/items/cfg/calibers.hpp`) |
 | `gmr_belt = 1;` | magazine | refills from belts instead of loose rounds |
 | `gmr_variant = "tracer";` | magazine | the kind of round inside (advanced ammunition) |
+| `gmr_family = "my_30Rnd_Mag";` | magazine | pairs it with its ball or tracer version when the names differ by more than a word |
 | `gmr_speedload = 0;` | magazine | no stripper clips with the speedloader |
 | `gmr_disabled = 1;` | magazine | GreenMag leaves it alone |
 | `gmr_arsenal = 1;` | item | shows it in GreenMag's Arsenal tab |
 
 Built in already, each loading only with its mod: RHS (AFRF, USAF, GREF, SAF), 3CB Factions and BAF Weapons, BWMod,
-CUP Weapons, NIArms, MCC and ACE Crew-Served Weapons. Missing your mod? Ask on the Workshop page or open an issue.
+CUP Weapons, NIArms, MCC and ACE Crew-Served Weapons, and for the Second World War IFA3 AIO, Faces of War, Northern
+Fronts, CSA38, IFA3 Liberation and JM's Second Assault. Missing your mod? Ask on the Workshop page or open an issue.
+
+The Second World War mods bring their own rounds: .30-06, .30 Carbine, 7.92 Kurz, .303 (also as 7.7x56 R), 7.7 and 6.5
+Arisaka, 6.5 Swedish, the Carcano, Lebel, Mannlicher, MAS and Breda rifle rounds, the pistol rounds from 6.35 Browning
+to .455 Webley, the anti-tank rifles' (.55 Boys, 7.92x94, 7.92x107, 14.5x114, 20x138 B) and the 12.7x81 of the heavy
+Vickers.
+The belts of the MG 34 and 42, the M1919, the Vickers and the Maxim refill from belts; pans, drums and feed strips (DP, Bren, Lewis, Hotchkiss, Breda) take
+loose rounds. Flamethrower fuel, blades, the placeholder magazines of scripted reloads and the shell boxes a gun crew
+carries are left alone.
+
+With the advanced ammunition, the rounds those mods have tracer magazines of come as tracer too (7.92x57, .30-06,
+.303, 7.62x25, .30 Carbine, 7.92 Kurz, 7.5 MAS, 8 mm Lebel, 8x59 Breda, 6.5x55), 7.92x57, .30-06 and .303 also as
+tracer belts: tracer rounds in an empty ball clip make it the tracer clip and the other way round. The same goes for
+armour-piercing rounds, which there are for 7.92x57 (S.m.K.), .303, 7.62x25 (P-41), 7.62x54 R (B-30), 8 mm Lebel
+(balle P) and 8x59 Breda, 7.92x57 and .303 also as belts. Heavy ball (sS, D, Mk VIII, M1) takes ball.
 
 ## Development
 
+`tools/generate_compat.py` and `tools/generate_compat_ww2.py` write the compat addons from the other mods' own configs;
+the latter reads them with `tools/pbo_config.py`, without HEMTT, and has tables for what a name does not tell.
 `tools/generate_items.py` writes the item configs from its table, `tools/render_items.py` renders the item
 pictures in Blender, `tools/make_icons.py` converts them and draws the menu icons, and `tools/cut_sounds.py`
 cuts the loading and unloading sounds out of CC0 recordings from BigSoundBank (see its header). `tools/anim/build_load_gesture.py` computes the loading animation from the Arma 3 Samples'

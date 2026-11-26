@@ -53,11 +53,17 @@ if (_facts select MAG_BELT) exitWith {QPATHTOF(data\mag_box.p3d)};
 // The family of magazine its caliber's weapons have, and of the sizes made for it (tools/make_mag_models.py) the
 // smallest that holds it, so a magazine of ten looks short and one of forty long.
 private _family = switch (true) do {
-    case (_caliber in ["9x19", "9x21", "9x18", "762x25", "45acp", "46x30", "570x28"]): {["pistol", [7, 15, 30]]};
+    case (_caliber in [
+        "9x19", "9x21", "9x18", "762x25", "45acp", "46x30", "570x28",
+        "765x17", "765x20", "765x21", "635x16", "9x17", "8x22", "8x27", "762x38", "75x23", "38sw", "455"
+    ]): {["pistol", [7, 15, 30]]};
     case (_caliber in ["545x39", "762x39", "762x54", "9x39"]): {["ak", [10, 20, 30, 45]]};
-    case (_caliber in ["762x51", "792x57", "303"]): {["battle", [5, 10, 20, 30]]};
-    case (_caliber in ["93x64", "338", "408", "127x54"]): {["heavy", [5, 10]]};
-    case (_caliber in ["127x99", "127x108"]): {["fifty", [5, 10]]};
+    case (_caliber in [
+        "762x51", "792x57", "303",
+        "762x63", "77x58", "65x50", "65x55", "65x52", "735x51", "75x54", "8x50r", "8x56r", "8x59", "577450"
+    ]): {["battle", [5, 10, 20, 30]]};
+    case (_caliber in ["93x64", "338", "408", "127x54", "792x94", "792x107"]): {["heavy", [5, 10]]};
+    case (_caliber in ["127x99", "127x108", "127x81", "139x99", "145x114", "20x138"]): {["fifty", [5, 10]]};
     case (_caliber == "12g"): {["shell", [5, 10]]};
     default {["rifle", [10, 20, 30, 40]]};
 };

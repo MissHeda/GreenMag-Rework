@@ -3,7 +3,8 @@
  * Author: Miss Heda
  * The version of a magazine for another kind of round: 30Rnd_556x45_Stanag and 30Rnd_556x45_Stanag_Tracer_Red are the
  * same magazine. Magazines count as one when their class names match without the words that only name the round, and
- * they hold the same number of rounds. The names of all magazines are read once, on first use.
+ * they hold the same number of rounds. Where the names do not tell (CSA38_7_7_30x56R and CSA38_7_7_30x56RTracer), a
+ * magazine's gmr_family is compared in place of its own name. The names of all magazines are read once, on first use.
  *
  * Arguments:
  * 0: Magazine class <STRING>
@@ -21,7 +22,8 @@
 params [["_class", "", [""]], ["_variant", "basic", [""]]];
 
 private _fnc_key = {
-    private _words = (toLowerANSI _this) splitString "_";
+    private _family = getText (configFile >> "CfgMagazines" >> _this >> "gmr_family");
+    private _words = (toLowerANSI ([_this, _family] select (_family isNotEqualTo ""))) splitString "_";
 
     (_words select {!(_x in ["tracer", "tracers", "trc", "t", "ir", "irtracer", "red", "green", "yellow", "white", "orange", "ball"])}) joinString "_"
 };

@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+- Added: Second World War compat for IFA3 AIO, Faces of War, Northern Fronts, CSA38, IFA3 Liberation and JM's Second Assault; every bullet magazine of theirs has its caliber and belt set, each part loads only with its mod
+- Added: 30 calibers of that war with their rounds, cartons and pictures: .30-06, .30 Carbine, 7.92x33 Kurz, 7.7x58 and 6.5x50 Arisaka, 6.5x55, 6.5x52 and 7.35x51 Carcano, 7.5x54 MAS, 8x50 R Lebel, 8x56 R Mannlicher, 8x59 Breda, .577/450, 7.65x17, 7.65x20 Longue, 7.65x21, 6.35x16, 9x17, 8x22 Nambu, 8x27 R, 7.62x38 R Nagant, 7.5 Nagant, .38 S&W, .455 Webley, 7.92x94, 7.92x107, .55 Boys, 14.5x114, 12.7x81 Vickers and 20x138 B (Lahti L-39, with tracer)
+- Added: stripper clips for .30-06, .30 Carbine, 7.92 Kurz, both Arisaka rounds, 6.5x55 and 7.5 MAS; belts of 1 to 200 rounds for .30-06 (M1919), .303 (Vickers) and 12.7x81 (heavy Vickers)
+- Added: tracer rounds, cartons and clips for 7.92x57, .30-06, .303, 7.62x25, .30 Carbine, 7.92 Kurz, 7.5 MAS, 8x50 R Lebel, 8x59 Breda and 6.5x55, and tracer belts for 7.92x57, .30-06 and .303; with the advanced ammunition the tracer magazines of those mods (IFA3's `_t`, Second Assault's colours, CSA38's and Northern Fronts' `Tracer`) take them and change places with their ball versions
+- Added: armour-piercing rounds, cartons and clips for 7.92x57, .303, 7.62x25, 7.62x54 R, 8x50 R Lebel and 8x59 Breda, and AP belts for 7.92x57 and .303; with the advanced ammunition the AP magazines of those mods (IFA3's S.m.K., P-41 and B-30, CSA38's AP loads, Second Assault's AP and balle P) take them and change places with their ball versions; heavy ball (sS, D, Mk VIII, M1) stays ball
+- Added: `gmr_family` in a magazine's config pairs it with its ball, tracer or AP version where the class names do not (`CSA38_7_7_30x56RTracer`, `LIB_5Rnd_792x57_SMK`, IFA3's `_t30` and `_t46`)
+- Changed: the Second World War compat states every magazine's kind of round (`gmr_variant`), so armour-piercing magazines that leave a trace and belts with a tracer every few rounds are not taken for tracer magazines
+- Changed: .303 British is also found as 7.7x56 (`770x56`, `77x56`), as IFA3, JMSSA and Northern Fronts name it
+- Changed: 100-round magazines of .30-06 count as belts, like those of the other full-power calibers
+- Fixed by the compat: CSA38's Mosin clips, its 9 mm Parabellum and Browning magazines and its .303 had no caliber; IFA3's Nagant revolver counted as 7.62x25 and Faces of War's Webley as .45 ACP
+- Left alone (`gmr_disabled`): flamethrower fuel, the knife and katana "magazines", blanks, the fake and empty placeholder magazines of Northern Fronts' and IFA3 Liberation's scripted reloads, and Northern Fronts' boxes of 37 to 114 mm shells
+- Still universal: the guns of vehicles, aircraft and ships from 13 mm up (20 mm and larger autocannon, MG 131), which no soldier carries magazines of
+- Tools: `tools/generate_compat_ww2.py` writes the Second World War compat addons, reading the mods' configs with `tools/pbo_config.py`; the render tools take several names, separated by commas, as their filter
+
 ## 1.3.3
 
 - Added: server setting "Excluded magazines" (Rules): magazines whose class name contains one of the listed parts are left alone, no unloading, loading or refilling; for flamethrower tanks and other magazines without rounds to take out (Spearhead M2 flamethrower). It is `flame` by default, so flamethrower tanks are left alone without any setup. Mods can still set `gmr_disabled = 1;` in a magazine's config for the same

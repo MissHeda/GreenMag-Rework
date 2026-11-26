@@ -111,8 +111,8 @@ private _belt = switch (true) do {
     default {
         _key in GVAR(registeredBelts)
         || {_capacity >= 130}
-        // No rifle of a full-power caliber holds 100 rounds: those are machine gun belts (RHS M240, PKM).
-        || {_capacity >= 100 && {_caliber in ["762x51", "762x54", "792x57"]}}
+        // No rifle of a full-power caliber holds 100 rounds: those are machine gun belts (RHS M240, PKM, M1919).
+        || {_capacity >= 100 && {_caliber in ["762x51", "762x54", "792x57", "762x63"]}}
         || {((["belt", "_box", "pouch", "_saw"]) findIf {_x in _key}) >= 0}
     };
 };

@@ -31,6 +31,8 @@ class gmr_calibers {
     class 762x25 {displayName = "7.62x25 mm"; tokens[] = {"762x25"}; packs[] = {60,30,10};
         class variants {
             class basic {displayName = "Basic"; tokens[] = {};};
+            class ap {displayName = "AP"; tokens[] = {"_ap_","armorpiercing"};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
         };
     };
     class 45acp {displayName = ".45 ACP"; tokens[] = {"45acp","45_acp","11x23"}; packs[] = {60,30,10};
@@ -105,17 +107,22 @@ class gmr_calibers {
     class 762x54 {displayName = "7.62x54 mmR"; tokens[] = {"762x54"}; packs[] = {60,30,10};
         class variants {
             class basic {displayName = "Basic"; tokens[] = {};};
+            class ap {displayName = "AP"; tokens[] = {"_ap_","armorpiercing"};};
             class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
         };
     };
     class 792x57 {displayName = "7.92x57 mm"; tokens[] = {"792x57","792mm","792mauser"}; packs[] = {60,30,10};
         class variants {
             class basic {displayName = "Basic"; tokens[] = {};};
+            class ap {displayName = "AP"; tokens[] = {"_ap_","armorpiercing"};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
         };
     };
-    class 303 {displayName = ".303 British"; tokens[] = {"303br","303_","_303"}; packs[] = {60,30,10};
+    class 303 {displayName = ".303 British"; tokens[] = {"303br","303_","_303","770x56","77x56"}; packs[] = {60,30,10};
         class variants {
             class basic {displayName = "Basic"; tokens[] = {};};
+            class ap {displayName = "AP"; tokens[] = {"_ap_","armorpiercing"};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
         };
     };
     class 50bw {displayName = ".50 Beowulf"; tokens[] = {"50bw","50beowulf"}; packs[] = {60,30,10};
@@ -163,6 +170,166 @@ class gmr_calibers {
         class variants {
             class basic {displayName = "Basic"; tokens[] = {};};
             class slug {displayName = "Slug"; tokens[] = {"slug"};};
+        };
+    };
+    class 762x63 {displayName = ".30-06 Springfield"; tokens[] = {"762x63","3006","30_06"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
+        };
+    };
+    class 762x33 {displayName = ".30 Carbine"; tokens[] = {"762x33","30carbine","30_carbine"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
+        };
+    };
+    class 792x33 {displayName = "7.92x33 mm Kurz"; tokens[] = {"792x33"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
+        };
+    };
+    class 77x58 {displayName = "7.7x58 mm Arisaka"; tokens[] = {"77x58","770x58"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 65x50 {displayName = "6.5x50 mm Arisaka"; tokens[] = {"65x50","650x50"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 65x55 {displayName = "6.5x55 mm"; tokens[] = {"65x55","650x55"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
+        };
+    };
+    class 65x52 {displayName = "6.5x52 mm Carcano"; tokens[] = {"65x52","650x52"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 735x51 {displayName = "7.35x51 mm Carcano"; tokens[] = {"735x51"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 75x54 {displayName = "7.5x54 mm MAS"; tokens[] = {"75x54","750x54"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
+        };
+    };
+    class 8x50r {displayName = "8x50 mmR Lebel"; tokens[] = {"8x50r","8x50"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+            class ap {displayName = "AP"; tokens[] = {"_ap_","armorpiercing"};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
+        };
+    };
+    class 8x56r {displayName = "8x56 mmR Mannlicher"; tokens[] = {"8x56r","8x56","8x52r"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 8x59 {displayName = "8x59 mm Breda"; tokens[] = {"8x59"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+            class ap {displayName = "AP"; tokens[] = {"_ap_","armorpiercing"};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
+        };
+    };
+    class 577450 {displayName = ".577/450 Martini-Henry"; tokens[] = {"577_450","577450"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 765x17 {displayName = "7.65x17 mm Browning"; tokens[] = {"765x17","32acp","32_acp"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 765x20 {displayName = "7.65x20 mm Longue"; tokens[] = {"765x20"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 765x21 {displayName = "7.65x21 mm Parabellum"; tokens[] = {"765x21","765x22"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 635x16 {displayName = "6.35x16 mm Browning"; tokens[] = {"635x16","25acp","25_acp"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 9x17 {displayName = "9x17 mm Browning"; tokens[] = {"9x17","380acp","380_acp"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 8x22 {displayName = "8x22 mm Nambu"; tokens[] = {"8x22"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 8x27 {displayName = "8x27 mmR Mle 1892"; tokens[] = {"8x27"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 762x38 {displayName = "7.62x38 mmR Nagant"; tokens[] = {"762x38"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 75x23 {displayName = "7.5 mm Nagant"; tokens[] = {"75x23","75mmnagant"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 38sw {displayName = ".38 S&W"; tokens[] = {"38sw","38_sw","38_200"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 455 {displayName = ".455 Webley"; tokens[] = {"455webley","455_webley"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 792x94 {displayName = "7.92x94 mm"; tokens[] = {"792x94","79x94"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 792x107 {displayName = "7.92x107 mm DS"; tokens[] = {"792x107"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 139x99 {displayName = ".55 Boys"; tokens[] = {"139x99","55boys","55_boys"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 145x114 {displayName = "14.5x114 mm"; tokens[] = {"145x114","145x144"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 127x81 {displayName = "12.7x81 mm Vickers"; tokens[] = {"127x81"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+        };
+    };
+    class 20x138 {displayName = "20x138 mm B"; tokens[] = {"20x138"}; packs[] = {60,30,10};
+        class variants {
+            class basic {displayName = "Basic"; tokens[] = {};};
+            class tracer {displayName = "Tracer"; tokens[] = {"tracer"};};
         };
     };
 };
